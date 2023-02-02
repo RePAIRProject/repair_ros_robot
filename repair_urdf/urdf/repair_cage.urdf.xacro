@@ -1,0 +1,353 @@
+<?xml version="1.0"?>
+<!-- xacro for the cage defining the workspace of the RePair platform -->
+
+<robot name = "repair_cage" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <xacro:include filename="$(find repair_urdf)/urdf/materials.gazebo.xacro"/>
+
+  <xacro:property name="table_height" value="0.5" />
+  <xacro:property name="cage_width" value="1.5" />
+  <xacro:property name="cage_height" value="1.0"/>
+
+  <xacro:property name="cage_depth" value="2.5" />
+  <xacro:property name="leg_radius" value="0.02" />
+  <xacro:property name="cage_depth" value="2.5" />
+  <xacro:property name="sliding_guide_width" value="0.2" />
+
+  <xacro:property name="table_x" value="0.98" />
+  <xacro:property name="table_y" value="0.0" />
+  <xacro:property name="table_z" value="0.0" />
+  <xacro:property name="table_top_thickness" value="0.05"/>
+
+  <xacro:property name="PI" value="3.14159265359" />
+  <xacro:property name="PI_2" value="1.57079632679" />
+
+  <xacro:property name="leg_z_offset_gz" value="0.0" /> 
+
+  <material name="wood">
+    <color rgba="0.522 0.369 0.259 0.8"/>
+  </material>
+
+  <material name="silver_gray">
+    <color rgba="0.8 0.8 0.8 0.8"/>
+  </material>
+
+  <link name="world">
+  </link>
+
+  <joint name="world_joint" type="fixed" >
+    <parent link="world" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <child link="table_top_link" />
+  </joint> 
+
+  <link name="table_top_link"> 
+    <visual>
+      <origin xyz="${table_x} ${table_y} ${table_z+table_height-table_top_thickness/2}" />
+      <geometry>
+        <box size="${cage_width} ${cage_depth} ${table_top_thickness}" />
+      </geometry>
+      <material name="wood" />
+    </visual> 
+    <collision>
+      <origin xyz="${table_x} ${table_y} ${table_z+table_height-table_top_thickness/2}" />
+      <geometry>
+        <box size="${cage_width} ${cage_depth} ${table_top_thickness}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="leg1_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x+cage_width/2} ${table_y+cage_depth/2} ${table_z+table_height}" rpy="0 0 0" />
+    <child link="leg1_link" />
+  </joint> 
+  <link name="leg1_link">
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2 + leg_z_offset_gz}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="vbar1_joint" type="fixed" >
+    <parent link="leg1_link" />
+    <origin xyz="0 0 ${cage_height/2}" rpy="0 0 0" />
+    <child link="vbar1_link" />
+  </joint> 
+  <link name="vbar1_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="leg2_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x-cage_width/2} ${table_y+cage_depth/2} ${table_z+table_height}" rpy="0 0 0" />
+    <child link="leg2_link" />
+  </joint> 
+  <link name="leg2_link">
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+      <material name="silver_gray" />
+
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2 + leg_z_offset_gz}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="vbar2_joint" type="fixed" >
+    <parent link="leg2_link" />
+    <origin xyz="0 0 ${cage_height/2}" rpy="0 0 0" />
+    <child link="vbar2_link" />
+  </joint> 
+  <link name="vbar2_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="leg3_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x+cage_width/2} ${table_y-cage_depth/2} ${table_z+table_height}" rpy="0 0 0" />
+    <child link="leg3_link" />
+  </joint> 
+  <link name="leg3_link"> 
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+      <material name="silver_gray" />
+
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2 + leg_z_offset_gz}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="vbar3_joint" type="fixed" >
+    <parent link="leg3_link" />
+    <origin xyz="0 0 ${cage_height/2}" rpy="0 0 0" />
+    <child link="vbar3_link" />
+  </joint> 
+  <link name="vbar3_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="leg4_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x-cage_width/2} ${table_y-cage_depth/2} ${table_z+table_height}" rpy="0 0 0" />
+    <child link="leg4_link" />
+  </joint> 
+  <link name="leg4_link">
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+      <material name="silver_gray" />
+
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2 + leg_z_offset_gz}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${table_height}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="vbar4_joint" type="fixed" >
+    <parent link="leg4_link" />
+    <origin xyz="0 0 ${cage_height/2}" rpy="0 0 0" />
+    <child link="vbar4_link" />
+  </joint> 
+  <link name="vbar4_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_height}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="obar1_joint" type="fixed" >
+    <parent link="vbar1_link" />
+    <origin xyz="-${cage_width/2} 0 ${cage_height/2}" rpy="0 -${PI_2} 0" />
+    <child link="obar1_link" />
+  </joint> 
+  <link name="obar1_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_width}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_width}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="obar2_joint" type="fixed" >
+    <parent link="vbar3_link" />
+    <origin xyz="-${cage_width/2} 0 ${cage_height/2}" rpy="0 -${PI_2} 0" />
+    <child link="obar2_link" />
+  </joint> 
+  <link name="obar2_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_width}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_width}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="obar3_joint" type="fixed" >
+    <parent link="vbar3_link" />
+    <origin xyz="0 ${cage_depth/2} ${cage_height/2}" rpy="-${PI_2} 0 0" />
+    <child link="obar3_link" />
+  </joint> 
+  <link name="obar3_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_depth}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_depth}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="obar4_joint" type="fixed" >
+    <parent link="vbar4_link" />
+    <origin xyz="0 ${cage_depth/2} ${cage_height/2}" rpy="-${PI_2} 0 0" />
+    <child link="obar4_link" />
+  </joint> 
+  <link name="obar4_link">
+    <!-- dummy intertia to make Gazebo urdf2sdf converter work -->
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_depth}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_depth}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="sliding_guide_joint" type="fixed" >
+    <parent link="obar2_link" />
+    <origin xyz="0 ${cage_depth/2} 0" rpy="-${PI_2} 0 0" />
+    <child link="sliding_guide_link" />
+  </joint> 
+  <link name="sliding_guide_link">
+    <visual>
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.001 ${sliding_guide_width} ${cage_depth}" />
+      </geometry>
+    <material name="silver_gray" />
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <cylinder radius="${leg_radius}" length="${cage_depth}" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="working_surface_joint" type="fixed" >
+    <parent link="sliding_guide_link" />
+    <origin xyz="-${cage_height} 0 0" rpy="0.0 -${PI_2} ${PI}" />
+    <child link="working_surface_link" />
+  </joint> 
+
+  <link name="working_surface_link">
+    <!-- Huge inertia (does not matter, is fixed to the world)-->
+      <inertial>
+          <mass value="1000" />
+          <origin xyz="0 0 0" />
+          <inertia ixx="0" ixy="0"  ixz="0"
+                  iyy="0" iyz="0"
+                  izz="0" />
+      </inertial> 
+
+  </link>
+
+  <xacro:repair_cage_materials />
+
+</robot>

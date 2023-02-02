@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<!-- Just definitions of materials for visualization purposes -->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:macro name="repair_arm_materials" params="id">
+
+<gazebo reference="arm_${id}_link_1">
+	<material>Gazebo/BlackTransparent   </material>
+</gazebo>
+<gazebo reference="arm_${id}_link_2">
+	<material>Gazebo/GreenTransparent    </material>
+</gazebo>
+<gazebo reference="arm_${id}_link_3">
+	<material>Gazebo/BlackTransparent   </material>
+</gazebo>
+<gazebo reference="arm_${id}_link_4">
+	<material>Gazebo/GreenTransparent    </material>
+</gazebo>
+<gazebo reference="arm_${id}_link_5">
+	<material>Gazebo/BlackTransparent  </material>
+</gazebo>
+<gazebo reference="arm_${id}_link_6">
+	<material>Gazebo/GreenTransparent    </material>
+</gazebo>
+<gazebo reference="arm_${id}_link_7">
+	<material>Gazebo/BlackTransparent  </material>
+</gazebo>
+<gazebo reference="arm_${id}_tcp">
+	<material>Gazebo/GreyTransparent    </material>
+</gazebo>
+
+</xacro:macro>
+
+<xacro:macro name="repair_torso_materials" >
+
+<gazebo reference="base_link">
+	<material>Gazebo/GreenTransparent   </material>
+</gazebo>
+
+</xacro:macro>
+
+<xacro:macro name="repair_cage_materials">
+
+<gazebo reference="table_top_link">
+	<material>Gazebo/Wood </material>
+</gazebo>
+<gazebo reference="leg1_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="leg2_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="leg3_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="leg4_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="vbar1_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="vbar2_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="vbar3_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="vbar4_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="obar1_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="obar2_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="obar3_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="obar4_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+<gazebo reference="sliding_guide_link">
+	<material>Gazebo/Grey </material>
+</gazebo>
+
+</xacro:macro>
+
+</robot>

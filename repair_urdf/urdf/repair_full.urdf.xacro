@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<!-- xacro for generating the full urdf of the RePair platform (cage + bimanual robot) -->
+
+<!-- is_sliding_wrist: whether to add a sliding joint along the wrist second d.o.f.
+    (true -> yes), everything else -> no. This is used to generate the URDF for the optimization.  -->
+    
+<!-- gen_coll: whether to add the approximate collision  model of the platform -->
+
+<!-- load_sol: whether to generate the URDF without the additional d.o.f. used by the co-design optimization.
+Setting it to "true", allow to fix the additional d.o.f. to desired values 
+(specified in the repair_urdf/config/arm_opt_mount_vals.yaml file) -->
+
+<!-- use_updated_wrist: visual parameter. if true, we load the latest meshes (which are adapted to the
+results of the optimization), otherwise we go with the old ones (generated for a spherical wrist) -->
+
+<robot name = "repair_full" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:arg name="is_sliding_wrist" default="true" />
+<xacro:arg name="gen_coll" default="false" />
+<xacro:arg name="load_sol" default="true" />
+<xacro:arg name="use_updated_wrist" default="false" />
+<xacro:arg name="gz_self_collide" default="true" />
+
+<xacro:include filename="$(find repair_urdf)/urdf/repair_arm.urdf.xacro"/>
+
+<xacro:include filename="$(find repair_urdf)/urdf/repair_cage.urdf.xacro"/>
+
+<xacro:include filename="$(find repair_urdf)/urdf/repair_opt_mount_params.urdf.xacro"/>
+
+<xacro:include filename="$(find repair_urdf)/urdf/materials.gazebo.xacro"/>
+
+<xacro:if value="$(arg load_sol)">
+
+    <joint name="x_joint" type="prismatic">
+        <origin xyz="0.0 0.0 ${mount_h}" rpy="0.0 0.0 0.0"/>
+        <parent link="working_surface_link"/>
+        <child link="base_link"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="${- cage_depth/2 + x_joint_limit_margin}" upper= "${cage_depth/2 - x_joint_limit_margin}" effort="1000.0" velocity="20.0"/>
+    </joint>
+    
+    <transmission name="trans_x_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="x_joint">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="x_joint_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <link name="base_link">
+        <!-- torso inertias + stuff attached to the sliding guide -->
+        <inertial>
+          <mass value="${full_torso_mass}" />
+          <origin xyz="0 0 0" />
+          <inertia ixx="0" ixy="0"  ixz="0"
+                  iyy="0" iyz="0"
+                  izz="0" />
+        </inertial> 
+    
+        <xacro:if value="$(arg use_updated_wrist)">
+            <visual name="base_link_visual">
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/optimized/link_0.stl" scale="${mmTom} ${mmTom} ${mmTom}"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+        </xacro:if>
+
+    </link>
+
+    <joint name="r_arm_mount_joint" type="fixed">
+        <origin xyz="0.0 ${-should_w} 0.0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="dummy_r"/>
+    </joint>
+
+    <joint name="l_arm_mount_joint" type="fixed">
+        <origin xyz="0.0 ${should_w} 0.0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="dummy_l"/>
+    </joint>
+
+    <link name="dummy_r">
+    </link>
+
+    <link name="dummy_l">
+    </link>
+
+    <joint name="roll_r" type="fixed">
+        <origin xyz="0 0.0 0.0" rpy="${roll_mount} 0.0 0.0"/>
+        <parent link="dummy_r"/>
+        <child link="r_arm_mount_frame"/>
+    </joint>
+
+    <joint name="roll_l" type="fixed">
+        <origin xyz="0 0.0 0.0" rpy="${-roll_mount} 0.0 0.0"/>
+        <parent link="dummy_l"/>
+        <child link="l_arm_mount_frame"/>
+    </joint>
+
+    <link name="r_arm_mount_frame">
+        <xacro:aux_inertia cutoff_inertia="${gazebo_cutoff_inertia}"/>
+    </link>
+
+    <link name="l_arm_mount_frame">
+        <xacro:aux_inertia cutoff_inertia="${gazebo_cutoff_inertia}"/>  
+    </link>
+
+</xacro:if>
+<xacro:unless value="$(arg load_sol)">
+
+    <joint name="x_joint" type="prismatic">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="working_surface_link"/>
+        <child link="dummy_link"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="${- cage_depth/2 + x_joint_limit_margin}" upper= "${cage_depth/2 - x_joint_limit_margin}" effort="1000.0" velocity="20.0"/>
+    </joint>
+    
+    <transmission name="trans_x_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="x_joint">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="x_joint_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <link name="dummy_link">
+    </link>
+
+    <joint name="z_joint" type="prismatic">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="dummy_link"/>
+        <child link="base_link"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="${z_joint_lb}" upper= "2" effort="1000.0" velocity="20.0"/>
+    </joint>
+
+    <!-- RePAIR assembly (two arms) -->
+
+    <link name="base_link">
+        <!-- torso inertias + stuff attached to the sliding guide -->
+        <inertial>
+            <mass value="${full_torso_mass}" />
+            <origin xyz="0 0 0" />
+            <inertia ixx="0" ixy="0"  ixz="0"
+                    iyy="0" iyz="0"
+                    izz="0" />
+          </inertial>
+
+        <xacro:if value="$(arg use_updated_wrist)">
+            <visual name="base_link_visual">
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/optimized/link_0.stl" scale="${mmTom} ${mmTom} ${mmTom}"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+        </xacro:if>
+        
+    </link>
+
+    <link name="dummy_r">
+    </link>
+
+    <link name="dummy_l">
+    </link>
+
+    <joint name="r_arm_mount_joint" type="prismatic">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="dummy_r"/>
+        <axis xyz="0 -1 0"/>
+        <limit lower="${shoulder_width_lb}" upper= "${shoulder_width_ub}" effort="1000.0" velocity="20.0"/>
+    </joint>
+
+    <joint name="l_arm_mount_joint" type="prismatic">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="dummy_l"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${shoulder_width_lb}" upper= "${shoulder_width_ub}" effort="1000.0" velocity="20.0"/>
+    </joint>
+
+    <joint name="roll_r" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="dummy_r"/>
+        <child link="r_arm_mount_frame"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="${shoulder_roll_lb}" upper="${shoulder_roll_ub}" effort="0.0" velocity="0.0"/>
+    </joint>
+
+    <joint name="roll_l" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="dummy_l"/>
+        <child link="l_arm_mount_frame"/>
+        <axis xyz="-1 0 0"/>
+        <limit lower="${shoulder_roll_lb}" upper="${shoulder_roll_ub}" effort="0.0" velocity="0.0"/>
+    </joint>
+
+    <link name="r_arm_mount_frame">
+    
+    </link>
+
+    <link name="l_arm_mount_frame">
+    </link>
+
+</xacro:unless>
+
+<xacro:repair_arm base_link="r_arm_mount_frame" id="1" is_sliding_wrist="$(arg is_sliding_wrist)"
+gen_coll="$(arg gen_coll)" load_sol="$(arg load_sol)" use_updated_wrist = "$(arg use_updated_wrist)"
+gz_self_collide = "$(arg gz_self_collide)" /> 
+
+<xacro:repair_arm base_link="l_arm_mount_frame" id="2" is_sliding_wrist="$(arg is_sliding_wrist)"
+gen_coll="$(arg gen_coll)" load_sol="$(arg load_sol)" use_updated_wrist = "$(arg use_updated_wrist)"
+gz_self_collide = "$(arg gz_self_collide)" />
+
+<xacro:repair_arm_materials id="1" />
+<xacro:repair_arm_materials id="2" />
+<xacro:repair_torso_materials />
+
+<xacro:if value="$(arg gz_self_collide)">
+
+    <gazebo reference="table_top_link">
+        <selfCollide> 1 </selfCollide>
+    </gazebo>
+
+</xacro:if>
+
+</robot>
