@@ -75,6 +75,24 @@
         <joint name="arm_1_joint_5" value="0.2975"/>
         <joint name="arm_1_joint_6" value="0.1454"/>
         <joint name="arm_1_joint_7" value="0.0331"/>
+     </group_state>
+     <group_state name="pre_picture" group="arm_2">
+        <joint name="arm_2_joint_1" value="-2.077"/>
+        <joint name="arm_2_joint_2" value="-1.047"/>
+        <joint name="arm_2_joint_3" value="2.391"/>
+        <joint name="arm_2_joint_4" value="-1.134"/>
+        <joint name="arm_2_joint_5" value="-2.618"/>
+        <joint name="arm_2_joint_6" value="0.227"/>
+        <joint name="arm_2_joint_7" value="1.955"/>
+    </group_state>
+        <group_state name="picture" group="arm_2">
+        <joint name="arm_2_joint_1" value="-1.222"/>
+        <joint name="arm_2_joint_2" value="-1.274"/>
+        <joint name="arm_2_joint_3" value="1.326"/>
+        <joint name="arm_2_joint_4" value="-1.134"/>
+        <joint name="arm_2_joint_5" value="-1.762"/>
+        <joint name="arm_2_joint_6" value="-0.733"/>
+        <joint name="arm_2_joint_7" value="2.600"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="hand_1" parent_link="arm_1_link_6" group="hand_1"/>
