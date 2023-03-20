@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
 
   <!-- Args -->
@@ -7,7 +6,8 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-
+  <arg name="xbot" default="true"/>
+  
   <arg name="gz_self_collide" default="true"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -24,21 +24,8 @@
 
   <param name="robot_description" command="$(find xacro)/xacro '$(find repair_urdf)/urdf/repair_full.urdf.xacro' 
   gz_self_collide:=$(arg gz_self_collide)" />
-   
-  <!-- spawn the first fragment >
-  <node name="spawn_fragment" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(find repair_urdf)/urdf/frag1.urdf -urdf -model frag1 -x 1 -y 0.8 -z 0.55" /-->
-  
-  <!-- spawn the second fragment >
-  <node name="spawn_fragment2" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(find repair_urdf)/urdf/frag2.urdf -urdf -model frag2 -x 1 -y 0.6 -z 0.55" /-->
-  
-  <!-- spawn the second fragment >
-  <node name="spawn_fragment3" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(find repair_urdf)/urdf/frag3.urdf -urdf -model frag3 -x 0.5 -y 0.7 -z 0.55" /-->
   
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-unpause -urdf -model repair_full -param robot_description"/>
-
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model repair_full -param robot_description"/>
 
 </launch>

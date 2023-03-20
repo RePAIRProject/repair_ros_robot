@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+
+    <xacro:macro name="ignore_softhand_jnts" params="side type" >
+        
+        <joint name="${side}_hand_${type}_thumb_knuckle_joint"/>
+        <joint name="${side}_hand_${type}_thumb_proximal_joint"/>
+        <joint name="${side}_hand_${type}_thumb_distal_joint"/>
+
+        <joint name="${side}_hand_${type}_index_distal_joint"/>
+        <joint name="${side}_hand_${type}_index_proximal_joint"/>
+        <joint name="${side}_hand_${type}_index_middle_joint"/>
+        <joint name="${side}_hand_${type}_index_distal_joint"/>
+
+        <joint name="${side}_hand_${type}_middle_distal_joint"/>
+        <joint name="${side}_hand_${type}_middle_proximal_joint"/>
+        <joint name="${side}_hand_${type}_middle_middle_joint"/>
+        <joint name="${side}_hand_${type}_middle_distal_joint"/>
+
+        <joint name="${side}_hand_${type}_ring_distal_joint"/>
+        <joint name="${side}_hand_${type}_ring_proximal_joint"/>
+        <joint name="${side}_hand_${type}_ring_middle_joint"/>
+        <joint name="${side}_hand_${type}_ring_distal_joint"/>
+
+        <joint name="${side}_hand_${type}_little_distal_joint"/>
+        <joint name="${side}_hand_${type}_little_proximal_joint"/>
+        <joint name="${side}_hand_${type}_little_middle_joint"/>
+        <joint name="${side}_hand_${type}_little_distal_joint"/>
+
+    </xacro:macro>  
+
+</robot>

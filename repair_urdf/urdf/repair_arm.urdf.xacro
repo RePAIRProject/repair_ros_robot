@@ -12,17 +12,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
 <robot name = "repair_arm" xmlns:xacro="http://ros.org/wiki/xacro">
 
 <xacro:include filename="$(find repair_urdf)/urdf/utils.urdf.xacro" />
+<xacro:include filename="$(find softhands_description)/urdf/softhands.xacro" />
+<!-- <xacro:include filename="$(find softhands_description)/urdf/utils.urdf.xacro" /> -->
+
 <xacro:property name="big_tau_max" value="200.0" />
 <xacro:property name="mid_tau_max" value="200.0" />
 <xacro:property name="sm_tau_max" value="200.0" />
 
 <xacro:include filename="$(find repair_urdf)/urdf/repair_arm_coll_params.urdf.xacro"/>
 
-<xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />
-<xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
-
-
-<xacro:macro name="repair_arm" params="id base_link is_sliding_wrist gen_coll load_sol use_updated_wrist gz_self_collide" >
+<xacro:macro name="repair_arm" params="id base_link is_sliding_wrist gen_coll load_sol use_updated_wrist gz_self_collide fixed_hands" >
 
 <xacro:if value="${gen_coll == True}">
 
@@ -31,6 +30,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <xacro:repair_arm_coll load_sol="${load_sol}"/> 
 
 </xacro:if>
+
 
 <!-- id: 1 for right arm, everything else is considered left arm -->
 <!-- base_link: name of base link a the single arm -->
@@ -425,13 +425,13 @@ results of the optimization), otherwise we go with the old ones (generated for a
 
     <xacro:if value="${id == 1}">
 
-        <origin xyz="${180.000 * mmTom} 0 0" rpy="${PI_2} 0 ${PI_2}"/>
+        <origin xyz="0.08 0 0" rpy="${PI_2} 0 ${PI_2}"/>
 
     </xacro:if>
 
     <xacro:unless value="${id == 1}">
 
-        <origin xyz="${180.000 * mmTom} 0 0" rpy="${-PI_2} ${PI} ${-PI_2}"/>
+        <origin xyz="0.08 0 0" rpy="${-PI_2} ${PI} ${-PI_2}"/>
         <!-- <origin xyz="${180.000 * mmTom} 0 0" rpy="${-PI_2} 0 ${-PI_2}"/> -->
 
     </xacro:unless>
@@ -452,48 +452,30 @@ results of the optimization), otherwise we go with the old ones (generated for a
 
 </link>
     
-<joint name="arm_${id}_tcp_joint" type="fixed">
-
-    <origin xyz="0 ${- object_size *  sin(softhand_mount_angle)} ${10.0 * mmTom + object_size *  cos(softhand_mount_angle)}" 
-            rpy="0 ${-(PI_2 + softhand_mount_angle)} ${-(PI_2)}"/>
-
-    <parent link="arm_${id}_link_7"/>
-
-    <child link="arm_${id}_tcp"/>
-
-</joint>
-
-<link name="arm_${id}_tcp">
+<xacro:if value="${id == 1}">
     
-    <visual name="arm_${id}_tcp_visual">
+    <xacro:softhands type="right" 
+        version="v1.0_simple" 
+        parent="arm_${id}_link_7" 
+        position="0 0 -0.015" 
+        orientation="0 0.0 ${PI}" 
+        translation="0"
+        operation_mode="0">
+    </xacro:softhands>
 
-        <origin xyz="0 0 ${object_size}" rpy="0 0 0"/>
-        
-        <xacro:if value="${id == 1}">
-            
-            <geometry>
-                
-                <mesh filename="package://repair_urdf/meshes/link_7_sh.stl" scale="${mmTom} ${mmTom} ${mmTom}"/>
-                
-            </geometry>
+</xacro:if>
+<xacro:unless value="${id == 1}">
 
-        </xacro:if>
-        <xacro:unless value="${id == 1}">
+    <xacro:softhands type="left" 
+        version="v1.0_simple" 
+        parent="arm_${id}_link_7" 
+        position="0 -0.013900 -0.015"  
+        orientation="0 0 0" 
+        translation="0"
+        operation_mode="0" >
+    </xacro:softhands>
 
-                <geometry>
-                    
-                    <mesh filename="package://repair_urdf/meshes/link_7_rh.stl" scale="${mmTom} ${mmTom} ${mmTom}"/>
-                    
-                </geometry>
-
-        </xacro:unless>
-
-        <material name="dark"/>
-
-    </visual>
-
-</link>
-
+</xacro:unless>
 
 <xacro:if value="${gz_self_collide == 1}">
 
@@ -517,8 +499,6 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </gazebo>
 
 </xacro:if>
-
-<xacro:repair_arm_transmission id="${id}" />
 
 </xacro:macro>
 

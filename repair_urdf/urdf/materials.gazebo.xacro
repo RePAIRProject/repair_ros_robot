@@ -7,28 +7,28 @@
 <xacro:macro name="repair_arm_materials" params="id">
 
 <gazebo reference="arm_${id}_link_1">
-	<material>Gazebo/BlackTransparent   </material>
+	<material>Gazebo/Grey     </material>
 </gazebo>
 <gazebo reference="arm_${id}_link_2">
-	<material>Gazebo/GreenTransparent    </material>
+	<material>Gazebo/BlueLaser      </material>
 </gazebo>
 <gazebo reference="arm_${id}_link_3">
-	<material>Gazebo/BlackTransparent   </material>
+	<material>Gazebo/Grey      </material>
 </gazebo>
 <gazebo reference="arm_${id}_link_4">
-	<material>Gazebo/GreenTransparent    </material>
+	<material>Gazebo/BlueLaser      </material>
 </gazebo>
 <gazebo reference="arm_${id}_link_5">
-	<material>Gazebo/BlackTransparent  </material>
+	<material>Gazebo/Grey     </material>
 </gazebo>
 <gazebo reference="arm_${id}_link_6">
-	<material>Gazebo/GreenTransparent    </material>
+	<material>Gazebo/BlueLaser      </material>
 </gazebo>
 <gazebo reference="arm_${id}_link_7">
-	<material>Gazebo/BlackTransparent  </material>
+	<material>Gazebo/Grey     </material>
 </gazebo>
 <gazebo reference="arm_${id}_tcp">
-	<material>Gazebo/GreyTransparent    </material>
+	<material>Gazebo/BlueLaser      </material>
 </gazebo>
 
 </xacro:macro>

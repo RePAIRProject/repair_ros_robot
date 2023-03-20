@@ -20,6 +20,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
 <xacro:arg name="load_sol" default="true" />
 <xacro:arg name="use_updated_wrist" default="false" />
 <xacro:arg name="gz_self_collide" default="true" />
+<xacro:arg name="xbot" default="true" />
+<xacro:arg name="fixed_hands" default="false" />
 
 <xacro:include filename="$(find repair_urdf)/urdf/repair_arm.urdf.xacro"/>
 
@@ -28,6 +30,12 @@ results of the optimization), otherwise we go with the old ones (generated for a
 <xacro:include filename="$(find repair_urdf)/urdf/repair_opt_mount_params.urdf.xacro"/>
 
 <xacro:include filename="$(find repair_urdf)/urdf/materials.gazebo.xacro"/>
+
+<xacro:if value="$(arg xbot)">
+
+    <xacro:include filename="$(find repair_urdf)/urdf/xbot2.gazebo.xacro"/>
+
+</xacro:if>
 
 <xacro:if value="$(arg load_sol)">
 
@@ -38,17 +46,6 @@ results of the optimization), otherwise we go with the old ones (generated for a
         <axis xyz="1 0 0"/>
         <limit lower="${- cage_depth/2 + x_joint_limit_margin}" upper= "${cage_depth/2 - x_joint_limit_margin}" effort="1000.0" velocity="20.0"/>
     </joint>
-    
-    <transmission name="trans_x_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="x_joint">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="x_joint_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
 
     <link name="base_link">
         <!-- torso inertias + stuff attached to the sliding guide -->
@@ -119,17 +116,6 @@ results of the optimization), otherwise we go with the old ones (generated for a
         <axis xyz="1 0 0"/>
         <limit lower="${- cage_depth/2 + x_joint_limit_margin}" upper= "${cage_depth/2 - x_joint_limit_margin}" effort="1000.0" velocity="20.0"/>
     </joint>
-    
-    <transmission name="trans_x_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="x_joint">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="x_joint_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
     
     <link name="dummy_link">
     </link>
@@ -213,12 +199,12 @@ results of the optimization), otherwise we go with the old ones (generated for a
 </xacro:unless>
 
 <xacro:repair_arm base_link="r_arm_mount_frame" id="1" is_sliding_wrist="$(arg is_sliding_wrist)"
-gen_coll="$(arg gen_coll)" load_sol="$(arg load_sol)" use_updated_wrist = "$(arg use_updated_wrist)"
-gz_self_collide = "$(arg gz_self_collide)" /> 
+gen_coll="$(arg gen_coll)" load_sol="$(arg load_sol)" use_updated_wrist ="$(arg use_updated_wrist)"
+gz_self_collide ="$(arg gz_self_collide)" fixed_hands ="$(arg fixed_hands)" /> 
 
 <xacro:repair_arm base_link="l_arm_mount_frame" id="2" is_sliding_wrist="$(arg is_sliding_wrist)"
-gen_coll="$(arg gen_coll)" load_sol="$(arg load_sol)" use_updated_wrist = "$(arg use_updated_wrist)"
-gz_self_collide = "$(arg gz_self_collide)" />
+gen_coll="$(arg gen_coll)" load_sol="$(arg load_sol)" use_updated_wrist ="$(arg use_updated_wrist)"
+gz_self_collide ="$(arg gz_self_collide)" fixed_hands ="$(arg fixed_hands)" />
 
 <xacro:repair_arm_materials id="1" />
 <xacro:repair_arm_materials id="2" />

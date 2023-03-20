@@ -1,8 +1,13 @@
 # iit-repair-ros-pkg
 
-### To use this package simply clone the repositroy and build it with 
+![iit-repair-ros-pkg](repo_imgs/gazebo_sim.png)
 
-``` catkin build ```
+
+### Depends on:
+- catkin
+- xacro
+- [Xbot2](https://advrhumanoids.github.io/xbot2/quickstart.html)
+- [Softhand-plugin](https://github.com/ADVRHumanoids/SoftHand-Plugin/tree/repair)
 
 ### To visualize RePair on RViz and play with its joints:
 
@@ -12,23 +17,19 @@
 
 ``` roslaunch repair_urdf repair_full.launch ```
 
-### To view the robot in Gazebo:
+### To use the simulator:
 
-``` roslaunch repair_gazebo repair_gazebo.launch ```
+- open a terminal, launch Gazebo simulation with ``` roslaunch repair_gazebo repair_gazebo.launch ```
 
-You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers
+- open a terminal and set the xbot2 config file with ``` set_xbot2_config {path2iit-repair-ros-pkg}/repair_cntrl/config/repair_basic.yaml```
 
-``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint ```
+- in the same terminal run ``` xbot2-core -S ```
 
-### To control the simulated robot with moveit:
+- open a terminal and run ``` xbot2-gui ```, which will open an interactive gui to play with the platform's joints and hands. Enable the plugin "ros_control", go to the "chain selection" column, select the chain, click "enable" and send commands to joints using sliders. For the Softhand, click on the tab called "Softhand", select the chosen hand from the dropdown menu; you can either send the grasping command to the hand or open it with a dedicated tab.
 
-``` roslaunch repair_gazebo bringup_moveit.launch ``` 
-
-This will automaitcally launch the gazebo simulation as well as rviz with the motion planing tool.
-You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers
-
-``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint ```
-
-The hands are currently just placeholders, they have no functionality and no collision
-
+- to inspect all the topics exposed by xbot2 run ``` rostopic list ```:
+	
+	- send commands to the joints (SoftHand excluded) using ```/xbotcore/command``` topic
+	- read joint states (SoftHand excluded) using ```/xbotcore/joint_states``` topic
+	- send commands to the SoftHans using ```/{left/right}_hand_v1s/synergy_command``` topic, or inspect the state of each finger looking at ```/{left/right}_hand_v1s/{fingername}_state``` topic
 

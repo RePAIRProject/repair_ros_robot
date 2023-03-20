@@ -1,0 +1,41 @@
+XBotInterface:
+  urdf_path: $(rospack find repair_urdf)/urdf/repair_full_xbot.urdf
+  srdf_path: $(rospack find repair_srdf)/srdf/repair_full.srdf
+
+ModelInterface:
+  model_type: RBDL
+  is_model_floating_base: false
+
+
+# hal
+xbotcore_device_configs:
+    sim: $PWD/hal/repair_gz.yaml
+    dummy: $PWD/hal/repair_dummy.yaml
+
+# threads
+xbotcore_threads:
+    rt_main:  {sched: fifo , prio: 60, period: 0.001, core_id: 2}
+    nrt_main: {sched: other, prio: 0 , period: 0.005}
+
+# plugins
+xbotcore_plugins:
+
+    homing:
+        thread: rt_main
+        type: homing_example
+
+    ros_io: {thread: nrt_main, type: ros_io}
+
+    ros_control: {thread: nrt_main, type: ros_control}
+    
+# global parameters
+xbotcore_param:
+    /jm/tx_filter_autostart: {value: true, type: bool}
+    /jm/tx_filter_cutoff: {value: 2.0, type: double}
+    /jm/enable_safety: {value: true, type: bool}  # safety checks (can be disabled in running a simulation. DO NOT DO THIS ON A REAL PROTOTYPE)
+
+
+
+
+
+

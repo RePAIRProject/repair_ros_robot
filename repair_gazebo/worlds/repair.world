@@ -3,7 +3,9 @@
   <!-- We use a custom world for the rrbot so that the camera angle is launched correctly -->
 
   <world name="default">
-  
+
+    <plugin name="xbot2_clock" filename="libxbot2_gz_clock.so"/>
+    
     <gravity>0 0 -9.81</gravity>
 
     <!-- A custom ground plane -->
