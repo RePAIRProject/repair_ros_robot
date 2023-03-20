@@ -31,11 +31,11 @@
     </group>
     <group name="hand_1">
         <link name="right_hand_v1s_palm_base"/>
-        <link name="arm_1_link_7"/>
+        <link name="right_hand_v1s_palm_link"/>
     </group>
     <group name="hand_2">
         <link name="left_hand_v1s_palm_base"/>
-        <link name="arm_2_link_7"/>
+        <link name="left_hand_v1s_palm_link"/>
     </group>
     <group name="both_arms">
     	<group name="arm_1"/>
@@ -133,8 +133,8 @@
         <joint name="arm_2_joint_7" value="2.600"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="hand_1" parent_link="arm_1_link_6" group="hand_1"/>
-    <end_effector name="hand_2" parent_link="arm_2_link_6" group="hand_2"/>
+    <end_effector name="hand_1" parent_link="arm_1_link_7" group="hand_1"/>
+    <end_effector name="hand_2" parent_link="arm_2_link_7" group="hand_2"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="x_joint"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
