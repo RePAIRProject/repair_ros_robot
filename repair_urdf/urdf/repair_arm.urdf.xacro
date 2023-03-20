@@ -21,6 +21,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
 
 <xacro:include filename="$(find repair_urdf)/urdf/repair_arm_coll_params.urdf.xacro"/>
 
+<xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />
+<xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
+
 <xacro:macro name="repair_arm" params="id base_link is_sliding_wrist gen_coll load_sol use_updated_wrist gz_self_collide fixed_hands" >
 
 <xacro:if value="${gen_coll == True}">
@@ -499,6 +502,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </gazebo>
 
 </xacro:if>
+
+<xacro:repair_arm_transmission id="${id}" />
 
 </xacro:macro>
 

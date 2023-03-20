@@ -46,6 +46,17 @@ results of the optimization), otherwise we go with the old ones (generated for a
         <axis xyz="1 0 0"/>
         <limit lower="${- cage_depth/2 + x_joint_limit_margin}" upper= "${cage_depth/2 - x_joint_limit_margin}" effort="1000.0" velocity="20.0"/>
     </joint>
+    
+    <transmission name="trans_x_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="x_joint">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="x_joint_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
 
     <link name="base_link">
         <!-- torso inertias + stuff attached to the sliding guide -->
