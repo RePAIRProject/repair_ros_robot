@@ -31,6 +31,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
 
 <xacro:include filename="$(find repair_urdf)/urdf/materials.gazebo.xacro"/>
 
+<xacro:include filename="$(find repair_urdf)/urdf/repair_hand_transmission.xacro" />
+
 <xacro:if value="$(arg xbot)">
 
     <xacro:include filename="$(find repair_urdf)/urdf/xbot2.gazebo.xacro"/>
@@ -228,5 +230,9 @@ gz_self_collide ="$(arg gz_self_collide)" fixed_hands ="$(arg fixed_hands)" />
     </gazebo>
 
 </xacro:if>
+
+<xacro:repair_hand_transmission id="left" />
+
+<xacro:repair_hand_transmission id="right" />
 
 </robot>
