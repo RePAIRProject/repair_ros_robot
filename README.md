@@ -7,7 +7,13 @@
 - catkin
 - xacro
 - [Xbot2](https://advrhumanoids.github.io/xbot2/quickstart.html)
-- [Softhand-plugin](https://github.com/ADVRHumanoids/SoftHand-Plugin/tree/repair)
+- [Softhand-plugin](https://github.com/vamsikalagaturu/SoftHand-Plugin/tree/synergy_joint)
+
+Note: changed the Softhand-pluging repository, clone again with below command
+
+```bash
+git clone -b synergy_joint https://github.com/vamsikalagaturu/SoftHand-Plugin.git
+```
 
 ### To visualize RePair on RViz and play with its joints:
 
@@ -16,6 +22,8 @@
 ### To launch RePair on RViz without the joint_state_publisher_gui:
 
 ``` roslaunch repair_urdf repair_full.launch ```
+
+- You can control the left hand with synergy joint and right hand left as it is for comparision.
 
 ### To use the simulator:
 
