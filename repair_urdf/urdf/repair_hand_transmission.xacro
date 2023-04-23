@@ -3,91 +3,57 @@
 
   <xacro:macro name="repair_hand_transmission" params="id">
 
-    <transmission name="trans_${id}_hand_v1s_index_knuckle_joint">
+    <!-- synergy joint -->
+    <transmission name="trans_${id}_hand_v2s_synergy_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_index_knuckle_joint">
+        <joint name="${id}_hand_v2s_synergy_joint">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_synergy_joint_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_${id}_hand_v2s_index_knuckle_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_index_knuckle_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_index_knuckle_joint_motor">
+        <actuator name="${id}_hand_v2s_index_knuckle_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_index_proximal_joint">
+    <transmission name="trans_${id}_hand_v2s_index_proximal_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_index_proximal_joint">
+        <joint name="${id}_hand_v2s_index_proximal_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_index_proximal_joint_motor">
+        <actuator name="${id}_hand_v2s_index_proximal_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_index_middle_joint">
+    <transmission name="trans_${id}_hand_v2s_index_middle_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_index_middle_joint">
+        <joint name="${id}_hand_v2s_index_middle_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_index_middle_joint_motor">
+        <actuator name="${id}_hand_v2s_index_middle_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_index_distal_joint">
+    <transmission name="trans_${id}_hand_v2s_index_distal_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_index_distal_joint">
+        <joint name="${id}_hand_v2s_index_distal_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_index_distal_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    
-    
-    <transmission name="trans_${id}_hand_v1s_middle_knuckle_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_middle_knuckle_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_middle_knuckle_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    <transmission name="trans_${id}_hand_v1s_middle_proximal_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_middle_proximal_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_middle_proximal_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    <transmission name="trans_${id}_hand_v1s_middle_middle_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_middle_middle_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_middle_middle_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    <transmission name="trans_${id}_hand_v1s_middle_distal_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_middle_distal_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_middle_distal_joint_motor">
+        <actuator name="${id}_hand_v2s_index_distal_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
@@ -95,91 +61,45 @@
     
     
     
-    <transmission name="trans_${id}_hand_v1s_ring_knuckle_joint">
+    <transmission name="trans_${id}_hand_v2s_middle_knuckle_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_ring_knuckle_joint">
+        <joint name="${id}_hand_v2s_middle_knuckle_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_ring_knuckle_joint_motor">
+        <actuator name="${id}_hand_v2s_middle_knuckle_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_ring_proximal_joint">
+    <transmission name="trans_${id}_hand_v2s_middle_proximal_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_ring_proximal_joint">
+        <joint name="${id}_hand_v2s_middle_proximal_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_ring_proximal_joint_motor">
+        <actuator name="${id}_hand_v2s_middle_proximal_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_ring_middle_joint">
+    <transmission name="trans_${id}_hand_v2s_middle_middle_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_ring_middle_joint">
+        <joint name="${id}_hand_v2s_middle_middle_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_ring_middle_joint_motor">
+        <actuator name="${id}_hand_v2s_middle_middle_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_ring_distal_joint">
+    <transmission name="trans_${id}_hand_v2s_middle_distal_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_ring_distal_joint">
+        <joint name="${id}_hand_v2s_middle_distal_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_ring_distal_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    
-    
-    <transmission name="trans_${id}_hand_v1s_little_knuckle_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_little_knuckle_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_little_knuckle_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    <transmission name="trans_${id}_hand_v1s_little_proximal_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_little_proximal_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_little_proximal_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    <transmission name="trans_${id}_hand_v1s_little_middle_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_little_middle_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_little_middle_joint_motor">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-    
-    <transmission name="trans_${id}_hand_v1s_little_distal_joint">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_little_distal_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="${id}_hand_v1s_little_distal_joint_motor">
+        <actuator name="${id}_hand_v2s_middle_distal_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
@@ -187,34 +107,126 @@
     
     
     
-    <transmission name="trans_${id}_hand_v1s_thumb_knuckle_joint">
+    <transmission name="trans_${id}_hand_v2s_ring_knuckle_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_thumb_knuckle_joint">
+        <joint name="${id}_hand_v2s_ring_knuckle_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_thumb_knuckle_joint_motor">
+        <actuator name="${id}_hand_v2s_ring_knuckle_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_thumb_proximal_joint">
+    <transmission name="trans_${id}_hand_v2s_ring_proximal_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_thumb_proximal_joint">
+        <joint name="${id}_hand_v2s_ring_proximal_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_thumb_proximal_joint_motor">
+        <actuator name="${id}_hand_v2s_ring_proximal_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
     
-    <transmission name="trans_${id}_hand_v1s_thumb_distal_joint">
+    <transmission name="trans_${id}_hand_v2s_ring_middle_joint">
         <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${id}_hand_v1s_thumb_distal_joint">
+        <joint name="${id}_hand_v2s_ring_middle_joint">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
         </joint>
-        <actuator name="${id}_hand_v1s_thumb_distal_joint_motor">
+        <actuator name="${id}_hand_v2s_ring_middle_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="trans_${id}_hand_v2s_ring_distal_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_ring_distal_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_ring_distal_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    
+    
+    <transmission name="trans_${id}_hand_v2s_little_knuckle_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_little_knuckle_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_little_knuckle_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="trans_${id}_hand_v2s_little_proximal_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_little_proximal_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_little_proximal_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="trans_${id}_hand_v2s_little_middle_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_little_middle_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_little_middle_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="trans_${id}_hand_v2s_little_distal_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_little_distal_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_little_distal_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    
+    
+    <transmission name="trans_${id}_hand_v2s_thumb_knuckle_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_thumb_knuckle_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_thumb_knuckle_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="trans_${id}_hand_v2s_thumb_proximal_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_thumb_proximal_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_thumb_proximal_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+    <transmission name="trans_${id}_hand_v2s_thumb_distal_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${id}_hand_v2s_thumb_distal_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${id}_hand_v2s_thumb_distal_joint_motor">
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>

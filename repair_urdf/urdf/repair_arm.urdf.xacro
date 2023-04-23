@@ -460,7 +460,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <xacro:softhands type="right" 
         version="v2.0_simple" 
         parent="arm_${id}_link_7" 
-        useMimicTag="false"
+        useMimicTag="true"
         position="0 0 -0.015" 
         orientation="0 0.0 ${PI}" 
         translation="0"

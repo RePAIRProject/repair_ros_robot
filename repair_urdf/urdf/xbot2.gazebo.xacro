@@ -41,9 +41,9 @@
 
         <ignore_joints>
             
-            <xacro:ignore_softhand_jnts side="right" type="v1s"/>
+            <xacro:ignore_softhand_jnts side="right" type="v2s"/>
 
-            <xacro:ignore_softhand_jnts side="left" type="v1s"/>
+            <xacro:ignore_softhand_jnts side="left" type="v2s"/>
 
         </ignore_joints>
 
