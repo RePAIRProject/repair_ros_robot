@@ -49,3 +49,19 @@ arm_2_trajectory_controller:
   stop_trajectory_duration: 0.5
   state_publish_rate:  25
   action_monitor_rate: 10
+
+hand_1_trajectory_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - right_hand_v2s_synergy_joint
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+
+hand_2_trajectory_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - left_hand_v2s_synergy_joint
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10

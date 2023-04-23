@@ -24,6 +24,9 @@
 
   <param name="robot_description" command="$(find xacro)/xacro '$(find repair_urdf)/urdf/repair_full.urdf.xacro' 
   gz_self_collide:=$(arg gz_self_collide)" />
+
+  <!-- load gazebo controllers -->
+  <rosparam file="$(find repair_gazebo)/config/gazebo_controller.yaml" command="load" />
    
   <!-- spawn the first fragment >
   <node name="spawn_fragment" pkg="gazebo_ros" type="spawn_model" 

@@ -9,6 +9,11 @@
 
 <!-- Joint trajectory controller -->
 <rosparam file="$(find repair_gazebo)/config/controllers.yaml" command="load" />
-<node name="repair_controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="joint_state_controller arm_1_trajectory_controller arm_2_trajectory_controller" />
+<node name="repair_controller_spawner" pkg="controller_manager" 
+    type="spawner" output="screen" args="joint_state_controller 
+                                            arm_1_trajectory_controller 
+                                            arm_2_trajectory_controller
+                                            hand_1_trajectory_controller
+                                            hand_2_trajectory_controller" />
 
 </launch>
