@@ -1,0 +1,3 @@
+[submodule "SoftHand-Plugin"]
+	path = SoftHand-Plugin
+	url = https://github.com/vamsikalagaturu/SoftHand-Plugin.git
