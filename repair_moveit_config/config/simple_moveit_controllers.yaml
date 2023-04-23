@@ -1,4 +1,16 @@
 controller_list:
+  - name: hand_1_trajectory_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - right_hand_v2s_synergy_joint
+  - name: hand_2_trajectory_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - left_hand_v2s_synergy_joint
   - name: arm_1_trajectory_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
