@@ -1,3 +1,6 @@
 [submodule "SoftHand-Plugin"]
 	path = SoftHand-Plugin
 	url = https://github.com/vamsikalagaturu/SoftHand-Plugin.git
+[submodule "roboticsgroup_upatras_gazebo_plugins"]
+	path = roboticsgroup_upatras_gazebo_plugins
+	url = https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git

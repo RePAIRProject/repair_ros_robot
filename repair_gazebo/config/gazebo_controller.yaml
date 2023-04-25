@@ -25,36 +25,36 @@ left_hand_v2s:
         publish_state: true
       # index
       left_hand_v2s_index_knuckle_joint:
-        p: 20.0
-        i: 0.1
-        d: 0.0
+        p: 0.0
+        i: 0.0
+        d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       left_hand_v2s_index_proximal_joint:
-        p: 20.0
-        i: 0.1
-        d: 0.0
+        p: 0.0
+        i: 0.0
+        d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       left_hand_v2s_index_middle_joint:
-        p: 20.0
-        i: 0.1
-        d: 0.0
+        p: 0.0
+        i: 0.0
+        d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       left_hand_v2s_index_distal_joint:
-        p: 20.0
-        i: 0.1
-        d: 0.0
+        p: 0.0
+        i: 0.0
+        d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       # middle
       left_hand_v2s_middle_knuckle_joint:
-        p: 20.0
+        p: 0.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
@@ -112,28 +112,28 @@ left_hand_v2s:
         publish_state: true
       # little
       left_hand_v2s_little_knuckle_joint:
-        p: 20.0
+        p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       left_hand_v2s_little_proximal_joint:
-        p: 20.0
+        p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       left_hand_v2s_little_middle_joint:
-        p: 20.0
+        p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
       left_hand_v2s_little_distal_joint:
-        p: 20.0
+        p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
