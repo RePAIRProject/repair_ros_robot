@@ -1,0 +1,8 @@
+# request
+geometry_msgs/PoseStamped target_pose
+# arm1 or arm2 as enum
+int32 arm
+---
+# response is a boolean and current pose
+bool success
+geometry_msgs/PoseStamped current_pose

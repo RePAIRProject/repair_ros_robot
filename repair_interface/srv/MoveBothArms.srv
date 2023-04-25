@@ -1,0 +1,8 @@
+# request
+geometry_msgs/PoseStamped target_pose_1
+geometry_msgs/PoseStamped target_pose_2
+---
+# response is a boolean and current pose
+bool success
+geometry_msgs/PoseStamped current_pose_1
+geometry_msgs/PoseStamped current_pose_2

@@ -75,12 +75,12 @@ class MoveitClient
         ros::Subscriber execute_target_pose_sub_;
 
         // enums for arm and hand
-        enum ARM {ARM_1, ARM_2, BOTH_ARMS};
+        enum class ARM {ARM_1, ARM_2};
         enum HAND {HAND_1, HAND_2};
 
         enum HAND_STATE {OPEN, CLOSE};
         
-        geometry_msgs::PoseStamped getCurrentPose();
+        std::vector<geometry_msgs::PoseStamped> getCurrentPose();
 
         bool moveToHome(enum ARM arm);
 
@@ -89,10 +89,19 @@ class MoveitClient
         void visualizePoseCB(const geometry_msgs::PoseStamped::ConstPtr& msg);
 
         void executePoseCB(const std_msgs::Bool::ConstPtr& msg);
+
+        bool sendPoseToSingleArm(geometry_msgs::PoseStamped pose, enum ARM arm);
+
+        bool sendPoseToBothArms(geometry_msgs::PoseStamped arm_1_pose, geometry_msgs::PoseStamped arm_2_pose);
         
-        bool visitPose(geometry_msgs::PoseStamped pose, float jump_thresh=5.0f, bool visualize=false);
+        bool visitPose(geometry_msgs::PoseStamped arm_1_pose, geometry_msgs::PoseStamped arm_2_pose, float jump_thresh=5.0f);
 
         void initMoveitClient();
+
+        void convertQuatToRPY(geometry_msgs::PoseStamped pose, double& roll, double& pitch, double& yaw);
+
+        void getArmMoveGroupAndPlan(enum ARM arm, std::shared_ptr<moveit::planning_interface::MoveGroupInterface>& move_group, 
+                                    moveit::planning_interface::MoveGroupInterface::Plan& plan);
 };
 
 #endif // MOVEIT_CLIENT_H
