@@ -32,6 +32,8 @@
 	source devel/setup.bash
 	```
 
+> For docs on `repair_interface`, go to the [wiki](https://gitlab.ipb.uni-bonn.de/hrl_software/repair_robot/-/wikis/home).
+
 ### To visualize RePair on RViz and play with its joints:
 
 ```bash
