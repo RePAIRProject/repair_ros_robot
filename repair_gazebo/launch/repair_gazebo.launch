@@ -25,14 +25,14 @@
   <param name="robot_description" command="$(find xacro)/xacro '$(find repair_urdf)/urdf/repair_full.urdf.xacro' 
   gz_self_collide:=$(arg gz_self_collide)" />
    
-  <!-- spawn the first fragment >
+  <!-- spawn the first fragment >>
   <node name="spawn_fragment" pkg="gazebo_ros" type="spawn_model" 
   args="-file $(find repair_urdf)/urdf/frag1.urdf -urdf -model frag1 -x 1 -y 0.8 -z 0.55" /-->
   
-  <!-- spawn the second fragment >
-  <node name="spawn_fragment2" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(find repair_urdf)/urdf/frag2.urdf -urdf -model frag2 -x 1 -y 0.6 -z 0.55" /-->
-  
+  <!-- spawn the second fragment -->
+  <arg name="fragment_model" default="$(find repair_urdf)/sdf/frag2/model.sdf"/>
+  <node name="fragment_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg fragment_model) -sdf -model frag2 -x 1 -y 0.6 -z 0.55" />
   <!-- spawn the second fragment >
   <node name="spawn_fragment3" pkg="gazebo_ros" type="spawn_model" 
   args="-file $(find repair_urdf)/urdf/frag3.urdf -urdf -model frag3 -x 0.5 -y 0.7 -z 0.55" /-->

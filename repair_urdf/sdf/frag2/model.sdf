@@ -1,0 +1,36 @@
+<sdf version='1.6'>
+  <model name='frag2'>
+    <link name='fragment_base_link'>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='fragment_base_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>2 2 2</scale>
+            <uri>model://frag2/meshes/frag2_small.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='fragment_base_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>2 2 2</scale>
+            <uri>model://frag2/meshes/frag2_small.stl</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
