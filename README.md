@@ -8,22 +8,41 @@
 - xacro
 - [Xbot2](https://advrhumanoids.github.io/xbot2/quickstart.html)
 - [Softhand-plugin](https://github.com/vamsikalagaturu/SoftHand-Plugin/tree/synergy_joint)
+- [roboticsgroup_upatras_gazebo_plugins](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins)
 
-Note: changed the Softhand-pluging repository, clone again with below command
+### Setup
 
-```bash
-git clone -b synergy_joint https://github.com/vamsikalagaturu/SoftHand-Plugin.git
-```
+- Clone the repository along with the submodules
+	```bash
+	mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
+
+	git clone --recurse-submodules -j8 -b develop git@gitlab.ipb.uni-bonn.de:hrl_software/repair_robot.git
+	```
+- Build the workspace
+	- source ROS (`source /opt/ros/noetic/setup.bash`) in all terminals
+	```bash
+	cd ~/catkin_ws
+
+	catkin build
+	```
+	- After successful build, source the workspace in all the terminals
+	```
+	cd ~/catkin_ws
+
+	source devel/setup.bash
+	```
 
 ### To visualize RePair on RViz and play with its joints:
 
-``` roslaunch repair_urdf repair_full_slider.launch ```
+```bash
+roslaunch repair_urdf repair_full_slider.launch 
+```
 
 ### To launch RePair on RViz without the joint_state_publisher_gui:
 
-``` roslaunch repair_urdf repair_full.launch ```
-
-- You can control the left hand with synergy joint and right hand left as it is for comparision.
+```bash
+roslaunch repair_urdf repair_full.launch
+```
 
 ### To use the simulator:
 
@@ -43,13 +62,20 @@ git clone -b synergy_joint https://github.com/vamsikalagaturu/SoftHand-Plugin.gi
 
 ### To view the robot in Gazebo:
 
-- ``` roslaunch repair_gazebo repair_gazebo.launch ``` 
-You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers
+```bash
+roslaunch repair_gazebo repair_gazebo.launch
+``` 
+
+- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers
 ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
 
 ### To control the simulated robot with moveit:
 
-- This will automaitcally launch the gazebo simulation as well as rviz with the motion planing tool. ``` roslaunch repair_gazebo bringup_moveit.launch``` 
+- This will automaitcally launch the gazebo simulation as well as rviz with the motion planing tool. 
+
+```bash
+roslaunch repair_gazebo bringup_moveit.launch
+``` 
 
 - You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
 
