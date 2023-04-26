@@ -72,17 +72,39 @@ class MoveItTest:
         arm1_pose = get_current_pose_resp.current_pose_1
         arm2_pose = get_current_pose_resp.current_pose_2
 
-        rospy.loginfo("Current pose arm 1: " + str(arm1_pose))
-        rospy.loginfo("Current pose arm 2: " + str(arm2_pose))
+        self.go_to_pos_1(arm1_pose)
+        arm1_pose = get_current_pose_resp.current_pose_1
+        self.go_to_pos_2(arm1_pose)
 
-        arm1_pose.pose.position.z += 0.1
-
+    def go_to_pos_2(self, target_pose):
+        target_pose.pose.position.z -= 0.25
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
-        move_arm_to_pose_req.target_pose = arm1_pose
+        move_arm_to_pose_req.target_pose = target_pose
+        self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
-        self.move_to_pose(ARM_ENUM.ARM_1, arm1_pose)
+    def go_to_pos_1(self, target_pose):
+        fragment_pose = self.get_fragment_pose()
+        target_pose.pose.position.x = fragment_pose[0]
+        target_pose.pose.position.y = fragment_pose[1]
+        target_pose.pose.position.z = fragment_pose[2] + 0.30
+
+        euler = tf.transformations.euler_from_quaternion(
+            [target_pose.pose.orientation.x,
+             target_pose.pose.orientation.y,
+             target_pose.pose.orientation.z,
+             target_pose.pose.orientation.w]
+        )
+        # = tf.transformations.quaternion_from_euler(math.pi / 2, -math.pi / 2, euler[2])
+        q = tf.transformations.quaternion_from_euler(euler[0], math.pi / 2, euler[2])
+        target_pose.pose.orientation = Quaternion(*q)
+        # create request
+        move_arm_to_pose_req = MoveArmToPoseRequest()
+        move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
+        move_arm_to_pose_req.target_pose = target_pose
+
+        self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
     def move_to_pose(self, arm: ARM_ENUM, 
                         pose: PoseStamped):
@@ -121,8 +143,10 @@ class MoveItTest:
             rospy.logwarn("Could not transform fragment pose to world")
             return None
         
-        print("Fragment pose in world: ", fragment_pose_in_world)
-
+        print("Fragment pose in world: ", fragment_pose_in_world.pose.position)
+        return [fragment_pose_in_world.pose.position.x,
+                fragment_pose_in_world.pose.position.y,
+                fragment_pose_in_world.pose.position.z]
     def transformed_pose_with_retries(self, reference_pose: PoseStamped, 
                                       target_frame: str,
                                       retries  : int = 5,

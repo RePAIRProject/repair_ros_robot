@@ -4,9 +4,10 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
-    Tree Height: 287
+    Tree Height: 305
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -162,6 +163,10 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          left_hand_v2s_grasp_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           left_hand_v2s_index_distal_link:
             Alpha: 1
             Show Axes: false
@@ -311,6 +316,10 @@ Visualization Manager:
             Show Trail: false
             Value: true
           r_arm_mount_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          right_hand_v2s_grasp_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -598,6 +607,10 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
+          left_hand_v2s_grasp_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           left_hand_v2s_index_distal_link:
             Alpha: 1
             Show Axes: false
@@ -747,6 +760,10 @@ Visualization Manager:
             Show Trail: false
             Value: true
           r_arm_mount_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          right_hand_v2s_grasp_link:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -906,16 +923,300 @@ Visualization Manager:
       Marker Topic: /visualization_marker
       Name: Marker
       Namespaces:
-        {}
+        frag2__fragment_base_link__fragment_base_link_visual: true
       Queue Size: 100
       Value: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Filter (blacklist): ""
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        arm_1_link_1:
+          Value: false
+        arm_1_link_2:
+          Value: false
+        arm_1_link_3:
+          Value: false
+        arm_1_link_4:
+          Value: false
+        arm_1_link_5:
+          Value: false
+        arm_1_link_6:
+          Value: false
+        arm_1_link_7:
+          Value: false
+        arm_2_link_1:
+          Value: false
+        arm_2_link_2:
+          Value: false
+        arm_2_link_3:
+          Value: false
+        arm_2_link_4:
+          Value: false
+        arm_2_link_5:
+          Value: false
+        arm_2_link_6:
+          Value: false
+        arm_2_link_7:
+          Value: false
+        base_link:
+          Value: false
+        dummy_l:
+          Value: false
+        dummy_r:
+          Value: false
+        dummy_sliding_wrist1_link:
+          Value: false
+        dummy_sliding_wrist2_link:
+          Value: false
+        frag2__fragment_base_link:
+          Value: false
+        gazebo_world:
+          Value: false
+        l_arm_mount_frame:
+          Value: false
+        left_hand_v2s_grasp_link:
+          Value: true
+        left_hand_v2s_index_distal_link:
+          Value: false
+        left_hand_v2s_index_knuckle_link:
+          Value: false
+        left_hand_v2s_index_middle_link:
+          Value: false
+        left_hand_v2s_index_proximal_link:
+          Value: false
+        left_hand_v2s_little_distal_link:
+          Value: false
+        left_hand_v2s_little_knuckle_link:
+          Value: false
+        left_hand_v2s_little_middle_link:
+          Value: false
+        left_hand_v2s_little_proximal_link:
+          Value: false
+        left_hand_v2s_middle_distal_link:
+          Value: false
+        left_hand_v2s_middle_knuckle_link:
+          Value: false
+        left_hand_v2s_middle_middle_link:
+          Value: false
+        left_hand_v2s_middle_proximal_link:
+          Value: false
+        left_hand_v2s_palm_base:
+          Value: false
+        left_hand_v2s_palm_link:
+          Value: false
+        left_hand_v2s_ring_distal_link:
+          Value: false
+        left_hand_v2s_ring_knuckle_link:
+          Value: false
+        left_hand_v2s_ring_middle_link:
+          Value: false
+        left_hand_v2s_ring_proximal_link:
+          Value: false
+        left_hand_v2s_synergy_link:
+          Value: false
+        left_hand_v2s_thumb_distal_link:
+          Value: false
+        left_hand_v2s_thumb_knuckle_link:
+          Value: false
+        left_hand_v2s_thumb_proximal_link:
+          Value: false
+        leg1_link:
+          Value: false
+        leg2_link:
+          Value: false
+        leg3_link:
+          Value: false
+        leg4_link:
+          Value: false
+        obar1_link:
+          Value: false
+        obar2_link:
+          Value: false
+        obar3_link:
+          Value: false
+        obar4_link:
+          Value: false
+        r_arm_mount_frame:
+          Value: false
+        repair_full__arm_1_link_1:
+          Value: false
+        repair_full__arm_1_link_2:
+          Value: false
+        repair_full__arm_1_link_3:
+          Value: false
+        repair_full__arm_1_link_4:
+          Value: false
+        repair_full__arm_1_link_5:
+          Value: false
+        repair_full__arm_1_link_7:
+          Value: false
+        repair_full__arm_2_link_1:
+          Value: false
+        repair_full__arm_2_link_2:
+          Value: false
+        repair_full__arm_2_link_3:
+          Value: false
+        repair_full__arm_2_link_4:
+          Value: false
+        repair_full__arm_2_link_5:
+          Value: false
+        repair_full__arm_2_link_7:
+          Value: false
+        repair_full__base_link:
+          Value: false
+        repair_full__dummy_sliding_wrist1_link:
+          Value: false
+        repair_full__dummy_sliding_wrist2_link:
+          Value: false
+        repair_full__left_hand_v2s_index_distal_link:
+          Value: false
+        repair_full__left_hand_v2s_index_knuckle_link:
+          Value: false
+        repair_full__left_hand_v2s_index_middle_link:
+          Value: false
+        repair_full__left_hand_v2s_index_proximal_link:
+          Value: false
+        repair_full__left_hand_v2s_little_distal_link:
+          Value: false
+        repair_full__left_hand_v2s_little_knuckle_link:
+          Value: false
+        repair_full__left_hand_v2s_little_middle_link:
+          Value: false
+        repair_full__left_hand_v2s_little_proximal_link:
+          Value: false
+        repair_full__left_hand_v2s_middle_distal_link:
+          Value: false
+        repair_full__left_hand_v2s_middle_knuckle_link:
+          Value: false
+        repair_full__left_hand_v2s_middle_middle_link:
+          Value: false
+        repair_full__left_hand_v2s_middle_proximal_link:
+          Value: false
+        repair_full__left_hand_v2s_ring_distal_link:
+          Value: false
+        repair_full__left_hand_v2s_ring_knuckle_link:
+          Value: false
+        repair_full__left_hand_v2s_ring_middle_link:
+          Value: false
+        repair_full__left_hand_v2s_ring_proximal_link:
+          Value: false
+        repair_full__left_hand_v2s_synergy_link:
+          Value: false
+        repair_full__left_hand_v2s_thumb_distal_link:
+          Value: false
+        repair_full__left_hand_v2s_thumb_knuckle_link:
+          Value: false
+        repair_full__left_hand_v2s_thumb_proximal_link:
+          Value: false
+        repair_full__right_hand_v2s_index_distal_link:
+          Value: false
+        repair_full__right_hand_v2s_index_knuckle_link:
+          Value: false
+        repair_full__right_hand_v2s_index_middle_link:
+          Value: false
+        repair_full__right_hand_v2s_index_proximal_link:
+          Value: false
+        repair_full__right_hand_v2s_little_distal_link:
+          Value: false
+        repair_full__right_hand_v2s_little_knuckle_link:
+          Value: false
+        repair_full__right_hand_v2s_little_middle_link:
+          Value: false
+        repair_full__right_hand_v2s_little_proximal_link:
+          Value: false
+        repair_full__right_hand_v2s_middle_distal_link:
+          Value: false
+        repair_full__right_hand_v2s_middle_knuckle_link:
+          Value: false
+        repair_full__right_hand_v2s_middle_middle_link:
+          Value: false
+        repair_full__right_hand_v2s_middle_proximal_link:
+          Value: false
+        repair_full__right_hand_v2s_ring_distal_link:
+          Value: false
+        repair_full__right_hand_v2s_ring_knuckle_link:
+          Value: false
+        repair_full__right_hand_v2s_ring_middle_link:
+          Value: false
+        repair_full__right_hand_v2s_ring_proximal_link:
+          Value: false
+        repair_full__right_hand_v2s_synergy_link:
+          Value: false
+        repair_full__right_hand_v2s_thumb_distal_link:
+          Value: false
+        repair_full__right_hand_v2s_thumb_knuckle_link:
+          Value: false
+        repair_full__right_hand_v2s_thumb_proximal_link:
+          Value: false
+        repair_full__table_top_link:
+          Value: false
+        repair_ground_plane__ground_link:
+          Value: false
+        right_hand_v2s_grasp_link:
+          Value: false
+        right_hand_v2s_index_distal_link:
+          Value: false
+        right_hand_v2s_index_knuckle_link:
+          Value: false
+        right_hand_v2s_index_middle_link:
+          Value: false
+        right_hand_v2s_index_proximal_link:
+          Value: false
+        right_hand_v2s_little_distal_link:
+          Value: false
+        right_hand_v2s_little_knuckle_link:
+          Value: false
+        right_hand_v2s_little_middle_link:
+          Value: false
+        right_hand_v2s_little_proximal_link:
+          Value: false
+        right_hand_v2s_middle_distal_link:
+          Value: false
+        right_hand_v2s_middle_knuckle_link:
+          Value: false
+        right_hand_v2s_middle_middle_link:
+          Value: false
+        right_hand_v2s_middle_proximal_link:
+          Value: false
+        right_hand_v2s_palm_base:
+          Value: false
+        right_hand_v2s_palm_link:
+          Value: false
+        right_hand_v2s_ring_distal_link:
+          Value: false
+        right_hand_v2s_ring_knuckle_link:
+          Value: false
+        right_hand_v2s_ring_middle_link:
+          Value: false
+        right_hand_v2s_ring_proximal_link:
+          Value: false
+        right_hand_v2s_synergy_link:
+          Value: false
+        right_hand_v2s_thumb_distal_link:
+          Value: false
+        right_hand_v2s_thumb_knuckle_link:
+          Value: false
+        right_hand_v2s_thumb_proximal_link:
+          Value: false
+        sliding_guide_link:
+          Value: false
+        table_top_link:
+          Value: false
+        vbar1_link:
+          Value: false
+        vbar2_link:
+          Value: false
+        vbar3_link:
+          Value: false
+        vbar4_link:
+          Value: false
+        working_surface_link:
+          Value: false
+        world:
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -923,9 +1224,226 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        world:
+          gazebo_world:
+            frag2__fragment_base_link:
+              {}
+            repair_full__arm_1_link_1:
+              {}
+            repair_full__arm_1_link_2:
+              {}
+            repair_full__arm_1_link_3:
+              {}
+            repair_full__arm_1_link_4:
+              {}
+            repair_full__arm_1_link_5:
+              {}
+            repair_full__arm_1_link_7:
+              {}
+            repair_full__arm_2_link_1:
+              {}
+            repair_full__arm_2_link_2:
+              {}
+            repair_full__arm_2_link_3:
+              {}
+            repair_full__arm_2_link_4:
+              {}
+            repair_full__arm_2_link_5:
+              {}
+            repair_full__arm_2_link_7:
+              {}
+            repair_full__base_link:
+              {}
+            repair_full__dummy_sliding_wrist1_link:
+              {}
+            repair_full__dummy_sliding_wrist2_link:
+              {}
+            repair_full__left_hand_v2s_index_distal_link:
+              {}
+            repair_full__left_hand_v2s_index_knuckle_link:
+              {}
+            repair_full__left_hand_v2s_index_middle_link:
+              {}
+            repair_full__left_hand_v2s_index_proximal_link:
+              {}
+            repair_full__left_hand_v2s_little_distal_link:
+              {}
+            repair_full__left_hand_v2s_little_knuckle_link:
+              {}
+            repair_full__left_hand_v2s_little_middle_link:
+              {}
+            repair_full__left_hand_v2s_little_proximal_link:
+              {}
+            repair_full__left_hand_v2s_middle_distal_link:
+              {}
+            repair_full__left_hand_v2s_middle_knuckle_link:
+              {}
+            repair_full__left_hand_v2s_middle_middle_link:
+              {}
+            repair_full__left_hand_v2s_middle_proximal_link:
+              {}
+            repair_full__left_hand_v2s_ring_distal_link:
+              {}
+            repair_full__left_hand_v2s_ring_knuckle_link:
+              {}
+            repair_full__left_hand_v2s_ring_middle_link:
+              {}
+            repair_full__left_hand_v2s_ring_proximal_link:
+              {}
+            repair_full__left_hand_v2s_synergy_link:
+              {}
+            repair_full__left_hand_v2s_thumb_distal_link:
+              {}
+            repair_full__left_hand_v2s_thumb_knuckle_link:
+              {}
+            repair_full__left_hand_v2s_thumb_proximal_link:
+              {}
+            repair_full__right_hand_v2s_index_distal_link:
+              {}
+            repair_full__right_hand_v2s_index_knuckle_link:
+              {}
+            repair_full__right_hand_v2s_index_middle_link:
+              {}
+            repair_full__right_hand_v2s_index_proximal_link:
+              {}
+            repair_full__right_hand_v2s_little_distal_link:
+              {}
+            repair_full__right_hand_v2s_little_knuckle_link:
+              {}
+            repair_full__right_hand_v2s_little_middle_link:
+              {}
+            repair_full__right_hand_v2s_little_proximal_link:
+              {}
+            repair_full__right_hand_v2s_middle_distal_link:
+              {}
+            repair_full__right_hand_v2s_middle_knuckle_link:
+              {}
+            repair_full__right_hand_v2s_middle_middle_link:
+              {}
+            repair_full__right_hand_v2s_middle_proximal_link:
+              {}
+            repair_full__right_hand_v2s_ring_distal_link:
+              {}
+            repair_full__right_hand_v2s_ring_knuckle_link:
+              {}
+            repair_full__right_hand_v2s_ring_middle_link:
+              {}
+            repair_full__right_hand_v2s_ring_proximal_link:
+              {}
+            repair_full__right_hand_v2s_synergy_link:
+              {}
+            repair_full__right_hand_v2s_thumb_distal_link:
+              {}
+            repair_full__right_hand_v2s_thumb_knuckle_link:
+              {}
+            repair_full__right_hand_v2s_thumb_proximal_link:
+              {}
+            repair_full__table_top_link:
+              {}
+            repair_ground_plane__ground_link:
+              {}
+          table_top_link:
+            leg1_link:
+              vbar1_link:
+                obar1_link:
+                  {}
+            leg2_link:
+              vbar2_link:
+                {}
+            leg3_link:
+              vbar3_link:
+                obar2_link:
+                  sliding_guide_link:
+                    working_surface_link:
+                      base_link:
+                        dummy_l:
+                          l_arm_mount_frame:
+                            arm_2_link_1:
+                              arm_2_link_2:
+                                arm_2_link_3:
+                                  arm_2_link_4:
+                                    arm_2_link_5:
+                                      dummy_sliding_wrist2_link:
+                                        arm_2_link_6:
+                                          arm_2_link_7:
+                                            left_hand_v2s_palm_base:
+                                              left_hand_v2s_grasp_link:
+                                                {}
+                                              left_hand_v2s_palm_link:
+                                                left_hand_v2s_index_knuckle_link:
+                                                  left_hand_v2s_index_proximal_link:
+                                                    left_hand_v2s_index_middle_link:
+                                                      left_hand_v2s_index_distal_link:
+                                                        {}
+                                                left_hand_v2s_little_knuckle_link:
+                                                  left_hand_v2s_little_proximal_link:
+                                                    left_hand_v2s_little_middle_link:
+                                                      left_hand_v2s_little_distal_link:
+                                                        {}
+                                                left_hand_v2s_middle_knuckle_link:
+                                                  left_hand_v2s_middle_proximal_link:
+                                                    left_hand_v2s_middle_middle_link:
+                                                      left_hand_v2s_middle_distal_link:
+                                                        {}
+                                                left_hand_v2s_ring_knuckle_link:
+                                                  left_hand_v2s_ring_proximal_link:
+                                                    left_hand_v2s_ring_middle_link:
+                                                      left_hand_v2s_ring_distal_link:
+                                                        {}
+                                                left_hand_v2s_synergy_link:
+                                                  {}
+                                                left_hand_v2s_thumb_knuckle_link:
+                                                  left_hand_v2s_thumb_proximal_link:
+                                                    left_hand_v2s_thumb_distal_link:
+                                                      {}
+                        dummy_r:
+                          r_arm_mount_frame:
+                            arm_1_link_1:
+                              arm_1_link_2:
+                                arm_1_link_3:
+                                  arm_1_link_4:
+                                    arm_1_link_5:
+                                      dummy_sliding_wrist1_link:
+                                        arm_1_link_6:
+                                          arm_1_link_7:
+                                            right_hand_v2s_palm_base:
+                                              right_hand_v2s_grasp_link:
+                                                {}
+                                              right_hand_v2s_palm_link:
+                                                right_hand_v2s_index_knuckle_link:
+                                                  right_hand_v2s_index_proximal_link:
+                                                    right_hand_v2s_index_middle_link:
+                                                      right_hand_v2s_index_distal_link:
+                                                        {}
+                                                right_hand_v2s_little_knuckle_link:
+                                                  right_hand_v2s_little_proximal_link:
+                                                    right_hand_v2s_little_middle_link:
+                                                      right_hand_v2s_little_distal_link:
+                                                        {}
+                                                right_hand_v2s_middle_knuckle_link:
+                                                  right_hand_v2s_middle_proximal_link:
+                                                    right_hand_v2s_middle_middle_link:
+                                                      right_hand_v2s_middle_distal_link:
+                                                        {}
+                                                right_hand_v2s_ring_knuckle_link:
+                                                  right_hand_v2s_ring_proximal_link:
+                                                    right_hand_v2s_ring_middle_link:
+                                                      right_hand_v2s_ring_distal_link:
+                                                        {}
+                                                right_hand_v2s_synergy_link:
+                                                  {}
+                                                right_hand_v2s_thumb_knuckle_link:
+                                                  right_hand_v2s_thumb_proximal_link:
+                                                    right_hand_v2s_thumb_distal_link:
+                                                      {}
+                obar3_link:
+                  {}
+            leg4_link:
+              vbar4_link:
+                obar4_link:
+                  {}
       Update Interval: 0
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -942,7 +1460,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.3339033126831055
+      Distance: 2.4598708152770996
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -950,9 +1468,9 @@ Visualization Manager:
         Value: false
       Field of View: 0.75
       Focal Point:
-        X: 1.0967313051223755
-        Y: -0.9773033857345581
-        Z: 0.1989114135503769
+        X: 0.5386329293251038
+        Y: -0.994465708732605
+        Z: 0.11274684965610504
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -974,9 +1492,9 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000001f300000398fc0200000007fb000000100044006900730070006c0061007900730100000042000001c1000000fb01000003fb0000000800480065006c00700000000342000000bb0000008501000003fb0000000a00560069006500770073000000010c000000a4000000cf01000003fb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000002200000022fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000204000001d60000019d010000030000058c0000039800000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000001f3000003a5fc0200000007fb000000100044006900730070006c006100790073010000003d000001c5000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000208000001da0000017d00ffffff00000587000003a500000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1920
-  X: 0
-  Y: 0
+  X: 72
+  Y: 27
