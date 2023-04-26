@@ -17,11 +17,42 @@ class ARM_ENUM(Enum):
     ARM_1 = 0
     ARM_2 = 1
 
+class HAND_ENUM(Enum):
+    HAND_1 = 0
+    HAND_2 = 1
+
+class HAND_STATE_ENUM(Enum):
+    OPEN = 0
+    CLOSE = 1
+
 class MoveItTest:
     def __init__(self):
         self.listener = tf.TransformListener()
         self.wait_for_transform = 0.1
         self.transform_tries = 5
+
+    def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM):
+        rospy.loginfo("Waiting for gripper command service")
+        rospy.wait_for_service('/gripper_command_srv')
+        rospy.loginfo("Service found")
+
+        # create service proxy
+        gripper_command_srv = rospy.ServiceProxy('/gripper_command_srv', GripperCommand)
+
+        # create request
+        gripper_command_req = GripperCommandRequest()
+        gripper_command_req.hand = hand.value
+        gripper_command_req.command = hand_state.value
+
+        # call service
+        gripper_command_resp = gripper_command_srv(gripper_command_req)
+
+        # check response
+        if gripper_command_resp.success:
+            rospy.loginfo("Successfully sent gripper command")
+        else:
+            rospy.logwarn("Could not send gripper command")
+
 
     def test_srv(self):
         # get current pose
@@ -167,5 +198,8 @@ class MoveItTest:
 if __name__ == '__main__':
     rospy.init_node('moveit_test')
     moveit_test = MoveItTest()
-    moveit_test.test_srv()
+    # moveit_test.test_srv()
+    h = HAND_ENUM.HAND_1
+    hs = HAND_STATE_ENUM.OPEN
+    moveit_test.send_gripper_command(h, hs)
     rospy.spin()

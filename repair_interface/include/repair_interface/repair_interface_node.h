@@ -13,6 +13,7 @@
 #include <repair_interface/GetCurrentPose.h>
 #include <repair_interface/MoveArmToPose.h>
 #include <repair_interface/MoveBothArms.h>
+#include <repair_interface/GripperCommand.h>
 
 class RePairInterface
 {
@@ -37,11 +38,13 @@ class RePairInterface
         ros::ServiceServer getCurrentPoseService_;
         ros::ServiceServer moveArmToPoseService_;
         ros::ServiceServer moveBothArmsToPoseService_;
+        ros::ServiceServer gripperCommandService_;
 
         // service callbacks
         bool getCurrentPoseServiceCB(repair_interface::GetCurrentPose::Request &req, repair_interface::GetCurrentPose::Response &res);
         bool moveArmPoseServiceCB(repair_interface::MoveArmToPose::Request &req, repair_interface::MoveArmToPose::Response &res);
         bool moveBothArmsPoseServiceCB(repair_interface::MoveBothArms::Request &req, repair_interface::MoveBothArms::Response &res);
+        bool gripperCommandServiceCB(repair_interface::GripperCommand::Request &req, repair_interface::GripperCommand::Response &res);
 
         void test();
 

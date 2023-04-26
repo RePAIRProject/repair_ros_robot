@@ -1,0 +1,4 @@
+int32 command
+int32 hand
+---
+bool success

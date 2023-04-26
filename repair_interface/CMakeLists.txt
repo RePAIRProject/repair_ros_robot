@@ -38,6 +38,7 @@ add_service_files(
   GetCurrentPose.srv
   MoveArmToPose.srv
   MoveBothArms.srv
+  GripperCommand.srv
 )
 
 ## Generate added messages and services with any dependencies listed here

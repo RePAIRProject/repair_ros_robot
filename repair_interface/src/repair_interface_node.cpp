@@ -14,12 +14,41 @@ RePairInterface::RePairInterface(ros::NodeHandle nh):
     getCurrentPoseService_ = nh_.advertiseService("/get_current_pose_srv", &RePairInterface::getCurrentPoseServiceCB, this);
     moveArmToPoseService_ = nh_.advertiseService("/move_arm_to_pose_srv", &RePairInterface::moveArmPoseServiceCB, this);
     moveBothArmsToPoseService_ = nh_.advertiseService("/move_both_arms_srv", &RePairInterface::moveBothArmsPoseServiceCB, this);
+    gripperCommandService_ = nh_.advertiseService("/gripper_command_srv", &RePairInterface::gripperCommandServiceCB, this);
 
     ROS_INFO("RePair interface node initialized");
 }
 
 RePairInterface::~RePairInterface()
 {
+}
+
+bool RePairInterface::gripperCommandServiceCB(repair_interface::GripperCommand::Request &req, repair_interface::GripperCommand::Response &res)
+{
+    ROS_INFO("Recieved request to command gripper");
+
+    // read gripper command from request
+    int32_t command = req.command;
+    int32_t hand = req.hand;
+
+    MoveitClient::HAND hand_enum = MoveitClient::HAND(hand);
+    MoveitClient::HAND_STATE gripper_command = MoveitClient::HAND_STATE(command);
+
+    // send gripper command to gripper
+    bool success = moveit_client_->controlHand(hand_enum, gripper_command);
+
+    if (success)
+    {
+        ROS_INFO("Successfully commanded gripper");
+    }
+    else
+    {
+        ROS_ERROR("Failed to command gripper");
+    }
+
+    res.success = success;
+
+    return true;
 }
 
 bool RePairInterface::getCurrentPoseServiceCB(repair_interface::GetCurrentPose::Request &req, repair_interface::GetCurrentPose::Response &res)

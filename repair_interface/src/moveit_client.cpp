@@ -130,10 +130,10 @@ bool MoveitClient::controlHand(enum HAND hand, enum HAND_STATE state)
     std::string hand_state;
     switch (state)
     {
-        case OPEN:
+        case HAND_STATE::OPEN:
             hand_state = "open";
             break;
-        case CLOSE:
+        case HAND_STATE::CLOSE:
             hand_state = "close";
             break;
         default:
