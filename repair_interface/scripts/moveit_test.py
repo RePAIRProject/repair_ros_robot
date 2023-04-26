@@ -147,6 +147,7 @@ class MoveItTest:
         return [fragment_pose_in_world.pose.position.x,
                 fragment_pose_in_world.pose.position.y,
                 fragment_pose_in_world.pose.position.z]
+    
     def transformed_pose_with_retries(self, reference_pose: PoseStamped, 
                                       target_frame: str,
                                       retries  : int = 5,
@@ -224,6 +225,12 @@ if __name__ == '__main__':
     moveit_test = MoveItTest()
     # moveit_test.test_srv()
     h = HAND_ENUM.HAND_1
+    hs = HAND_STATE_ENUM.OPEN
+    moveit_test.send_gripper_command(h, hs)
+    rospy.sleep(1)
+    hs = HAND_STATE_ENUM.CLOSE
+    moveit_test.send_gripper_command(h, hs)
+    rospy.sleep(1)
     hs = HAND_STATE_ENUM.OPEN
     moveit_test.send_gripper_command(h, hs)
     rospy.spin()
