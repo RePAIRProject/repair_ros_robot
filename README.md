@@ -1,6 +1,6 @@
 # iit-repair-ros-pkg
 
-![iit-repair-ros-pkg](repo_imgs/gazebo_sim.png)
+![iit-ubo-repair-ros-gazebo-pkg](repo_imgs/gazebo_sim.png)
 
 
 ### Depends on:
@@ -9,7 +9,8 @@
 - [Xbot2](https://advrhumanoids.github.io/xbot2/quickstart.html)
 - [Softhand-plugin](https://github.com/vamsikalagaturu/SoftHand-Plugin/tree/synergy_joint)
 - [roboticsgroup_upatras_gazebo_plugins](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins)
-
+- [gazebo2rviz](https://github.com/andreasBihlmaier/gazebo2rviz)
+- [pysdf](https://github.com/andreasBihlmaier/pysdf)
 ### Setup
 
 - Clone the repository along with the submodules
@@ -82,3 +83,15 @@ roslaunch repair_gazebo bringup_moveit.launch
 - You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
 
 
+### To run pick and Place Demo (not final yet):
+The following command will launch the robot in gazebo and rviz, and will place a fragment on the table
+```bash
+roslaunch repair_interface repair_interface.launch
+``` 
+to get the demo to run you need to copy the fragments model folder from ```repair_urdf/sdf/frag2``` to ```~/.gazebo/models/frag2```.
+Furthermore, you have to change the path in file pysdf/src/pysdf/parser.py line 26 to your catkin src path.
+
+To run the demoexecude the following command in an other tab:
+```bash
+rosrun repair_interface moveit_test.py
+```

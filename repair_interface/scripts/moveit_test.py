@@ -75,9 +75,12 @@ class MoveItTest:
         self.go_to_pos_1(arm1_pose)
         arm1_pose = get_current_pose_resp.current_pose_1
         self.go_to_pos_2(arm1_pose)
+        moveit_test.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.CLOSE)
+        self.go_to_pos_1(arm1_pose)
+        rospy.sleep(1)
 
     def go_to_pos_2(self, target_pose):
-        target_pose.pose.position.z -= 0.25
+        target_pose.pose.position.z -= 0.10
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
@@ -88,7 +91,7 @@ class MoveItTest:
         fragment_pose = self.get_fragment_pose()
         target_pose.pose.position.x = fragment_pose[0]
         target_pose.pose.position.y = fragment_pose[1]
-        target_pose.pose.position.z = fragment_pose[2] + 0.30
+        target_pose.pose.position.z = fragment_pose[2] + 0.15
 
         euler = tf.transformations.euler_from_quaternion(
             [target_pose.pose.orientation.x,
@@ -223,14 +226,14 @@ class MoveItTest:
 if __name__ == '__main__':
     rospy.init_node('moveit_test')
     moveit_test = MoveItTest()
-    # moveit_test.test_srv()
-    h = HAND_ENUM.HAND_1
-    hs = HAND_STATE_ENUM.OPEN
-    moveit_test.send_gripper_command(h, hs)
-    rospy.sleep(1)
-    hs = HAND_STATE_ENUM.CLOSE
-    moveit_test.send_gripper_command(h, hs)
-    rospy.sleep(1)
-    hs = HAND_STATE_ENUM.OPEN
-    moveit_test.send_gripper_command(h, hs)
-    rospy.spin()
+    moveit_test.test_srv()
+    # h = HAND_ENUM.HAND_1
+    # hs = HAND_STATE_ENUM.OPEN
+    # moveit_test.send_gripper_command(h, hs)
+    # rospy.sleep(1)
+    # hs = HAND_STATE_ENUM.CLOSE
+    # moveit_test.send_gripper_command(h, hs)
+    # rospy.sleep(1)
+    # hs = HAND_STATE_ENUM.OPEN
+    # moveit_test.send_gripper_command(h, hs)
+    # rospy.spin()
