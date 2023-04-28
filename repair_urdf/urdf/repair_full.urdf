@@ -786,7 +786,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <axis xyz="0 0 -1"/>
     <limit effort="30" lower="0" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="2.0420352248333655"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_thumb_knuckle_jointmimic_joint_plugin">
@@ -794,7 +794,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_thumb_knuckle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>2.0420352248333655</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -845,7 +845,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <axis xyz="0 0 1"/>
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0210176124166828"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_thumb_proximal_jointmimic_joint_plugin">
@@ -853,7 +853,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_thumb_proximal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>1.0210176124166828</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -903,7 +903,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.05" friction="0.0"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_thumb_distal_jointmimic_joint_plugin">
@@ -911,7 +911,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_thumb_distal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -965,7 +965,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.1" upper="0.1" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="-0.2"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_index_knuckle_jointmimic_joint_plugin">
@@ -973,7 +973,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_index_knuckle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>-0.2</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1020,7 +1020,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_index_proximal_jointmimic_joint_plugin">
@@ -1028,7 +1028,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_index_proximal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1077,7 +1077,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_index_middle_jointmimic_joint_plugin">
@@ -1085,7 +1085,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_index_middle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1134,7 +1134,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_index_distal_jointmimic_joint_plugin">
@@ -1142,7 +1142,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_index_distal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1196,7 +1196,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.1" upper="0.1" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.0"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_middle_knuckle_jointmimic_joint_plugin">
@@ -1204,7 +1204,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_middle_knuckle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.0</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1251,7 +1251,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_middle_proximal_jointmimic_joint_plugin">
@@ -1259,7 +1259,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_middle_proximal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1308,7 +1308,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_middle_middle_jointmimic_joint_plugin">
@@ -1316,7 +1316,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_middle_middle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1365,7 +1365,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_middle_distal_jointmimic_joint_plugin">
@@ -1373,7 +1373,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_middle_distal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1427,7 +1427,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.1" upper="0.1" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.2"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_ring_knuckle_jointmimic_joint_plugin">
@@ -1435,7 +1435,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_ring_knuckle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.2</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1482,7 +1482,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_ring_proximal_jointmimic_joint_plugin">
@@ -1490,7 +1490,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_ring_proximal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1539,7 +1539,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_ring_middle_jointmimic_joint_plugin">
@@ -1547,7 +1547,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_ring_middle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1596,7 +1596,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_ring_distal_jointmimic_joint_plugin">
@@ -1604,7 +1604,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_ring_distal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1647,7 +1647,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     </surface>
   </gazebo>
   
-	      
+
       # Little finger
       
   <!-- KNUCKLE -->
@@ -1658,7 +1658,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.1" upper="0.1" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.4"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_little_knuckle_jointmimic_joint_plugin">
@@ -1666,7 +1666,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_little_knuckle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.4</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1713,7 +1713,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_little_proximal_jointmimic_joint_plugin">
@@ -1721,7 +1721,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_little_proximal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1770,7 +1770,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_little_middle_jointmimic_joint_plugin">
@@ -1778,7 +1778,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_little_middle_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1827,7 +1827,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     <limit effort="30" lower="-0.785398" upper="1.57" velocity="1.0"/>
     <dynamics damping="0.05" friction="0.0"/>
     <axis xyz="0 0 1"/>
-    <mimic joint="right_hand_v2s_synergy_joint" multiplier="0.7853981633974483"/>
+    <mimic joint="right_hand_v2s_synergy_joint" multiplier="1.0"/>
   </joint>
   <gazebo>
     <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="right_hand_v2s_little_distal_jointmimic_joint_plugin">
@@ -1835,7 +1835,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
       <mimicJoint>right_hand_v2s_little_distal_joint</mimicJoint>
       <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
       <hasPID/>
-      <multiplier>0.7853981633974483</multiplier>
+      <multiplier>1.0</multiplier>
       <offset>0</offset>
       <sensitiveness>0.0</sensitiveness>
       <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
@@ -1882,7 +1882,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     # LEFT HAND 
     
   <joint name="right_hand_v2s_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0.07"/>
+    <origin rpy="0 0 0" xyz="0 0 0.09"/>
     <parent link="right_hand_v2s_palm_base"/>
     <child link="right_hand_v2s_grasp_link"/>
   </joint>
@@ -3425,7 +3425,7 @@ Links are approximated as spheres with hand-tuned radii and positions -->
     </surface>
   </gazebo>
   <joint name="left_hand_v2s_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0.07"/>
+    <origin rpy="0 0 0" xyz="0 0 0.09"/>
     <parent link="left_hand_v2s_palm_base"/>
     <child link="left_hand_v2s_grasp_link"/>
   </joint>

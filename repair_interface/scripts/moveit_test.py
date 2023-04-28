@@ -6,6 +6,7 @@ import sys
 import rospy
 import tf
 from geometry_msgs.msg import PoseStamped, Quaternion
+#from sensor_msgs.msg import JointState
 import math
 from enum import Enum
 
@@ -30,6 +31,7 @@ class MoveItTest:
         self.listener = tf.TransformListener()
         self.wait_for_transform = 0.1
         self.transform_tries = 5
+        #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM):
         rospy.loginfo("Waiting for gripper command service")
@@ -73,14 +75,14 @@ class MoveItTest:
         arm2_pose = get_current_pose_resp.current_pose_2
 
         self.go_to_pos_1(arm1_pose)
-        arm1_pose = get_current_pose_resp.current_pose_1
+        #arm1_pose = get_current_pose_resp.current_pose_1
         self.go_to_pos_2(arm1_pose)
-        moveit_test.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.CLOSE)
+        self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.CLOSE)
         self.go_to_pos_1(arm1_pose)
-        rospy.sleep(1)
+        #rospy.sleep(1)
 
     def go_to_pos_2(self, target_pose):
-        target_pose.pose.position.z -= 0.10
+        target_pose.pose.position.z -= 0.12
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
@@ -137,7 +139,7 @@ class MoveItTest:
     def get_fragment_pose(self):
         # transform fragment pose from fragment_base_link to world
         fragment_pose = PoseStamped()
-        fragment_pose.header.frame_id = "frag2__fragment_base_link"
+        fragment_pose.header.frame_id = "frag3__fragment_base_link"
         fragment_pose.header.stamp = rospy.Time(0)
 
         fragment_pose_in_world = self.transformed_pose_with_retries(fragment_pose, "world", 5)
