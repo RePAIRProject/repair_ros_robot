@@ -30,12 +30,13 @@ bool RePairInterface::gripperCommandServiceCB(repair_interface::GripperCommand::
     // read gripper command from request
     int32_t command = req.command;
     int32_t hand = req.hand;
+    double value = req.value;
 
     MoveitClient::HAND hand_enum = MoveitClient::HAND(hand);
     MoveitClient::HAND_STATE gripper_command = MoveitClient::HAND_STATE(command);
 
     // send gripper command to gripper
-    bool success = moveit_client_->controlHand(hand_enum, gripper_command);
+    bool success = moveit_client_->controlHand(hand_enum, gripper_command, value);
 
     if (success)
     {

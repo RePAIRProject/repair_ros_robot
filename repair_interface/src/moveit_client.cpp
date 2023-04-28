@@ -107,7 +107,7 @@ bool MoveitClient::moveToHome(enum ARM arm)
     return success;
 }
 
-bool MoveitClient::controlHand(enum HAND hand, enum HAND_STATE state)
+bool MoveitClient::controlHand(enum HAND hand, enum HAND_STATE state, double value)
 {
     bool success = false;
     std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand;
@@ -127,14 +127,30 @@ bool MoveitClient::controlHand(enum HAND hand, enum HAND_STATE state)
             break;
     }
 
+    // get the hand joint name
+    auto n = move_group_hand->getJointNames();
+
+    // print out the joint names
+    for (auto i = 0; i < n.size(); i++)
+    {
+        ROS_INFO("Joint %d: %s", i, n[i].c_str());
+    }
+
+    // get the first joint name
+    auto joint_name = n[0];
+
     std::string hand_state;
     switch (state)
     {
         case HAND_STATE::OPEN:
-            hand_state = "open";
+            move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues("open"));
             break;
         case HAND_STATE::CLOSE:
-            hand_state = "close";
+            move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues("close"));
+            break;
+        case HAND_STATE::VALUE:
+            // set the joint value target to the value passed in
+            move_group_hand->setJointValueTarget(std::map<std::string, double>{{joint_name, value}});
             break;
         default:
             ROS_ERROR("Invalid hand state selection");

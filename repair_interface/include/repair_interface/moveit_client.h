@@ -78,13 +78,13 @@ class MoveitClient
         enum class ARM {ARM_1, ARM_2};
         enum HAND {HAND_1, HAND_2};
 
-        enum HAND_STATE {OPEN, CLOSE};
+        enum HAND_STATE {OPEN, CLOSE, VALUE};
         
         std::vector<geometry_msgs::PoseStamped> getCurrentPose();
 
         bool moveToHome(enum ARM arm);
 
-        bool controlHand(enum HAND hand, enum HAND_STATE state);
+        bool controlHand(enum HAND hand, enum HAND_STATE state, double value=0.0);
 
         void visualizePoseCB(const geometry_msgs::PoseStamped::ConstPtr& msg);
 
