@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>repair_srdf</name>
+  <version>0.0.0</version>
+  <description>The repair_srdf package</description>
+
+  <maintainer email="arturo@todo.todo">arturo</maintainer>
+  <maintainer email="andrea.patrizi@iit.it">andrea</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>

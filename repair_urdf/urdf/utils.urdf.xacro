@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!-- Just definitions of useful paramters -->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- scale -->
+<xacro:property name="mmTom" value="0.001" />
+<xacro:property name="mm2Tom2" value="${0.001*0.001}" />
+<xacro:property name="tonsToKg" value="1000.0" />
+<xacro:property name="kgmm2_2_kgm2" value="${1e-06}" />
+
+<xacro:property name="PI" value="3.14159265359" />
+<xacro:property name="PI_2" value="1.57079632679" />
+<xacro:property name="PI_3" value="1.047197551196598" />
+<xacro:property name="PI_4" value="0.7853981633974483" />
+<xacro:property name="DEG2RAD" value="${PI/180.0}" />
+
+<xacro:property name="gazebo_cutoff_inertia" value="0.00000100000000000001" /> <!-- below this value, Gazebo parser ignores links
+To give some  perspective, a grain of sand weights  0.0000045 grams. So this corresponds to less than 1/4 of a grain of sand of
+fake inertia -> it is acceptable. -->
+
+<xacro:property name="full_torso_mass" value="5.0" />
+<xacro:property name="x_joint_limit_margin" value="0.1" />
+<xacro:property name="z_joint_limit_margin" value="0.1" />
+<xacro:property name="z_joint_lb" value="0.3" />
+<xacro:property name="shoulder_width_lb" value="0.21" /> <!-- wrt shoulder center -->
+<xacro:property name="shoulder_width_ub" value="0.5" />
+<xacro:property name="shoulder_roll_lb" value="-${PI_3}" />
+<xacro:property name="shoulder_roll_ub" value="${PI_2}" />
+<xacro:property name="sliding_wrist_deltaz_lb" value="0" />
+<xacro:property name="sliding_wrist_deltaz_ub" value="0.01" />
+<xacro:property name="softhand_mount_angle" value="${PI_4}" />
+<xacro:property name="object_size" value="0.02" />
+
+<!-- color -->
+<material name="darkblue">
+    <color rgba="0.0 0.3 0.9 1"/>
+</material>
+
+<material name="darkred">
+    <color rgba="0.55 0.0 0.0 1"/>
+</material>
+
+<material name="dark">
+    <color rgba="0.6 0.6 0.6 1"/>
+</material>
+
+<!-- Macro for adding simple fake inertias to auxiliary links, so that
+Gazebo does not ignore them. gazebo_cutoff_inertia is the lowest admissible mass value 
+under which Gazebo starts to neglect links. The rotational inertias can be put to 0
+without problems.-->
+<xacro:macro name="aux_inertia" params="cutoff_inertia">
+    <!-- dummy intertia to make Gazebo urdf2sdf converter work -->
+    <inertial>
+      <mass value="${cutoff_inertia}" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0" ixy="0"  ixz="0"
+               iyy="0" iyz="0"
+               izz="0" />
+    </inertial>
+</xacro:macro>
+
+<!-- just used to write more compactly the self collision gazebo ref tag -->
+<xacro:macro name="gz_self_collide" params="collide">
+
+    <xacro:if value="${collide == True}">
+
+        <self_collide>1</self_collide>
+
+    </xacro:if>
+
+</xacro:macro>
+
+</robot>

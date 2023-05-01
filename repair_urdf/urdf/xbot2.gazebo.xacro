@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<!-- XBot2-specific gazebo tags -->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- xbot2 joint device driver-->
+<gazebo>  
+
+    <xacro:include filename="$(find repair_urdf)/urdf/ignore_joint_softhand.xbot2.xacro" />
+
+    <plugin name='xbot2_gz_joint_server' filename='libxbot2_gz_joint_server.so'> 
+        <pid>
+
+            <gain name="lowpwr_mot" p="50"  d="5"/>
+            <gain name="small_mot"  p="1000"  d="10"/>
+            <gain name="medium_mot" p="4000" d="40"/>
+            <gain name="big_mot"    p="8000" d="50"/>
+            <gain name="hugr_mot"    p="12000" d="70"/>
+            <gain name="guide_motor"  p="8000" d="50"/>
+
+            <pid name="x_joint" profile="guide_motor"/>
+
+            <pid name="arm_1_joint_1" profile="big_mot"/>
+            <pid name="arm_1_joint_2" profile="big_mot"/>
+            <pid name="arm_1_joint_3" profile="big_mot"/>
+            <pid name="arm_1_joint_4" profile="big_mot"/>
+            <pid name="arm_1_joint_5" profile="big_mot"/>
+            <pid name="arm_1_joint_6" profile="big_mot"/>
+            <pid name="arm_1_joint_7" profile="big_mot"/>
+            
+            <pid name="arm_2_joint_1" profile="big_mot"/>
+            <pid name="arm_2_joint_2" profile="big_mot"/>
+            <pid name="arm_2_joint_3" profile="big_mot"/>
+            <pid name="arm_2_joint_4" profile="big_mot"/>
+            <pid name="arm_2_joint_5" profile="big_mot"/>
+            <pid name="arm_2_joint_6" profile="big_mot"/>
+            <pid name="arm_2_joint_7" profile="big_mot"/>
+
+        </pid>
+
+        <ignore_joints>
+            
+            <xacro:ignore_softhand_jnts side="right" type="v2s"/>
+
+            <xacro:ignore_softhand_jnts side="left" type="v2s"/>
+
+        </ignore_joints>
+
+    </plugin>
+</gazebo>
+
+<gazebo> 
+    <plugin name="xbot2_ft_driver" filename="libxbot2_gz_ft_server.so"/>
+</gazebo>
+
+</robot>

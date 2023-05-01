@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Args -->
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <arg name="gz_self_collide" default="true"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find repair_gazebo)/worlds/repair.world"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="verbose" value="true"/>
+  </include>
+
+  <!-- Load the right URDF into the ROS Parameter Server, depending on the chosen model type -->
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find repair_urdf)/urdf/repair_full.urdf.xacro' 
+  gz_self_collide:=$(arg gz_self_collide)" />
+
+  <!-- load gazebo controllers -->
+  <rosparam file="$(find repair_gazebo)/config/gazebo_controller.yaml" command="load" />
+   
+  <!-- spawn the first fragment >>
+  <node name="spawn_fragment" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(find repair_urdf)/urdf/frag1.urdf -urdf -model frag1 -x 1 -y 0.8 -z 0.55" /-->
+  
+  <!-- spawn the second fragment -->
+  <arg name="fragment_model" default="$(find repair_urdf)/sdf/frag3/model.sdf"/>
+  <node name="fragment_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg fragment_model) -sdf -model frag3 -x 1.3 -y 0.2 -z 0.6" />
+
+
+  <arg name="fragment_stance" default="$(find repair_urdf)/urdf/fragment_stance.urdf"/>
+  <node name="fragment_stance_description" pkg="gazebo_ros" type="spawn_model"
+  args="-file $(arg fragment_stance) -urdf -model fragment_stance -x 1.3 -y 0.2 -z 0.55" />
+  <!-- spawn the second fragment >
+  <node name="spawn_fragment3" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(find repair_urdf)/urdf/frag3.urdf -urdf -model frag3 -x 0.5 -y 0.7 -z 0.55" /-->
+  
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-unpause -urdf -model repair_full -param robot_description"/>
+
+
+</launch>

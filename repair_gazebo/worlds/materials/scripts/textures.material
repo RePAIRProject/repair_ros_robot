@@ -1,0 +1,89 @@
+material wood_clear
+{
+  technique
+  {
+    pass
+    {
+      
+      texture_unit
+      {
+        // Relative to the location of the material script
+        texture ../textures/wood_clear.jpg
+        // Repeat the texture over the surface (4 per face)
+        scale 0.008 0.008
+      }
+    }
+  }
+}
+
+material tile_floor
+{
+  technique
+  {
+    pass
+    {
+      
+      texture_unit
+      {
+        // Relative to the location of the material script
+        texture ../textures/tile_floor.jpg
+        // Repeat the texture over the surface (4 per face)
+        scale 0.02 0.02
+      }
+    }
+  }
+}
+
+material tile_floor2
+{
+  technique
+  {
+    pass
+    {
+      
+      texture_unit
+      {
+        // Relative to the location of the material script
+        texture ../textures/tile_floor2.jpg
+        // Repeat the texture over the surface (4 per face)
+        scale 0.02 0.02
+      }
+    }
+  }
+}
+
+material brick_floor
+{
+  technique
+  {
+    pass
+    {
+      
+      texture_unit
+      {
+        // Relative to the location of the material script
+        texture ../textures/brick_floor.jpg
+        // Repeat the texture over the surface (4 per face)
+        scale 0.02 0.02
+      }
+    }
+  }
+}
+
+material old_floor_grass
+{
+  technique
+  {
+    pass
+    {
+      
+      texture_unit
+      {
+        // Relative to the location of the material script
+        texture ../textures/old_floor_grass.jpg
+        // Repeat the texture over the surface (4 per face)
+        scale 0.04 0.04
+      }
+    }
+  }
+}

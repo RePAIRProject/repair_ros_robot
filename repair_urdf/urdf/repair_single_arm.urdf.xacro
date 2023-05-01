@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair">
+
+<xacro:include filename="$(find repair_urdf)/urdf/repair_arm.urdf.xacro"/>
+
+<link name="world"/>
+
+<link name="base_link">
+</link>
+
+<joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="base_link"/>
+</joint>
+
+<link name="r_arm_mount_frame">
+</link>
+
+<joint name="r_arm_mount_joint" type="fixed">
+    <origin xyz="0 -0.2 0" rpy="${PI_2} ${PI} 0"/>
+    <parent link="base_link"/>
+    <child link="r_arm_mount_frame"/>
+</joint>
+
+<xacro:repair_arm base_link="r_arm_mount_frame" id="1"/>
+
+</robot>

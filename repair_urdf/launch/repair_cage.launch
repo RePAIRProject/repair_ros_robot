@@ -1,0 +1,18 @@
+<launch>
+    <arg name="gui" default="true" />
+    <arg name="rate" default="250.0"/>
+
+    <!-- send the mirror robot XML to param server -->
+    <param name="robot_description" command="xacro '$(find repair_urdf)/urdf/repair_cage.urdf.xacro'" />
+    <param name="use_gui" value="$(arg gui)"/>
+
+    <!-- start robot state publisher -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+        <param name="publish_frequency" type="double" value="$(arg rate)" />
+    </node>
+    
+    <group if="$(arg gui)">
+        <node type="rviz" name="rviz" pkg="rviz" args="-d $(find repair_urdf)/config/repair_full.rviz" />
+    </group>
+    
+</launch>

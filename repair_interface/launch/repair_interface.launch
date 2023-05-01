@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- launch repair_gazebo bringup_moveit.launch -->
+    <include file="$(find repair_gazebo)/launch/bringup_moveit.launch" />
+
+    <!-- launch the repair_interface node -->
+    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
+
+</launch>

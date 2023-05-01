@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<robot name="repair_full" xmlns:xacro="http://ros.org/wiki/xacro">
+    
+    <xacro:include filename="$(find softhands_description)/srdf/softhands.srdf.xacro"/>
+    <xacro:include filename="$(find softhands_description)/srdf/softhands.srdf.xacro"/>
+    <xacro:include filename="$(find softhands_description)/srdf/softhands_homing.srdf.xacro"/>
+
+    <group name="sliding_guide">
+        <chain base_link="working_surface_link" tip_link="base_link"/>
+    </group>
+    
+    <group name="arm1">
+        <chain base_link="base_link" tip_link="arm_1_link_7"/>
+    </group>
+
+    <group name="arm2">
+        <chain base_link="base_link" tip_link="arm_2_link_7"/>
+    </group>
+
+    <xacro:softhand side="right" type="v2s" base_link="arm_1_link_7"/>
+    <xacro:softhand side="left" type="v2s" base_link="arm_2_link_7"/>
+
+    <group name="chains">
+        <group name="sliding_guide"/>
+        <group name="arm1"/>
+        <group name="arm2"/>
+        <!-- <group name="palm_right"/> -->
+        <!-- <group name="thumb_right"/> -->
+        <!-- <group name="index_right"/> -->
+        <!-- <group name="middle_right"/> -->
+        <!-- <group name="ring_right"/> -->
+        <!-- <group name="little_right"/> -->
+        <!-- <group name="palm_left"/> -->
+        <!-- <group name="thumb_left"/> -->
+        <!-- <group name="index_left"/>
+        <group name="middle_left"/>
+        <group name="ring_left"/>
+        <group name="little_left"/> -->
+    </group>
+    
+    <group_state name="home" group="chains">
+
+        <joint name="arm_1_joint_1" value="0.85"/>
+        <joint name="arm_1_joint_2" value="0.72"/>
+        <joint name="arm_1_joint_3" value="0.6"/>
+        <joint name="arm_1_joint_4" value="-0.9"/>
+        <joint name="arm_1_joint_5" value="-0.5"/>
+        <joint name="arm_1_joint_6" value="0"/>
+        <joint name="arm_1_joint_7" value="1.0"/>
+        <joint name="arm_2_joint_1" value="-0.85"/>
+        <joint name="arm_2_joint_2" value="-0.72"/>
+        <joint name="arm_2_joint_3" value="-0.6"/>
+        <joint name="arm_2_joint_4" value="-0.9"/>
+        <joint name="arm_2_joint_5" value="0.5"/>
+        <joint name="arm_2_joint_6" value="0"/>
+        <joint name="arm_2_joint_7" value="-1.0"/>
+        <joint name="x_joint" value="-0.05"/>
+
+        <xacro:softhand_homing side="right" type="v2s"/>
+        <xacro:softhand_homing side="left" type="v2s"/>
+
+    </group_state>
+
+</robot>
+

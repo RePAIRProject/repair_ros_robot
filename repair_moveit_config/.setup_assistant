@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: repair_urdf
+    relative_path: urdf/repair_full.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/repair_full.srdf
+  CONFIG:
+    author_name: Patrick Reitz
+    author_email: s6pareit@uni-bonn.de
+    generated_timestamp: 1682269016

@@ -1,0 +1,8 @@
+xbotcore_devices:  
+    joint_gz:
+        names: [__joint_srdf__]  # autodetect joints from gazebo
+        thread: rt_main  # allocate this device on rt_main thread
+
+    joint_master:
+        master: true  # this is a master device for all 'joint' devices
+        thread: rt_main
