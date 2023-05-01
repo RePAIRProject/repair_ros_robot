@@ -62,8 +62,8 @@ bool MoveitClient::sendPoseToBothArms(geometry_msgs::PoseStamped arm_1_pose, geo
     
     move_group = move_group_both_arms;
 
-    move_group->setPoseTarget(arm_1_pose, "arm_1_link_7");
-    move_group->setPoseTarget(arm_2_pose, "arm_2_link_7");
+    move_group->setPoseTarget(arm_1_pose, "right_hand_v2s_grasp_link");
+    move_group->setPoseTarget(arm_2_pose, "left_hand_v2s_grasp_link");
     ROS_INFO("Planning to move both arms to target pose");
     success = (move_group->plan(both_arms_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
 
