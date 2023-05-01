@@ -25,6 +25,7 @@ class HAND_ENUM(Enum):
 class HAND_STATE_ENUM(Enum):
     OPEN = 0
     CLOSE = 1
+    VALUE = 2
 
 class MoveItTest:
     def __init__(self):
@@ -33,7 +34,7 @@ class MoveItTest:
         self.transform_tries = 5
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
-    def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM):
+    def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
         rospy.loginfo("Waiting for gripper command service")
         rospy.wait_for_service('/gripper_command_srv')
         rospy.loginfo("Service found")
@@ -45,6 +46,7 @@ class MoveItTest:
         gripper_command_req = GripperCommandRequest()
         gripper_command_req.hand = hand.value
         gripper_command_req.command = hand_state.value
+        gripper_command_req.value = value
 
         # call service
         gripper_command_resp = gripper_command_srv(gripper_command_req)
