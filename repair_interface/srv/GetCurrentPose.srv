@@ -1,0 +1,3 @@
+---
+geometry_msgs/PoseStamped current_pose_1
+geometry_msgs/PoseStamped current_pose_2

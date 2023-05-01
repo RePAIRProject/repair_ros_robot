@@ -1,0 +1,43 @@
+<sdf version='1.6'>
+  <model name='frag3'>
+    <link name='fragment_base_link'>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='fragment_base_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://frag3/meshes/frag_3.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='fragment_base_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://frag3/meshes/frag_3.stl</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <gazebo reference="fragment_base_link">
+  <kp>1000000.0</kp>
+  <kd>1.0</kd>
+  <mu1>1.0</mu1>
+  <mu2>1.0</mu2>
+  <minDepth>0.001</minDepth>
+</gazebo>
+  </model>
+</sdf>

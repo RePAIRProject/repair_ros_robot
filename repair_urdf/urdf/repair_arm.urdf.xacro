@@ -459,10 +459,10 @@ results of the optimization), otherwise we go with the old ones (generated for a
     
     <xacro:softhands type="right" 
         version="v2.0_simple" 
-        parent="arm_${id}_link_7" 
+        parent="arm_${id}_link_7"
         useMimicTag="true"
-        position="0 0 -0.015" 
-        orientation="0 0.0 ${PI}" 
+        position="0 0 -0.015"
+        orientation="0 0.0 ${PI}"
         translation="0"
         operation_mode="0">
     </xacro:softhands>
@@ -470,9 +470,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
 </xacro:if>
 <xacro:unless value="${id == 1}">
 
-    <xacro:softhands type="left" 
-        version="v2.0_simple" 
-        parent="arm_${id}_link_7" 
+    <xacro:softhands type="left"
+        version="v2.0_simple"
+        parent="arm_${id}_link_7"
         useMimicTag="true"
         position="0 -0.013900 -0.015"  
         orientation="0 0 0" 

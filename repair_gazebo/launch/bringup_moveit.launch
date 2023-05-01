@@ -21,5 +21,5 @@
     <include file="$(find repair_moveit_config)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config)/launch/moveit.rviz" />
     </include>
-
+    <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
 </launch>
