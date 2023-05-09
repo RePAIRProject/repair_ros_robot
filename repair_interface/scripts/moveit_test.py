@@ -30,7 +30,7 @@ class HAND_STATE_ENUM(Enum):
 class MoveItTest:
     def __init__(self):
         self.listener = tf.TransformListener()
-        self.wait_for_transform = 0.1
+        self.wait_for_transform = 5
         self.transform_tries = 5
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
@@ -79,12 +79,14 @@ class MoveItTest:
         self.go_to_pos_1(arm1_pose)
         #arm1_pose = get_current_pose_resp.current_pose_1
         self.go_to_pos_2(arm1_pose)
-        self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.CLOSE)
+        self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.VALUE, 1.0)
         self.go_to_pos_1(arm1_pose)
         #rospy.sleep(1)
 
     def go_to_pos_2(self, target_pose):
-        target_pose.pose.position.z -= 0.12
+        # target_pose.pose.position.x -= 0.025
+        target_pose.pose.position.y -= 0.03
+        target_pose.pose.position.z -= 0.11
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
@@ -207,15 +209,15 @@ class MoveItTest:
 
         """
         try:
-            common_time = self.listener.getLatestCommonTime(
-                target_frame, reference_pose.header.frame_id
-            )
+            # common_time = self.listener.getLatestCommonTime(
+            #     target_frame, reference_pose.header.frame_id
+            # )
 
             self.listener.waitForTransform(
                 target_frame, reference_pose.header.frame_id,
-                common_time, rospy.Duration(self.wait_for_transform)
+                rospy.Time(0), rospy.Duration(self.wait_for_transform)
             )
-            reference_pose.header.stamp = common_time
+            # reference_pose.header.stamp = common_time
 
             transformed_pose = self.listener.transformPose(
                 target_frame, reference_pose,
