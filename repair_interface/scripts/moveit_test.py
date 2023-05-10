@@ -85,8 +85,8 @@ class MoveItTest:
 
     def go_to_pos_2(self, target_pose):
         # target_pose.pose.position.x -= 0.025
-        target_pose.pose.position.y -= 0.03
-        target_pose.pose.position.z -= 0.11
+        target_pose.pose.position.y -= 0.035
+        target_pose.pose.position.z -= 0.13
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value

@@ -454,11 +454,18 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
 
 </link>
+
+<gazebo reference="arm_${id}_link_7">
+    <kp value="1e4" />
+    <kd value="1e2" />
+    <mu1>0.2</mu1> 
+	<mu2>0.2</mu2>
+</gazebo>
     
 <xacro:if value="${id == 1}">
     
     <xacro:softhands type="right" 
-        version="v2.0_simple" 
+        version="v1.0_simple" 
         parent="arm_${id}_link_7"
         useMimicTag="true"
         position="0 0 -0.015"
@@ -471,7 +478,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 <xacro:unless value="${id == 1}">
 
     <xacro:softhands type="left"
-        version="v2.0_simple"
+        version="v1.0_simple"
         parent="arm_${id}_link_7"
         useMimicTag="true"
         position="0 -0.013900 -0.015"  
