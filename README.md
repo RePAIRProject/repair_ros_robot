@@ -83,15 +83,25 @@ roslaunch repair_gazebo bringup_moveit.launch
 - You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
 
 
-### To run pick and Place Demo (not final yet):
-The following command will launch the robot in gazebo and rviz, and will place a fragment on the table
-```bash
-roslaunch repair_interface repair_interface.launch
-``` 
-to get the demo to run you need to copy the fragments model folder from ```repair_urdf/sdf/frag2``` to ```~/.gazebo/models/frag2```.
-Furthermore, you have to change the path in file pysdf/src/pysdf/parser.py line 26 to your catkin src path.
+### To run pick and Place Demo:
 
-To run the demoexecude the following command in an other tab:
-```bash
-rosrun repair_interface moveit_test.py
-```
+- Prerequisites:
+	- Copy the fragment model folder from ```repair_urdf/sdf/frag3``` to ```~/.gazebo/models/frag3```.
+	- Change the path in file `pysdf/src/pysdf/parser.py` line `26` to your `catkin_ws` src path.
+
+- The following command will launch the robot in gazebo and rviz, and will place a fragment on the table
+	```bash
+	roslaunch repair_interface repair_interface.launch
+	``` 
+
+- To run the demoexecude the following command in an other tab:
+	```bash
+	rosrun repair_interface moveit_test.py
+	```
+
+- If the fragment is toppled while the arm is moving to the goal, let the execution finish and run the following command to reset the gazebo world:
+	```bash
+	rosservice call /gazebo/reset_world
+	```
+- `Open` the gripper from the rviz `motion planning` tab.
+- Now you can run the `moveit_test.py` script again.

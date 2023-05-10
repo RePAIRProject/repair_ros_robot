@@ -22,11 +22,11 @@ controller_list:
   - name: fake_hand_1_controller
     type: $(arg fake_execution_type)
     joints:
-      - right_hand_v2s_synergy_joint
+      - right_hand_v1s_synergy_joint
   - name: fake_hand_2_controller
     type: $(arg fake_execution_type)
     joints:
-      - left_hand_v2s_synergy_joint
+      - left_hand_v1s_synergy_joint
   - name: fake_both_arms_controller
     type: $(arg fake_execution_type)
     joints:
