@@ -18,7 +18,7 @@
         <joint name="arm_1_joint_6"/>
         <joint name="dummy_sliding_wrist1_joint"/>
         <joint name="arm_1_joint_7"/>
-        <chain base_link="base_link" tip_link="right_hand_v1s_grasp_link" />
+        <chain base_link="base_link" tip_link="right_hand_v1s_grasp_link"/>
     </group>
     <group name="arm_2">
         <joint name="arm_2_joint_1"/>
@@ -29,13 +29,7 @@
         <joint name="arm_2_joint_6"/>
         <joint name="dummy_sliding_wrist2_joint"/>
         <joint name="arm_2_joint_7"/>
-        <chain base_link="base_link" tip_link="left_hand_v1s_grasp_link" />
-    </group>
-    <group name="hand_1">
-        <joint name="right_hand_v1s_synergy_joint"/>
-    </group>
-    <group name="hand_2">
-        <joint name="left_hand_v1s_synergy_joint"/>
+        <chain base_link="base_link" tip_link="left_hand_v1s_grasp_link"/>
     </group>
     <group name="both_arms">
         <group name="arm_1"/>
@@ -128,21 +122,6 @@
         <joint name="arm_2_joint_6" value="-0.733"/>
         <joint name="arm_2_joint_7" value="2.6"/>
     </group_state>
-    <group_state name="open" group="hand_1">
-        <joint name="right_hand_v1s_synergy_joint" value="0"/>
-    </group_state>
-    <group_state name="close" group="hand_1">
-        <joint name="right_hand_v1s_synergy_joint" value="0.85"/>
-    </group_state>
-    <group_state name="open" group="hand_2">
-        <joint name="left_hand_v1s_synergy_joint" value="0"/>
-    </group_state>
-    <group_state name="close" group="hand_2">
-        <joint name="left_hand_v1s_synergy_joint" value="0.85"/>
-    </group_state>
-    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="hand_1" parent_link="arm_1_link_7" group="hand_1"/>
-    <end_effector name="hand_2" parent_link="arm_2_link_7" group="hand_2"/>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="x_joint"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->

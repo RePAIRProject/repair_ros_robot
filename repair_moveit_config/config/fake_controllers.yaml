@@ -19,14 +19,6 @@ controller_list:
       - arm_2_joint_5
       - arm_2_joint_6
       - arm_2_joint_7
-  - name: fake_hand_1_controller
-    type: $(arg fake_execution_type)
-    joints:
-      - right_hand_v1s_synergy_joint
-  - name: fake_hand_2_controller
-    type: $(arg fake_execution_type)
-    joints:
-      - left_hand_v1s_synergy_joint
   - name: fake_both_arms_controller
     type: $(arg fake_execution_type)
     joints:
@@ -49,9 +41,5 @@ initial:  # Define initial robot poses per group
     pose: home
   - group: arm_2
     pose: home
-  - group: hand_1
-    pose: open
-  - group: hand_2
-    pose: open
   - group: both_arms
     pose: home

@@ -5,6 +5,8 @@ from __future__ import print_function
 import sys
 import rospy
 import tf
+import tf.transformations
+from std_msgs.msg import Float64
 from geometry_msgs.msg import PoseStamped, Quaternion
 #from sensor_msgs.msg import JointState
 import math
@@ -33,30 +35,28 @@ class MoveItTest:
         self.wait_for_transform = 5
         self.transform_tries = 5
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
+        self.hand1_pub = rospy.Publisher("/right_hand_v1s/synergy_command", Float64, queue_size=10)
+        self.hand2_pub = rospy.Publisher("/left_hand_v1s/synergy_command", Float64, queue_size=10)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
-        rospy.loginfo("Waiting for gripper command service")
-        rospy.wait_for_service('/gripper_command_srv')
-        rospy.loginfo("Service found")
+        
+        if hand == HAND_ENUM.HAND_1:
+            pub = self.hand1_pub
+        elif hand == HAND_ENUM.HAND_2:
+            pub = self.hand2_pub
+        
+        if hand_state == HAND_STATE_ENUM.OPEN:
+            value = 0.0
+        elif hand_state == HAND_STATE_ENUM.CLOSE:
+            value = 1.0
+        elif hand_state == HAND_STATE_ENUM.VALUE:
+            pass
 
-        # create service proxy
-        gripper_command_srv = rospy.ServiceProxy('/gripper_command_srv', GripperCommand)
-
-        # create request
-        gripper_command_req = GripperCommandRequest()
-        gripper_command_req.hand = hand.value
-        gripper_command_req.command = hand_state.value
-        gripper_command_req.value = value
-
-        # call service
-        gripper_command_resp = gripper_command_srv(gripper_command_req)
-
-        # check response
-        if gripper_command_resp.success:
-            rospy.loginfo("Successfully sent gripper command")
-        else:
-            rospy.logwarn("Could not send gripper command")
-
+        # publish to topic
+        rospy.loginfo("Executing gripper command")
+        pub.publish(value)
+        # wait for execution
+        rospy.sleep(1)
 
     def test_srv(self):
         # get current pose
@@ -80,13 +80,16 @@ class MoveItTest:
         #arm1_pose = get_current_pose_resp.current_pose_1
         self.go_to_pos_2(arm1_pose)
         self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.VALUE, 1.0)
-        self.go_to_pos_1(arm1_pose)
+        get_current_pose_resp = get_current_pose_srv(get_current_pose_req)
+        arm1_pose = get_current_pose_resp.current_pose_1
+        arm1_pose.pose.position.z += 0.1
+        self.move_to_pose(ARM_ENUM.ARM_1, arm1_pose)
         #rospy.sleep(1)
 
     def go_to_pos_2(self, target_pose):
-        # target_pose.pose.position.x -= 0.025
-        target_pose.pose.position.y -= 0.035
-        target_pose.pose.position.z -= 0.13
+        target_pose.pose.position.x -= 0.02
+        target_pose.pose.position.y -= 0.01
+        target_pose.pose.position.z -= 0.11
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
@@ -140,7 +143,7 @@ class MoveItTest:
         else:
             rospy.logwarn("Could not move arm to pose")
 
-    def get_fragment_pose(self):
+    def get_fragment_pose(self) -> list:
         # transform fragment pose from fragment_base_link to world
         fragment_pose = PoseStamped()
         fragment_pose.header.frame_id = "frag3__fragment_base_link"
@@ -150,7 +153,7 @@ class MoveItTest:
 
         if fragment_pose_in_world is None:
             rospy.logwarn("Could not transform fragment pose to world")
-            return None
+            return []
         
         print("Fragment pose in world: ", fragment_pose_in_world.pose.position)
         return [fragment_pose_in_world.pose.position.x,
@@ -180,6 +183,16 @@ class MoveItTest:
             if transformed_pose:
                 break
         
+    # h = HAND_ENUM.HAND_1
+    # hs = HAND_STATE_ENUM.OPEN
+    # moveit_test.send_gripper_command(h, hs)
+    # rospy.sleep(1)
+    # hs = HAND_STATE_ENUM.CLOSE
+    # moveit_test.send_gripper_command(h, hs)
+    # rospy.sleep(1)
+    # hs = HAND_STATE_ENUM.OPEN
+    # moveit_test.send_gripper_command(h, hs)
+    # rospy.spin()
         if execute_arm:
             # rotate around z axis by 90 degrees
             euler = tf.transformations.euler_from_quaternion(
@@ -233,13 +246,3 @@ if __name__ == '__main__':
     rospy.init_node('moveit_test')
     moveit_test = MoveItTest()
     moveit_test.test_srv()
-    # h = HAND_ENUM.HAND_1
-    # hs = HAND_STATE_ENUM.OPEN
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.sleep(1)
-    # hs = HAND_STATE_ENUM.CLOSE
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.sleep(1)
-    # hs = HAND_STATE_ENUM.OPEN
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.spin()
