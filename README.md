@@ -6,7 +6,7 @@
 ### Depends on:
 - catkin
 - xacro
-- [Xbot2](https://advrhumanoids.github.io/xbot2/quickstart.html)
+- [Xbot2](https://advrhumanoids.github.io/xbot2/master/index.html)
 - [Softhand-plugin](https://github.com/vamsikalagaturu/SoftHand-Plugin/tree/synergy_joint)
 - [roboticsgroup_upatras_gazebo_plugins](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins)
 - [gazebo2rviz](https://github.com/andreasBihlmaier/gazebo2rviz)
