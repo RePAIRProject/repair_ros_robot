@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair_full">
+    
+    <xacro:include filename="$(find softhands_description)/urdf/softhands.xacro" />
 
     <xacro:include filename="$(find repair_urdf)/urdf/conversions.urdf.xacro" />
     <xacro:include filename="$(find repair_urdf)/urdf/materials.urdf.xacro" />
@@ -13,6 +15,9 @@
     <xacro:include filename="$(find repair_urdf)/urdf/limits.urdf.xacro" />
     
     <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" />
+
+    <!-- <xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />-->
+    <xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
     
     <link name="world"/>
 
@@ -33,7 +38,30 @@
         <origin xyz="${Shoulder_1_Ox} ${-Shoulder_1_Oy} ${Shoulder_1_Oz}"
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
       </xacro:repair_arm>
+    
+    <xacro:softhands type="left"
+        version="v1.0_simple" 
+        parent="arm_1_7" 
+        position="0 0 -0.015" 
+        orientation="0 0.0 ${PI}" 
+        translation="0"
+        operation_mode="0" 
+        fixed_hands="false">
+    </xacro:softhands>
 
+    <xacro:softhands type="right" 
+        version="v1.0_simple" 
+        parent="arm_2_7" 
+        position="0 -0.013900 -0.015"  
+        orientation="0 0 ${PI}" 
+        translation="0"
+        operation_mode="0" 
+        fixed_hands="false">
+    </xacro:softhands>
+
+    <!-- <gazebo reference="table_top_link">
+        <selfCollide> 1 </selfCollide>
+    </gazebo> -->
 
 
 </robot>

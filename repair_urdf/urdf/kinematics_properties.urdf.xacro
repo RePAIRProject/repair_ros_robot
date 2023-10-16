@@ -10,7 +10,7 @@
     
     <xacro:property name="Cage_x" value="1.0" />
     <xacro:property name="Cage_y" value="2.5" />
-    <xacro:property name="Cage_z" value="1.0"/> <!-- w.r.t table  --> 
+    <xacro:property name="Cage_z" value="0.97"/> <!-- w.r.t table  --> 
     <xacro:property name="Cage_leg_radius" value="0.02" />
 
     <xacro:property name="Cage_sliding_guide_x" value="0.0"/> <!-- w.r.t world  --> 

@@ -1,6 +1,17 @@
 zmq_setup:
     timeout: 1000
 
+j_torso_1:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
 j_arm_1_1:
     control_mode: D4_impedance_ctrl
     motor_has_brake: false
@@ -133,17 +144,26 @@ j_arm_2_5:
             - 0.007
             - 0.8
 
+#j_arm_2_6:
+#    control_mode: D4_impedance_ctrl
+#    motor_has_brake: false
+#    pid:
+#        impedance:
+#            - 1000.0
+#            - 60.0
+#            - 1.0
+#            - 0.007
+#            - 0.8
+
 j_arm_2_6:
-    control_mode: D4_impedance_ctrl
+    control_mode: 3B_motor_pos_ctrl
     motor_has_brake: false
     pid:
-        impedance:
+        position:
             - 1000.0
-            - 60.0
-            - 1.0
-            - 0.007
-            - 0.8
-
+            - 0.0
+            - 30.0
+            
 j_arm_2_7:
     control_mode: D4_impedance_ctrl
     motor_has_brake: false
@@ -154,3 +174,18 @@ j_arm_2_7:
             - 1.0
             - 0.007
             - 0.8
+
+left_hand:
+    control_mode: 3B_motor_pos_ctrl
+    pid:
+        position:
+            - 0.0
+            - 0.0
+            - 0.0
+right_hand:
+    control_mode: 3B_motor_pos_ctrl
+    pid:
+        position:
+            - 0.0
+            - 0.0
+            - 0.0

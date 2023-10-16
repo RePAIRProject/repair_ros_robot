@@ -25,7 +25,9 @@ xbotcore_plugins:
     ros_io: {thread: nrt_main, type: ros_io, params: {publish_tf: {type: bool, value: true}}}
 
     ros_control: {thread: nrt_main, type: ros_control, params: {autostart: {type: bool, value: true}}}
-    
+
+    ec_ros: {thread: nrt_main, type: ec_ros}
+
 xbotcore_param:
     /jm/tx_filter_autostart: {value: true, type: bool}
     /jm/tx_filter_cutoff: {value: 2.0, type: double}

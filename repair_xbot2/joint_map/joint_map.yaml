@@ -14,3 +14,5 @@ joint_map:
   26: j_arm_2_6
   27: j_arm_2_7
   41: j_torso_1
+  102: left_hand
+  101: right_hand

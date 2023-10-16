@@ -4,6 +4,8 @@
 
 <gazebo>
     
+    <xacro:include filename="$(find repair_urdf)/urdf/gazebo/ignore_joint_softhand.xbot.xacro" />
+    
     <plugin name="xbot2_joint_driver" filename="libxbot2_gz_joint_server.so">
         <pid>
             <gain name="fake_mot"  p="10"  d="1"/>
@@ -30,6 +32,12 @@
 
 
         </pid>
+
+        <ignore_joints>
+            <xacro:ignore_softhand_jnts side="right" type="v1s"/>
+            <xacro:ignore_softhand_jnts side="left" type="v1s"/>
+        </ignore_joints>
+
     </plugin>
 </gazebo>
 

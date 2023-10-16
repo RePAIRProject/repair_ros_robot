@@ -59,7 +59,7 @@ def main():
 
     rospy.init_node('repair_stress_test')
 
-    time = 2.0
+    time = 1.5
 
     # homing_arm_r = [0.5, 0.5, -0.5, 1.0, 0.5, 0.5, 1.0] # arm_1 
     # homing_arm_l = [-0.5, -0.5, 0.5, -1.0, -0.5, -0.5, -1.0] # arm_2
@@ -75,24 +75,31 @@ def main():
     t0 = rospy.Time.now()
 
     while not rospy.is_shutdown():
+
         print('Started loop ', niter, ', elapsed time ', (rospy.Time.now() - t0).to_sec())
         niter += 1
 
-        la_q_1 = -np.array([1.25, 0.0, -0.5, 1.0, 2.0, 1.9, 0.0])
+        la_q_1 = -np.array([1.0, 0.0, -0.5, 1.0, 2.0, 1.9, 0.0])
         la_q_2 = -np.array([1.0, 1.0, -2.1, 0.5, -0.5, -1.5, -2.7])
-        la_q_3 = -np.array([-1.5, 0.2, -0.7, 2.0, 0.5, 1.5, 1])
-        la_q_4 = -np.array([-2.5, 2.4, 2.5, 0.7, 1.8, -1.0, -2.5])
-
+        la_q_3 = -np.array([0.5, 0.8, -0.7, 2.0, 0.5, 1.5, 1])
+        la_q_4 = -np.array([0.5, 0.4, -1.0, 0.7, 1.8, -1.0, -2.5])
+        
         q1 =la_to_q(robot, q0, la_q_1, s)
         q2 =la_to_q(robot, q0, la_q_2, s)
         q3 =la_to_q(robot, q0, la_q_3, s)
         q4 =la_to_q(robot, q0, la_q_4, s)
 
+        print('Moving from q0 -> q1 ')
         move_to_q(robot, q0, q1, time)
-        move_to_q(robot, q1, q2, 2*time)
-        move_to_q(robot, q2, q3, 3*time)
-        move_to_q(robot, q3, q4, 4*time)
-        move_to_q(robot, q4, q0, 4*time)
+        print('Moving from q1 -> q2 ')
+        move_to_q(robot, q1, q2, 1.5*time)
+        print('Moving from q2 -> q3 ')
+        move_to_q(robot, q2, q3, 2*time)
+        print('Moving from q3 -> q4 ')
+        move_to_q(robot, q3, q4, 2.5*time)
+        print('Moving from q4 -> q5 ')
+        move_to_q(robot, q4, q0, 2*time)
+        print('Loop finished. Restarting...')
     
 
     print('Exiting..')

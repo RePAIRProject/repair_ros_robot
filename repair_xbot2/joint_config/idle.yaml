@@ -76,4 +76,10 @@ j_torso_1:
     motor_has_brake: false
     pid: {}
 
+left_hand:
+    control_mode: idle
+    pid: {}
 
+right_hand:
+    control_mode: idle
+    pid: {}
