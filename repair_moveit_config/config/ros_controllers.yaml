@@ -6,12 +6,12 @@ arm_l_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
     - j_arm_1_1
-    - j_arm_1_1
-    - j_arm_1_1
-    - j_arm_1_1
-    - j_arm_1_1
-    - j_arm_1_1
-    - j_arm_1_1
+    - j_arm_1_2
+    - j_arm_1_3
+    - j_arm_1_4
+    - j_arm_1_5
+    - j_arm_1_6
+    - j_arm_1_7
   constraints:
       goal_time: 0.6
       stopped_velocity_tolerance: 0.0
@@ -30,12 +30,12 @@ arm_r_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
     - j_arm_2_1
-    - j_arm_2_1
-    - j_arm_2_1
-    - j_arm_2_1
-    - j_arm_2_1
-    - j_arm_2_1
-    - j_arm_2_1
+    - j_arm_2_2
+    - j_arm_2_3
+    - j_arm_2_4
+    - j_arm_2_5
+    - j_arm_2_6
+    - j_arm_2_7
   constraints:
       goal_time: 0.6
       stopped_velocity_tolerance: 0.0

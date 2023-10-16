@@ -273,6 +273,10 @@ results of the optimization), otherwise we go with the old ones (generated for a
         </joint>
         <!-- virtual tip-->
 
+    <xacro:repair_arm_transmission id="${id}" />
+
     </xacro:macro>
+
+
 
 </robot>

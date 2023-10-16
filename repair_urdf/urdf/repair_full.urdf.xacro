@@ -16,7 +16,7 @@
     
     <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" />
 
-    <!-- <xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />-->
+    <xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />
     <xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
     
     <link name="world"/>

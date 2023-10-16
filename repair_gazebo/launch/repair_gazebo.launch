@@ -21,6 +21,8 @@
   <arg     if="$(arg verbose)" name="command_arg3" value="--verbose"/>
   <arg unless="$(arg debug)" name="script_type" value="gzserver"/>
   <arg     if="$(arg debug)" name="script_type" value="debug"/>
+  <arg name="initial_joint_positions" default=" -J j_arm_1_1 -0.5 -J j_arm_1_2 -0.5 -J j_arm_1_3 0.5 -J j_arm_1_4 -1.0 -J arm_1_5 -0.5 -J j_arm_1_6 -0.5 -J j_arm_1_7 -1.0 -J j_arm_2_1 0.5 -J j_arm_2_2 0.5 -J j_arm_2_3 -0.5 -J j_arm_2_4 1.0 -J j_arm_2_5 0.5 -J j_arm_2_6 0.5 -J j_arm_2_7 1.0" doc="Initial joint configuration of the robot"/>
+
 
   <arg name="world_name" value="$(find repair_gazebo)/worlds/repair.world"/>
 
@@ -42,7 +44,7 @@
 
     <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-          args="-urdf -model repair -param robot_description_gz"/>
+          args="-urdf -model repair  $(arg initial_joint_positions)  -param robot_description_gz"/>
 
   </group>
 
