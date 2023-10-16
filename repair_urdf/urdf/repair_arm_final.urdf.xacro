@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair_arm">
+
+
+    <xacro:include filename="$(find repair_urdf)/urdf/conversions.urdf.xacro" />
+    <xacro:include filename="$(find repair_urdf)/urdf/materials.urdf.xacro" />
+
+    <xacro:include filename="$(find repair_urdf)/urdf/repair_base.urdf.xacro" />
+    <xacro:include filename="$(find repair_urdf)/urdf/repair_arm_macro.urdf.xacro" />
+    
+    <xacro:include filename="$(find repair_urdf)/urdf/kinematics_properties.urdf.xacro" />
+    <xacro:include filename="$(find repair_urdf)/urdf/inertial_properties.urdf.xacro" />
+    <xacro:include filename="$(find repair_urdf)/urdf/limits.urdf.xacro" />
+    <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" />
+    
+    <link name="world"/>
+
+    <xacro:repair_base parent="world">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:repair_base>
+
+
+    <xacro:repair_arm id="2"  rot="1"  parent="base_link">
+      <origin xyz="0.0 0.0 0.14"
+              rpy="0.0 0.0 0.0" />
+    </xacro:repair_arm>
+
+</robot>

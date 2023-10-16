@@ -1,0 +1,25 @@
+<launch>
+
+<arg name="rate" default="100.0"/>
+<arg name="prefix" default=""/>
+<arg name="gui" default="true"/>
+<arg name="ver" default="1"/>
+
+<param name="/robot_description" command="xacro $(find repair_urdf)/urdf/repair_arm_final.urdf.xacro"/>
+<param name="/robot_description_semantic" textfile="$(find repair_srdf)/srdf/repair_arm.srdf"/>
+
+<param name="/cartesian/problem_description" textfile="$(find repair_cartesio)/config/repair_simple.yaml"/>
+
+<include file="$(find cartesian_interface)/launch/cartesio.launch">
+    <arg name="rate" value="$(arg rate)"/>
+    <arg name="prefix" value="$(arg prefix)"/>
+    <arg name="is_model_floating_base" value="false"/>
+</include>
+
+<node if="$(arg gui)"
+          type="rviz"
+          name="rviz"
+          pkg="rviz"
+          args="-d $(find repair_cartesio)/rviz/repair_cartesio.rviz" />
+
+</launch>

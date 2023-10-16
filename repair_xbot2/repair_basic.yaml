@@ -1,0 +1,37 @@
+XBotInterface:
+  urdf_path: $(rospack find repair_urdf)/urdf/repair_full.urdf
+  srdf_path: $(rospack find repair_srdf)/srdf/repair_full.srdf
+
+ModelInterface:
+  model_type: RBDL
+
+xbotcore_device_configs:
+  dummy: $PWD/hal/repair_dummy.yaml
+  sim: $PWD/hal/repair_gz.yaml
+  ec_idle: $PWD/hal/ec_all.yaml
+  ec_imp: $PWD/hal/ec_all.yaml
+  ec_pos: $PWD/hal/ec_all.yaml
+
+xbotcore_threads:
+    rt_main:  {sched: fifo , prio: 60, period: 0.001}
+    nrt_main: {sched: other, prio: 0 , period: 0.005}
+
+xbotcore_plugins:
+
+    homing:
+        thread: rt_main
+        type: homing
+
+    ros_io: {thread: nrt_main, type: ros_io, params: {publish_tf: {type: bool, value: true}}}
+
+    ros_control: {thread: nrt_main, type: ros_control, params: {autostart: {type: bool, value: true}}}
+    
+xbotcore_param:
+    /jm/tx_filter_autostart: {value: true, type: bool}
+    /jm/tx_filter_cutoff: {value: 2.0, type: double}
+    /jm/enable_safety: {value: true, type: bool}
+    /xbot/hal/joint_safety/filter_autostart: {value: true, type: bool}
+    /xbot/hal/joint_safety/filter_cutoff_hz: {value: 2.0, type: double}
+    /xbot/hal/enable_safety: {value: true, type: bool}
+    /xbot_internal/ros_io/call_timeout: {value: 1.0, type: chrono}
+    /rt_main/memory_hooks: {value: true, type: bool}

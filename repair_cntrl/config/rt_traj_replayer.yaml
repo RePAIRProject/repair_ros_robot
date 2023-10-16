@@ -1,0 +1,69 @@
+# XBot2 Awesome Leg configuration file, with a tip cartesian impedance control plugin.
+
+# description
+XBotInterface:
+  urdf_path: $(rospack find repair_urdf)/urdf/repair_full.urdf
+  srdf_path: $(rospack find repair_srdf)/srdf/repair_full.srdf
+
+# model interface
+ModelInterface:
+  model_type: RBDL
+  is_model_floating_base: false
+
+# hal
+xbotcore_device_configs:
+    sim: $PWD/hal/repair_gz.yaml
+    dummy: $PWD/hal/repair_dummy.yaml
+
+# threads
+xbotcore_threads:
+    # rt_traj_replayer: {sched: fifo , prio: 60, period: 0.001, core_id: 2}
+    rt_main:  {sched: fifo , prio: 60, period: 0.01, core_id: 2}
+    nrt_main: {sched: other, prio: 0 , period: 0.001}
+
+# plugins
+xbotcore_plugins:
+
+    homing:
+        thread: rt_main
+        type: homing_example
+
+    ros_io: {thread: nrt_main, type: ros_io}
+
+    ros_control: {thread: nrt_main, type: ros_control}
+    
+    traj_replayer:
+        thread: rt_main
+        type: traj_replayer_rt
+        params:
+            mat_path: {value: /home/andreap/hhcm_ws/src/iit-repair-ros-pkg/repair_codesign/test_results/test_results_07-09-2022-16_52_10/l2_postproc/, type: string}
+            mat_name: {value: final_opt_solution_07-09-2022-16_52_10.mat, type: string}
+            dump_dir: {value: /home/andreap/hhcm_ws/src/iit-repair-ros-pkg/repair_codesign/test_results/test_results_07-09-2022-16_52_10/l2_postproc/, type: string}
+            stop_stiffness: {value: [7000.0, 
+                                    2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 
+                                    2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0], type: Eigen::VectorXd}
+            stop_damping: {value: [400.0, 
+                                    50, 50, 50, 50, 50, 50, 50, 
+                                    50, 50, 50, 50, 50, 50, 50], type: Eigen::VectorXd}
+            delta_effort_lim: {value: 1e-6, type: double} 
+            approach_traj_exec_time: {value: 6.0, type: double} 
+            replay_stiffness: {value: [7000.0, 
+                                    2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 
+                                    2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0, 2000.0], type: Eigen::VectorXd}
+            replay_damping: {value: [400.0, 
+                                    50, 50, 50, 50, 50, 50, 50, 
+                                    50, 50, 50, 50, 50, 50, 50], type: Eigen::VectorXd}
+            send_pos_ref: {value: true, type: bool}
+            send_vel_ref: {value: false, type: bool}
+            send_eff_ref: {value: false, type: bool}
+            looped_traj: {value: true, type: bool}
+            traj_pause_time: {value: 4, type: double}
+
+# global parameters
+xbotcore_param:
+    /jm/tx_filter_autostart: {value: true, type: bool}
+    /jm/tx_filter_cutoff: {value: 20.0, type: double}
+    /jm/enable_safety: {value: false, type: bool}  # safety checks (can be disabled in running a simulation. DO NOT DO THIS ON A REAL PROTOTYPE)
+
+    
+    

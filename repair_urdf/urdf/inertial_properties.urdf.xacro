@@ -1,0 +1,146 @@
+<!--<?xml version="1.0"?>-->
+<robot  xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- General Data -->
+    <xacro:property name="link_width" value=" 0.100000 "/>
+    <xacro:property name="link_visual" value=" 0.050000 "/>
+    <xacro:property name="motors_radius" value=" 0.050000 "/>
+    <xacro:property name="motors_length" value=" 0.100000 "/>
+    <xacro:property name="motors_weight" value=" 1.500000 "/>
+    
+    <!-- Center of Mass -->
+    <xacro:property name="Torso_x" value=" ${4.9776510e-01 *mmTom} "/>
+    <xacro:property name="Torso_y" value=" ${-4.2604032e-01*mmTom} "/>
+    <xacro:property name="Torso_z" value=" ${-1.6838189e+02 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Torso_xx" value=" ${1.1857829e+05 *mm2Tom2} "/>
+    <xacro:property name="Torso_yy" value=" ${8.0733992e+04 *mm2Tom2} "/>
+    <xacro:property name="Torso_zz" value=" ${5.4100212e+04 *mm2Tom2} "/>
+    <xacro:property name="Torso_xy" value=" ${2.0401988e+01 *mm2Tom2} "/> 
+    <xacro:property name="Torso_xz" value=" ${1.2279511e+01 *mm2Tom2} "/>
+    <xacro:property name="Torso_yz" value=" ${7.0011268e+00 *mm2Tom2}"/> 
+    <!-- Mass -->
+    <xacro:property name="Torso_mass" value=" 8.7077745e+00 "/>
+    
+    <!-- Center of Mass -->
+    <xacro:property name="Base_x" value=" ${2.0548930e-01 *mmTom} "/>
+    <xacro:property name="Base_y" value=" ${-6.2095789e-01*mmTom} "/>
+    <xacro:property name="Base_z" value=" ${7.7352002e+01 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Base_xx" value=" ${1.0002127e+04 *mm2Tom2} "/>
+    <xacro:property name="Base_yy" value=" ${1.0728527e+04 *mm2Tom2} "/>
+    <xacro:property name="Base_zz" value=" ${6.2156037e+03 *mm2Tom2} "/>
+    <xacro:property name="Base_xy" value=" ${4.1468014e+01 *mm2Tom2} "/> 
+    <xacro:property name="Base_xz" value=" ${-5.1253649e+01*mm2Tom2} "/>
+    <xacro:property name="Base_yz" value=" ${-1.2700723e+02 *mm2Tom2}"/> 
+    <!-- Mass -->
+    <xacro:property name="Base_mass" value=" 2.7764953 "/>
+    
+    <!-- SHOULDER PITCH -->
+    <!-- Center of Mass -->
+    <xacro:property name="Shoulder_1_x" value=" ${1.0200651e+01 *mmTom} "/>
+    <xacro:property name="Shoulder_1_y" value=" ${-2.1560998e+01 *mmTom} "/>
+    <xacro:property name="Shoulder_1_z" value=" ${9.8767025e+01 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Shoulder_1_xx" value=" ${7.1929157e+03 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_1_yy" value=" ${9.4711610e+03 *mm2Tom2} "/>
+    <xacro:property name="Shoulder_1_zz" value=" ${5.8530904e+03 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_1_xy" value=" ${7.8543184e+01 *mm2Tom2} "/> 
+    <xacro:property name="Shoulder_1_xz" value=" ${-3.9791236e+02 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_1_yz" value=" ${1.2857051e+03 *mm2Tom2}"/> 
+    <!-- Mass -->
+    <xacro:property name="Shoulder_1_mass" value="2.347"/> <!-- 2.4405495 -->
+    
+    <!-- SHOULDER ROLL -->
+    <!-- Center of Mass -->
+    <xacro:property name="Shoulder_2_x" value=" ${4.5955243e-02*mmTom} "/>
+    <xacro:property name="Shoulder_2_y" value=" ${-4.4957128e+01*mmTom} "/>
+    <xacro:property name="Shoulder_2_z" value=" ${-3.0791013e+01 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Shoulder_2_xx" value=" ${2.7927572e+03 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_2_yy" value=" ${1.9288488e+03 *mm2Tom2} "/>
+    <xacro:property name="Shoulder_2_zz" value=" ${2.6633366e+03 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_2_xy" value=" ${-2.0135067e+00 *mm2Tom2} "/> 
+    <xacro:property name="Shoulder_2_xz" value=" ${-1.3644218e+00 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_2_yz" value=" ${-6.6693438e+02 *mm2Tom2}"/> 
+    <!-- Mass -->
+    <xacro:property name="Shoulder_2_mass" value="0.76"/> <!-- 7.8724534e-01 -->
+    
+    <!-- SHOULDER YAW -->
+    <!-- Center of Mass -->
+    <xacro:property name="Shoulder_3_x" value=" ${5.0993150e+00 *mmTom} "/>
+    <xacro:property name="Shoulder_3_y" value=" ${5.9986523e+00 *mmTom} "/>
+    <xacro:property name="Shoulder_3_z" value=" ${-1.8011742e+02 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Shoulder_3_xx" value=" ${3.1298785e+04 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_3_yy" value=" ${3.1963501e+04 *mm2Tom2} "/>
+    <xacro:property name="Shoulder_3_zz" value=" ${2.6332359e+03 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_3_xy" value=" ${-2.5158367e+02 *mm2Tom2} "/> 
+    <xacro:property name="Shoulder_3_xz" value=" ${2.3711270e+03 *mm2Tom2}"/>
+    <xacro:property name="Shoulder_3_yz" value=" ${1.8728041e+03 *mm2Tom2}"/> 
+    <!-- Mass -->
+    <xacro:property name="Shoulder_3_mass" value="3.34"/> <!-- 2.8848438e+00-->
+
+    <!-- ELBOW -->
+    <!-- Center of Mass -->
+    <xacro:property name="Elbow_x" value=" ${3.3322750e-03 *mmTom} "/>
+    <xacro:property name="Elbow_y" value=" ${-3.3289421e+01 *mmTom} "/> 
+    <xacro:property name="Elbow_z" value=" ${-2.3682302e+01 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Elbow_xx" value=" ${1.6198328e+03 *mm2Tom2} "/>
+    <xacro:property name="Elbow_yy" value=" ${1.2266731e+03 *mm2Tom2} "/>
+    <xacro:property name="Elbow_zz" value=" ${1.6081346e+03 *mm2Tom2} "/>
+    <xacro:property name="Elbow_xy" value=" ${-1.2642724e+00 *mm2Tom2} "/> 
+    <xacro:property name="Elbow_xz" value=" ${-1.1734799e+00 *mm2Tom2} "/>
+    <xacro:property name="Elbow_yz" value=" ${-3.9531701e+02 *mm2Tom2} "/> 
+    <!-- Mass -->
+    <xacro:property name="Elbow_mass" value="0.55"/> <!-- 6.0145584e-01 -->
+    
+    <!-- FOREARM -->
+    <!-- Center of Mass -->
+    <xacro:property name="Forearm_x" value=" ${9.4711044e-01 *mmTom} "/>
+    <xacro:property name="Forearm_y" value=" ${-4.8009667e+01 *mmTom} "/> 
+    <xacro:property name="Forearm_z" value=" ${-1.4331833e+02 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Forearm_xx" value=" ${3.0333275e+04 *mm2Tom2}"/>
+    <xacro:property name="Forearm_yy" value=" ${2.5195445e+04 *mm2Tom2}"/>
+    <xacro:property name="Forearm_zz" value=" ${6.9975104e+03 *mm2Tom2}"/>
+    <xacro:property name="Forearm_xy" value=" ${7.3729709e+01 *mm2Tom2} "/> 
+    <xacro:property name="Forearm_xz" value=" ${3.2427371e+01 *mm2Tom2} "/>
+    <xacro:property name="Forearm_yz" value=" ${-9.5263763e+03 *mm2Tom2}"/> 
+    <!-- Mass -->
+    <xacro:property name="Forearm_mass" value="2.825"/> <!-- 2.7650803e+00 -->
+
+    <!-- WRITST PITCH -->    
+    <!-- Center of Mass -->
+    <xacro:property name="Wrist_1_x" value=" ${6.8559302e-01 *mmTom} "/>
+    <xacro:property name="Wrist_1_y" value=" ${-5.0299682e+00 *mmTom} "/> 
+    <xacro:property name="Wrist_1_z" value=" ${4.6682846e+01 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Wrist_1_xx" value=" ${4.2406037e+03 *mm2Tom2} "/>
+    <xacro:property name="Wrist_1_yy" value=" ${2.9010806e+03 *mm2Tom2} "/>
+    <xacro:property name="Wrist_1_zz" value=" ${4.4989008e+03 *mm2Tom2} "/>
+    <xacro:property name="Wrist_1_xy" value=" ${-5.5692732e+01 *mm2Tom2} "/> 
+    <xacro:property name="Wrist_1_xz" value=" ${-9.0851982e+01 *mm2Tom2} "/>
+    <xacro:property name="Wrist_1_yz" value=" ${-1.8560541e+02 *mm2Tom2} "/> 
+    <!-- Mass -->
+    <xacro:property name="Wrist_1_mass" value="1.861"/> <!-- 1.8854765e+00 -->
+
+    <!-- WRITST ROLL -->    
+    <!-- Center of Mass -->
+    <xacro:property name="Wrist_2_x" value=" ${0.0000000e+00 *mmTom} "/>
+    <xacro:property name="Wrist_2_y" value=" ${-1.0491951e+00 *mmTom} "/> 
+    <xacro:property name="Wrist_2_z" value=" ${-1.0307299e+01 *mmTom} "/>
+    <!-- Inertia -->
+    <xacro:property name="Wrist_2_xx" value=" ${6.1479333e+01 *mm2Tom2} "/>
+    <xacro:property name="Wrist_2_yy" value=" ${6.4247521e+01 *mm2Tom2} "/>
+    <xacro:property name="Wrist_2_zz" value=" ${1.1879744e+02 *mm2Tom2} "/>
+    <xacro:property name="Wrist_2_xy" value=" ${-7.4023399e-05 *mm2Tom2} "/> 
+    <xacro:property name="Wrist_2_xz" value=" ${0.0000000e+00 *mm2Tom2} "/>
+    <xacro:property name="Wrist_2_yz" value=" ${4.7786448e-01 *mm2Tom2} "/>
+    <!-- Mass -->
+    <xacro:property name="Wrist_2_mass" value="1.4163970e-01"/> <!-- 2.4405495 -->
+    
+    
+    </robot>
+    

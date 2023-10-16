@@ -1,0 +1,5 @@
+xbotcore_devices:
+
+    joint_dummy:
+        names: [__joint_srdf__]
+        thread: rt_main

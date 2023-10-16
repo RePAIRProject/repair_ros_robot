@@ -1,0 +1,156 @@
+zmq_setup:
+    timeout: 1000
+
+j_arm_1_1:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_1_2:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_1_3:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_1_4:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_1_5:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_1_6:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_1_7:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_1:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_2:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_3:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_4:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_5:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_6:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8
+
+j_arm_2_7:
+    control_mode: D4_impedance_ctrl
+    motor_has_brake: false
+    pid:
+        impedance:
+            - 1000.0
+            - 60.0
+            - 1.0
+            - 0.007
+            - 0.8

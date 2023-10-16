@@ -1,5 +1,5 @@
 XBotInterface:
-  urdf_path: $(rospack find repair_urdf)/urdf/repair_full_xbot.urdf
+  urdf_path: $(rospack find repair_urdf)/urdf/repair_full.urdf
   srdf_path: $(rospack find repair_srdf)/srdf/repair_full.srdf
 
 ModelInterface:
@@ -32,7 +32,7 @@ xbotcore_plugins:
 xbotcore_param:
     /jm/tx_filter_autostart: {value: true, type: bool}
     /jm/tx_filter_cutoff: {value: 2.0, type: double}
-    /jm/enable_safety: {value: true, type: bool}  # safety checks (can be disabled in running a simulation. DO NOT DO THIS ON A REAL PROTOTYPE)
+    /jm/enable_safety: {value: false, type: bool}  # safety checks (can be disabled in running a simulation. DO NOT DO THIS ON A REAL PROTOTYPE)
 
 
 

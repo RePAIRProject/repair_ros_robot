@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- macro for generating the urdf associated with a single arm of the RePair platform -->
+<!-- id: specifies the id of the arm (e.g. 0 for left arm and 1 for right) -->
+<!-- base_link: name of base link a the single arm -->
+<!-- is_sliding_wrist: whether to add a sliding joint along the wrist second d.o.f.
+    (true -> yes), everything else -> no. This is used to generate the URDF for the optimization.  -->
+<!-- gen_coll: whether to add the approximate collision  model of the platform -->
+<!-- use_updated_wrist: visual parameter. if true, we load the latest meshes (which are adapted to the
+results of the optimization), otherwise we go with the old ones (generated for a spherical wrist) -->
+
+    <xacro:macro name="repair_arm" params="id rot parent *origin">
+
+        <xacro:property name="limit_index" value="0" />
+        
+        <xacro:if value="${rot == -1}">
+            <xacro:property name="limit_index" value="1" />
+        </xacro:if>
+
+        <link name="arm_${id}_1"> 
+            <inertial>
+                <origin xyz="${Shoulder_1_x} ${rot*Shoulder_1_y} ${Shoulder_1_z}" />
+                <mass value="${Shoulder_1_mass}" />
+                <inertia ixx="${Shoulder_1_xx}" ixy="${rot*Shoulder_1_xy}" ixz="${Shoulder_1_xz}"
+                    iyy="${Shoulder_1_yy}" iyz="${rot*Shoulder_1_yz}" izz="${Shoulder_1_zz}" />
+                </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_sh-pitch.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_2"> 
+            <inertial>
+                <origin xyz="${Shoulder_2_x} ${rot*Shoulder_2_y} ${Shoulder_2_z}" />
+                <mass value="${Shoulder_2_mass}" />
+                <inertia ixx="${Shoulder_2_xx}" ixy="${rot*Shoulder_2_xy}" ixz="${Shoulder_2_xz}"
+                    iyy="${Shoulder_2_yy}" iyz="${rot*Shoulder_2_yz}" izz="${Shoulder_2_zz}" />
+                </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_sh-roll.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_3">
+            <inertial>
+                <origin xyz="${Shoulder_3_x} ${rot*Shoulder_3_y} ${Shoulder_3_z}" />
+                <mass value="${Shoulder_3_mass}" />
+                <inertia ixx="${Shoulder_3_xx}" ixy="${rot*Shoulder_3_xy}" ixz="${Shoulder_3_xz}"
+                    iyy="${Shoulder_3_yy}" iyz="${rot*Shoulder_3_yz}" izz="${Shoulder_3_zz}" />
+                </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_sh-yaw.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_4"> 
+            <inertial>
+                <origin xyz="${Elbow_x} ${rot*Elbow_y} ${Elbow_z}" />
+                <mass value="${Elbow_mass}" />
+                <inertia ixx="${Elbow_xx}" ixy="${rot*Elbow_xy}" ixz="${Elbow_xz}"
+                    iyy="${Elbow_yy}" iyz="${rot*Elbow_yz}" izz="${Elbow_zz}" />
+                </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_elbow.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_5"> 
+            <inertial>
+                <origin xyz="${Forearm_x} ${rot*Forearm_y} ${Forearm_z}" />
+                <mass value="${Forearm_mass}" />
+                <inertia ixx="${Forearm_xx}" ixy="${rot*Forearm_xy}" ixz="${Forearm_xz}"
+                    iyy="${Forearm_yy}" iyz="${rot*Forearm_yz}" izz="${Forearm_zz}" />
+                </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_forearm-yaw.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_6"> 
+            <inertial>
+                <origin xyz="${Wrist_1_x} ${rot*Wrist_1_y} ${Wrist_1_z}" />
+                <mass value="${Wrist_1_mass}" />
+                <inertia ixx="${Wrist_1_xx}" ixy="${rot*Wrist_1_xy}" ixz="${Wrist_1_xz}"
+                    iyy="${Wrist_1_yy}" iyz="${rot*Wrist_1_yz}" izz="${Wrist_1_zz}" />
+                </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_wrist-pitch.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_7"> 
+            <inertial>
+                <origin xyz="${Wrist_2_x} ${rot*Wrist_2_y} ${Wrist_2_z}" />
+                <mass value="${Wrist_2_mass}" />
+                <inertia ixx="${Wrist_2_xx}" ixy="${rot*Wrist_2_xy}" ixz="${Wrist_2_xz}"
+                    iyy="${Wrist_2_yy}" iyz="${rot*Wrist_2_yz}" izz="${Wrist_2_zz}" />
+            </inertial>
+
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_wrist-roll.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 ${rot*0.001} 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <link name="arm_${id}_tcp">
+            <inertial>
+                <origin xyz="0.0 0.05 0.1" />
+                <mass value="0.5" />
+                <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+            </inertial>
+        </link>
+        <!-- JOINTS -->
+
+        <!-- shoulder pitch -->
+        <joint name="j_arm_${id}_1" type="revolute">
+            <parent link="${parent}" />
+            <child link="arm_${id}_1" />
+            <axis xyz="0 0 1" />
+            <xacro:insert_block name="origin" />
+            <limit lower="${j_arm_1_lower[limit_index]}" upper="${j_arm_1_upper[limit_index]}"
+            effort="${j_arm_1_torque[0]}" velocity="${j_arm_1_velocity[0]}" />
+        </joint>
+        <!-- shoulder pitch -->
+
+        <!-- shoulder yaw -->
+        <joint name="j_arm_${id}_2" type="revolute">
+            <parent link="arm_${id}_1" />
+            <child link="arm_${id}_2" />
+            <origin xyz="${Shoulder_2_Ox} ${rot*Shoulder_2_Oy} ${Shoulder_2_Oz}"
+            rpy="${rot*Shoulder_2_roll} ${Shoulder_2_pitch} ${Shoulder_2_yaw}" />
+            <axis xyz="0 0 1" /> <!-- -1 -->
+            <limit lower="${j_arm_2_lower[limit_index]}" upper="${j_arm_2_upper[limit_index]}"
+            effort="${j_arm_2_torque[0]}" velocity="${j_arm_2_velocity[0]}" />
+        </joint>
+        <!-- shoulder yaw -->
+
+        <!-- shoulder yaw -->
+        <joint name="j_arm_${id}_3" type="revolute">
+            <parent link="arm_${id}_2" />
+            <child link="arm_${id}_3" />
+            <origin xyz="${Shoulder_3_Ox} ${rot*Shoulder_3_Oy} ${Shoulder_3_Oz}"
+            rpy="${rot*Shoulder_3_roll} ${Shoulder_3_pitch} ${Shoulder_3_yaw}" />
+            <axis xyz="0 0 -1" /> <!-- -1 -->
+            <limit lower="${j_arm_3_lower[limit_index]}" upper="${j_arm_3_upper[limit_index]}"
+            effort="${j_arm_3_torque[0]}" velocity="${j_arm_3_velocity[0]}" />
+        </joint>
+        <!-- shoulder yaw -->
+
+        <!-- elbow -->
+        <joint name="j_arm_${id}_4" type="revolute">
+            <parent link="arm_${id}_3" />
+            <child link="arm_${id}_4" />
+            <origin xyz="${Elbow_1_Ox} ${rot*Elbow_1_Oy} ${Elbow_1_Oz}"
+            rpy="${rot*Elbow_1_roll} ${Elbow_1_pitch} ${Elbow_1_yaw}" />
+            <axis xyz="0 0 1" /> <!-- -1 -->
+            <limit lower="${j_arm_4_lower[limit_index]}" upper="${j_arm_4_upper[limit_index]}"
+            effort="${j_arm_4_torque[0]}" velocity="${j_arm_4_velocity[0]}" />
+        </joint>
+        <!-- elbow -->
+
+        <!-- forearm yaw -->
+        <joint name="j_arm_${id}_5" type="revolute">
+            <parent link="arm_${id}_4" />
+            <child link="arm_${id}_5" />
+            <origin xyz="${Forearm_1_Ox} ${rot*Forearm_1_Oy} ${Forearm_1_Oz}"
+            rpy="${rot*Forearm_1_roll} ${Forearm_1_pitch} ${Forearm_1_yaw}" />
+            <axis xyz="0 0 -1" /> <!-- -1 -->
+            <limit lower="${j_arm_5_lower[limit_index]}" upper="${j_arm_5_upper[limit_index]}"
+            effort="${j_arm_5_torque[0]}" velocity="${j_arm_5_velocity[0]}" />
+        </joint>
+        <!-- forearm yaw -->
+
+        <!-- wrist pitch-->
+        <joint name="j_arm_${id}_6" type="revolute">
+            <parent link="arm_${id}_5" />
+            <child link="arm_${id}_6" />
+            <origin xyz="${Wrist_1_Ox} ${rot*Wrist_1_Oy} ${Wrist_1_Oz}"
+            rpy="${rot*Wrist_1_roll} ${Wrist_1_pitch} ${Wrist_1_yaw}" />
+            <axis xyz="0 0 1" />
+            <limit lower="${j_arm_6_lower[limit_index]}" upper="${j_arm_6_upper[limit_index]}"
+            effort="${j_arm_6_torque[0]}" velocity="${j_arm_6_velocity[0]}" />
+        </joint>
+        <!-- wrist pitch-->
+
+        <!-- wrist roll-->
+        <joint name="j_arm_${id}_7" type="revolute">
+            <parent link="arm_${id}_6" />
+            <child link="arm_${id}_7" />
+            <origin xyz="${Wrist_2_Ox} ${rot*Wrist_2_Oy} ${Wrist_2_Oz}"
+            rpy="${rot*Wrist_2_roll} ${Wrist_2_pitch} ${Wrist_2_yaw}" />
+            <axis xyz="0 0 1" />
+            <limit lower="${j_arm_7_lower[limit_index]}" upper="${j_arm_7_upper[limit_index]}"
+            effort="${j_arm_7_torque[0]}" velocity="${j_arm_7_velocity[0]}" />
+        </joint>
+        <!-- /wrist roll-->
+
+        <!-- virtual tip-->
+        <joint name="j_tcp_${id}" type="fixed">
+            <parent link="arm_${id}_7" />
+            <child link="arm_${id}_tcp" />
+            <origin xyz="${No_end_ft_Ox} ${rot*No_end_ft_Oy} ${No_end_ft_Oz}"
+            rpy="${rot*No_end_ft_roll} ${No_end_ft_pitch} ${No_end_ft_yaw}" />
+        </joint>
+        <!-- virtual tip-->
+
+    </xacro:macro>
+
+</robot>

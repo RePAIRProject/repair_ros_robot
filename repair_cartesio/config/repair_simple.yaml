@@ -1,0 +1,40 @@
+solver_options:
+    regularization: 1e-2
+    back_end: qpoases
+
+stack:
+  - [tcp]
+  - [postural]
+
+constraints:
+  - jlim
+  - vlim
+
+jlim:
+  type: JointLimits
+  limits:
+    # arm_joint_3: [0, 0]
+
+vlim:
+  type: VelocityLimits
+  limits: 3.0
+
+tcp:
+  type: Cartesian
+  lambda: 0.1
+  distal_link: arm_1_tcp
+  use_local_subtasks: true
+
+tcp_pos:
+  type: Subtask
+  task: tcp
+  indices: [0, 1, 2]
+
+tcp_rot:
+  type: Subtask
+  task: tcp
+  indices: [4, 5]
+
+postural:
+  type: Postural
+  lambda: 0.1

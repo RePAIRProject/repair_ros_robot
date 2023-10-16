@@ -2,56 +2,44 @@ controller_list:
   - name: fake_arm_1_controller
     type: $(arg fake_execution_type)
     joints:
-      - arm_1_joint_1
-      - arm_1_joint_2
-      - arm_1_joint_3
-      - arm_1_joint_4
-      - arm_1_joint_5
-      - arm_1_joint_6
-      - arm_1_joint_7
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
   - name: fake_arm_2_controller
     type: $(arg fake_execution_type)
     joints:
-      - arm_2_joint_1
-      - arm_2_joint_2
-      - arm_2_joint_3
-      - arm_2_joint_4
-      - arm_2_joint_5
-      - arm_2_joint_6
-      - arm_2_joint_7
-  - name: fake_hand_1_controller
-    type: $(arg fake_execution_type)
-    joints:
-      - right_hand_v1s_synergy_joint
-  - name: fake_hand_2_controller
-    type: $(arg fake_execution_type)
-    joints:
-      - left_hand_v1s_synergy_joint
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
   - name: fake_both_arms_controller
     type: $(arg fake_execution_type)
     joints:
-      - arm_2_joint_1
-      - arm_2_joint_2
-      - arm_2_joint_3
-      - arm_2_joint_4
-      - arm_2_joint_5
-      - arm_2_joint_6
-      - arm_2_joint_7
-      - arm_1_joint_1
-      - arm_1_joint_2
-      - arm_1_joint_3
-      - arm_1_joint_4
-      - arm_1_joint_5
-      - arm_1_joint_6
-      - arm_1_joint_7
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_2_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
+      - j_arm_1_1
 initial:  # Define initial robot poses per group
-  - group: arm_1
+  - group: arm_l
     pose: home
-  - group: arm_2
+  - group: arm_r
     pose: home
-  - group: hand_1
-    pose: open
-  - group: hand_2
-    pose: open
   - group: both_arms
     pose: home

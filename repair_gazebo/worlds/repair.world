@@ -3,46 +3,27 @@
   <!-- We use a custom world for the rrbot so that the camera angle is launched correctly -->
 
   <world name="default">
-
+  
     <plugin name="xbot2_clock" filename="libxbot2_gz_clock.so"/>
-    
+
     <gravity>0 0 -9.81</gravity>
 
-    <!-- A custom ground plane -->
-    <model name="repair_ground_plane">
+    <model name="ground_plane">
       <static>true</static>
-      <link name="ground_link">
+      <link name="link">
         <collision name="collision">
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>10 10</size>
+              <size>100 100</size>
             </plane>
           </geometry>
           <surface>
-            <contact>
-              <!--<collide_bitmask>0xffff</collide_bitmask>-->
-              <ode>
-                  <kp>1000000000000000</kp> <!-- default 1000000000000 -->
-                  <kd>1</kd>
-                  <!--<min_depth> </min_depth>-->
-                  <!--<max_vel>0.01</max_vel>-->
-              </ode>
-              <bullet>
-                  <kp>1000000000000000</kp>
-                  <kd>1</kd>
-                  <!--<split_impulse_penetration_threshold>  </split_impulse_penetration_threshold>--> <!-- default -0.01 -->
-              </bullet>
-            </contact>
             <friction>
               <ode>
                 <mu>1</mu>
                 <mu2>1</mu2>
               </ode>
-              <bullet>
-                <friction>1</friction>
-                <friction2>1</friction2>
-              </bullet>
             </friction>
           </surface>
         </collision>
@@ -51,45 +32,33 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>10 10</size>
+              <size>100 100</size>
             </plane>
           </geometry>
           <material>
             <script>
-              <uri> materials/scripts/textures.material</uri>
-              <name>old_floor_grass</name>-->
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
             </script>
           </material>
         </visual>
       </link>
     </model>
 
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>4.927360 -4.376610 3.740080 0.000000 0.275643 2.356190</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
+
     <!-- Global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
 
-    <scene>
-        <sky>
-          <clouds>
-              <speed>10</speed>
-          </clouds>
-        </sky>
-        <shadows>1</shadows> <!-- necessary, otherwise the models appear dark-->
-        <grid>0</grid>
-        <origin_visual>0</origin_visual>
-    </scene>
-
-    <!-- Focus camera on tall pendulum -->
-    <gui fullscreen='0'>
-      <camera name='user_camera'>
-        <pose>0.964869 2.40035 0.953173 0 0.164 -1.56399</pose>
-        <view_controller>orbit</view_controller>
-      </camera>
-    </gui>
-
     <physics name="update_rate" type="ode">
-      <real_time_update_rate>0</real_time_update_rate>
+      <real_time_update_rate>4000</real_time_update_rate>
       <max_step_size>0.00025</max_step_size>
       <max_contacts>5</max_contacts>
       <bullet>

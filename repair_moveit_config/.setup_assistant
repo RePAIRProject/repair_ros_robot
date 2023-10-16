@@ -8,4 +8,4 @@ moveit_setup_assistant_config:
   CONFIG:
     author_name: Patrick Reitz
     author_email: s6pareit@uni-bonn.de
-    generated_timestamp: 1682269016
+    generated_timestamp: 1685539845

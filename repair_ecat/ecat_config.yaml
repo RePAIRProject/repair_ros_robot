@@ -1,0 +1,154 @@
+#
+ec_board_ctrl :
+  eth_iface: rteth0
+  sync_cycle_time_ns: 1000000
+  #sync_cycle_time_ns: 0
+  sync_cycle_offset_ns: 300000000
+  sync_point_ns : 650000
+  power_off_boards: false
+  reset_micro : true
+  
+ec_boards_base :
+  app_mode : run_mode
+  #app_mode : config_mode
+  robot_name : NoNe
+  read_SDOs : false
+  use_pipes : true
+  log_level : 1
+  #fault_power_off : true
+  use_ecat_pos_as_id : false
+  pb_utils_verbose : false
+
+repl :
+  enable_ft_ati : false
+  enable_udp_srv : false
+  
+zmq_pub :
+  base_port : 9000
+  uri : "tcp://*:"
+  #uri: "ipc:///tmp/ecat_master:"
+  fd_timeout_us : 100000
+
+zmq_rep :
+  uri: "tcp://*:5555"
+  #uri: "ipc:///tmp/ecat_master:5555"
+  zmq_rcvtimeo_ms : 500
+  pipe_prefix : "/proc/xenomai/registry/rtipc/xddp/"
+  pb_utils_verbose : false
+
+
+ati_config :
+  ati_ip_addr : 192.168.1.1
+  ft_ecat_pos : 1
+  # SMALL = 0 BIG = 1 COGIMON = 2
+  sensor_type : 0
+  # SMALL
+  signs : [1,1,1,1,1,1]
+  idx_map : [0,1,2,3,4,5]
+  # BIG
+  #signs : [-1,1,1,-1,1,1]
+  #idx_map : [0,1,2,3,4,5]
+  # COGIMON
+  #signs : [-1,1,1,-1,1,1]
+  #idx_map : [1,0,2,4,3,5]
+  # TEST
+  #signs : [1,1,1,-1,-1,-1]
+  #idx_map : [0,1,2,3,4,5]
+  save_calib_matrix : false
+  #calib_mat_file : ../examples/ati_ft6_calib/data/ones.txt
+  #calib_mat_file : ../examples/ati_ft6_calib/data/Calib_matrix_Cogimon_right_Foot_ft_147_sens8.txt
+  # ft6_msp432 use FOE to send bin files as calib matrix
+  calib_mat_file : /home/embedded/nfs/python/pandas-snip/ones.bin
+  #calib_mat_file : /home/embedded/nfs/python/pandas-snip/cal_mat.bin
+  dump_log : true
+
+
+#############################
+## GENERIC config
+#############################
+
+LpESC_X:
+  sign: 1
+  pos_offset: 0
+  control_mode : 3B_motor_pos_ctrl
+  pid :
+    position: [100000.0 , 0.0 , 1.0]
+
+LpHandESC_X:
+  sign: 1
+  pos_offset: 0
+  control_mode : 3B_motor_pos_ctrl
+  pid :
+    position: [100000.0 , 0.0 , 1.0]
+
+HeriHandESC_X:
+  sign: 1
+  pos_offset: 0
+  control_mode : 3B_motor_pos_ctrl
+  pid :
+    position: [100000.0 , 0.0 , 1.0]
+    
+CentAcESC_X: &CentAcESC_X
+  sign: 1
+  pos_offset: 0
+  enable_sandbox: false
+  enable_pos_filter: false  
+  #control_mode : 00_idle_ctrl
+  control_mode : 3B_motor_pos_ctrl
+  #control_mode : D4_impedance_ctrl
+  pid :
+    position: [220.0 , 0.0 , 5.0]
+    #  .... tor_K divided by 10000 to respect the int range [0..65536]
+    #impedance:  [0.0, 0.0, 5.0, 0.001, 0.08]
+    impedance:   [250.0, 5.0, 2.0, 0.001, 0.08]
+  aux_pdo : # names defined in SDO index 0x8002 
+    _rd :  [ pos_ref_fb ]
+    _rd :  [ pos_ref_fb, motor_enc_warn, motor_enc_err, link_enc_warn, link_enc_err ]
+    rd :  [ iq_ref_fb, iq_out_fb ]
+    _wr :  [ iq_ref ]
+    _wrd : [ "iq_offset&&iq_out_fb" ]
+    _wrd : [ "ts&&rtt" ]
+  NO_upd_params :
+    #BackEmfCompensationGain: 0.5
+    #DirectTorqueFeedbackGain: 0.5
+    module_params: 0
+
+CentAcEsc_301:
+  sign: -1
+  pos_offset: 0
+  max_current_A: 7
+  ram_cmd: [38]
+    
+Ft6Msp432ESC_X:
+  analog_sample_freq_HZ: 20000
+  smpl_num_pow2: 8
+  aux_pdo : # names defined in SDO index 0x8002 
+     wrd : [ "ts&&rtt" ]
+
+AinMsp432ESC_X:
+  analog_sample_freq_HZ: 1000
+
+TJuntionESC_X:
+  aux_pdo :
+    rd : []
+
+PowF28M36ESCESC_X:
+  aux_pdo :
+    rd : [ FSM ]
+
+TestESC_X:
+  aux_pdo : # names defined in SDO index 0x8002 
+    rd :  [ pos_ref_fb ]
+    _rd :  [ pos_ref_fb, motor_enc_warn, motor_enc_err, link_enc_warn, link_enc_err ]
+    _rd :  [ iq_ref_fb, id_ref_fb ]
+    _wr :  [ iq_ref ]
+    _wrd : [ "iq_offset&&iq_out_fb" ]
+    wrd : [ "ts&&rtt" ]
+
+
+CentAcESC_301:
+  sign: 1
+  pos_offset: 0
+  max_current_A: 7
+  ram_cmd: [38]
+

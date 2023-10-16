@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:macro name="repair_torso" params="parent *origin">
+
+        <!-- <link name="dummy_prismatic_link"/> -->
+
+        <link name="torso_1"> 
+            <inertial>
+                <origin xyz="${Torso_x} ${Torso_y} ${Torso_z}" />
+                <mass value="${Torso_mass}" />
+                <inertia ixx="${Torso_xx}" ixy="${Torso_xy}" ixz="${Torso_xz}"
+                    iyy="${Torso_yy}" iyz="${Torso_yz}" izz="${Torso_zz}" />
+            </inertial>
+            <visual>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/mesh_torso-yaw.stl" scale="0.001 0.001 0.001"/>
+                </geometry>
+                <material name="dark"/>
+            </visual>
+
+            <collision>
+                <geometry>
+                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_torso-yaw.stl" scale="0.001 0.001 0.001"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <!-- <joint name="j_torso_base" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}" />
+            <child link="dummy_prismatic_link"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="${j_prismatic_lower[0]/2}" upper= "${j_prismatic_upper[0]/2}" effort="${j_prismatic_torque[0]}" velocity="${j_prismatic_velocity[0]}"/>
+        </joint> -->
+
+        <!-- torso -->
+        <joint name="j_torso_1" type="revolute">
+            <parent link="${parent}" />
+            <child link="torso_1" />
+            <axis xyz="0 0 1" />
+            <xacro:insert_block name="origin" />
+            <limit lower="${j_torso_lower[0]}" upper="${j_torso_upper[0]}"
+            effort="${j_torso_torque[0]}" velocity="${j_torso_velocity[0]}" />
+        </joint>
+        <!-- torso  -->
+
+    </xacro:macro>
+
+</robot>

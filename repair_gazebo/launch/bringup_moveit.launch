@@ -11,15 +11,15 @@
         <arg name="load_robot_description" value="true" />
     </include>
 
-    <!-- Start the simulated robot in an empty Gazebo world -->
-    <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
-
     <!-- Start the controllers and robot state publisher-->
     <include file="$(find repair_gazebo)/launch/control_utils.launch"/>
+
+    <!-- Start the simulated robot in an empty Gazebo world -->
+    <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
 
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config)/launch/moveit.rviz" />
     </include>
-    <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
+    <!--<include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>-->
 </launch>
