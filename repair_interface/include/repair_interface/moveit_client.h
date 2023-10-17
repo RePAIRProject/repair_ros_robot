@@ -47,24 +47,24 @@ class MoveitClient
         std::string PLANNING_GROUP_ARM_1 = "arm_1";
         std::string PLANNING_GROUP_ARM_2 = "arm_2";
 
-        std::string PLANNING_GROUP_HAND_1 = "hand_1";
-        std::string PLANNING_GROUP_HAND_2 = "hand_2";
+        /* std::string PLANNING_GROUP_HAND_1 = "hand_1"; */
+        /* std::string PLANNING_GROUP_HAND_2 = "hand_2"; */
 
         std::string PLANNING_GROUP_BOTH_ARMS = "both_arms";
 
         std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_arm_1;
         std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_arm_2;
 
-        std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand_1;
-        std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand_2;
+        /* std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand_1; */
+        /* std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand_2; */
 
         std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_both_arms;
 
         moveit::planning_interface::MoveGroupInterface::Plan arm_1_plan;
         moveit::planning_interface::MoveGroupInterface::Plan arm_2_plan;
 
-        moveit::planning_interface::MoveGroupInterface::Plan hand_1_plan;
-        moveit::planning_interface::MoveGroupInterface::Plan hand_2_plan;
+        /* moveit::planning_interface::MoveGroupInterface::Plan hand_1_plan; */
+        /* moveit::planning_interface::MoveGroupInterface::Plan hand_2_plan; */
 
         moveit::planning_interface::MoveGroupInterface::Plan both_arms_plan;
 
@@ -76,7 +76,7 @@ class MoveitClient
 
         // enums for arm and hand
         enum class ARM {ARM_1, ARM_2};
-        enum HAND {HAND_1, HAND_2};
+        /* enum HAND {HAND_1, HAND_2}; */
 
         enum HAND_STATE {OPEN, CLOSE, VALUE};
         
@@ -84,7 +84,7 @@ class MoveitClient
 
         bool moveToHome(enum ARM arm);
 
-        bool controlHand(enum HAND hand, enum HAND_STATE state, double value=0.0);
+        /* bool controlHand(enum HAND hand, enum HAND_STATE state, double value=0.0); */
 
         void visualizePoseCB(const geometry_msgs::PoseStamped::ConstPtr& msg);
 

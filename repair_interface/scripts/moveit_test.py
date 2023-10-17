@@ -43,10 +43,10 @@ class MoveItTest:
         gripper_command_srv = rospy.ServiceProxy('/gripper_command_srv', GripperCommand)
 
         # create request
-        gripper_command_req = GripperCommandRequest()
-        gripper_command_req.hand = hand.value
-        gripper_command_req.command = hand_state.value
-        gripper_command_req.value = value
+        # gripper_command_req = GripperCommandRequest()
+        # gripper_command_req.hand = hand.value
+        # gripper_command_req.command = hand_state.value
+        # gripper_command_req.value = value
 
         # call service
         gripper_command_resp = gripper_command_srv(gripper_command_req)
@@ -56,7 +56,6 @@ class MoveItTest:
             rospy.loginfo("Successfully sent gripper command")
         else:
             rospy.logwarn("Could not send gripper command")
-
 
     def test_srv(self):
         # get current pose

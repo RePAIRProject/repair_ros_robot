@@ -15,8 +15,8 @@ void MoveitClient::initMoveitClient()
     move_group_arm_1 = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_ARM_1);
     move_group_arm_2 = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_ARM_2);
 
-    move_group_hand_1 = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_HAND_1);
-    move_group_hand_2 = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_HAND_2);
+    /* move_group_hand_1 = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_HAND_1); */
+    /* move_group_hand_2 = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_HAND_2); */
 
     move_group_both_arms = std::make_shared<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_BOTH_ARMS);
 
@@ -107,74 +107,74 @@ bool MoveitClient::moveToHome(enum ARM arm)
     return success;
 }
 
-bool MoveitClient::controlHand(enum HAND hand, enum HAND_STATE state, double value)
-{
-    bool success = false;
-    std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand;
-    moveit::planning_interface::MoveGroupInterface::Plan hand_plan;
-    switch (hand)
-    {
-        case HAND_1:
-            move_group_hand = move_group_hand_1;
-            hand_plan = hand_1_plan;
-            break;
-        case HAND_2:
-            move_group_hand = move_group_hand_2;
-            hand_plan = hand_2_plan;
-            break;
-        default:
-            ROS_ERROR("Invalid hand selection");
-            break;
-    }
+/* bool MoveitClient::controlHand(enum HAND hand, enum HAND_STATE state, double value) */
+/* { */
+/*     bool success = false; */
+/*     std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_hand; */
+/*     moveit::planning_interface::MoveGroupInterface::Plan hand_plan; */
+/*     switch (hand) */
+/*     { */
+/*         case HAND_1: */
+/*             move_group_hand = move_group_hand_1; */
+/*             hand_plan = hand_1_plan; */
+/*             break; */
+/*         case HAND_2: */
+/*             move_group_hand = move_group_hand_2; */
+/*             hand_plan = hand_2_plan; */
+/*             break; */
+/*         default: */
+/*             ROS_ERROR("Invalid hand selection"); */
+/*             break; */
+/*     } */
 
-    // get the hand joint name
-    auto n = move_group_hand->getJointNames();
+/*     // get the hand joint name */
+/*     auto n = move_group_hand->getJointNames(); */
 
-    // print out the joint names
-    for (auto i = 0; i < n.size(); i++)
-    {
-        ROS_INFO("Joint %d: %s", i, n[i].c_str());
-    }
+/*     // print out the joint names */
+/*     for (auto i = 0; i < n.size(); i++) */
+/*     { */
+/*         ROS_INFO("Joint %d: %s", i, n[i].c_str()); */
+/*     } */
 
-    // get the first joint name
-    auto joint_name = n[0];
+/*     // get the first joint name */
+/*     auto joint_name = n[0]; */
 
-    std::string hand_state;
-    switch (state)
-    {
-        case HAND_STATE::OPEN:
-            move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues("open"));
-            break;
-        case HAND_STATE::CLOSE:
-            move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues("close"));
-            break;
-        case HAND_STATE::VALUE:
-            // set the joint value target to the value passed in
-            move_group_hand->setJointValueTarget(std::map<std::string, double>{{joint_name, value}});
-            break;
-        default:
-            ROS_ERROR("Invalid hand state selection");
-            break;
-    }
+/*     std::string hand_state; */
+/*     switch (state) */
+/*     { */
+/*         case HAND_STATE::OPEN: */
+/*             move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues("open")); */
+/*             break; */
+/*         case HAND_STATE::CLOSE: */
+/*             move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues("close")); */
+/*             break; */
+/*         case HAND_STATE::VALUE: */
+/*             // set the joint value target to the value passed in */
+/*             move_group_hand->setJointValueTarget(std::map<std::string, double>{{joint_name, value}}); */
+/*             break; */
+/*         default: */
+/*             ROS_ERROR("Invalid hand state selection"); */
+/*             break; */
+/*     } */
 
-    move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues(hand_state));
-    ROS_INFO("Planning to move hand to %s position", hand_state.c_str());
+/*     move_group_hand->setJointValueTarget(move_group_hand->getNamedTargetValues(hand_state)); */
+/*     ROS_INFO("Planning to move hand to %s position", hand_state.c_str()); */
 
-    success = (move_group_hand->plan(hand_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+/*     success = (move_group_hand->plan(hand_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS); */
 
-    if (success)
-    {
-        ROS_INFO("Moving hand to %s position", hand_state.c_str());
-        move_group_hand->execute(hand_plan);
-        // move_group_hand->move();
-    }
-    else
-    {
-        ROS_ERROR("Failed to move hand to %s position", hand_state.c_str());
-    }
+/*     if (success) */
+/*     { */
+/*         ROS_INFO("Moving hand to %s position", hand_state.c_str()); */
+/*         move_group_hand->execute(hand_plan); */
+/*         // move_group_hand->move(); */
+/*     } */
+/*     else */
+/*     { */
+/*         ROS_ERROR("Failed to move hand to %s position", hand_state.c_str()); */
+/*     } */
 
-    return success;
-}
+/*     return success; */
+/* } */
 
 std::vector<geometry_msgs::PoseStamped> MoveitClient::getCurrentPose()
 {
