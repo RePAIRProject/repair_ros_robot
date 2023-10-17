@@ -10,3 +10,6 @@
 [submodule "pysdf"]
 	path = pysdf
 	url = https://github.com/andreasBihlmaier/pysdf.git
+[submodule "xbot_msgs"]
+	path = xbot_msgs
+	url = https://github.com/ADVRHumanoids/xbot_msgs.git

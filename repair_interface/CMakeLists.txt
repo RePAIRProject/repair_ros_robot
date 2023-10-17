@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sensor_msgs
+  control_msgs
   std_msgs
   tf2_ros
   moveit_core
@@ -25,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_visual_tools
   interactive_markers
   message_generation
+  xbot_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -45,6 +47,9 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   geometry_msgs
+  sensor_msgs
+  control_msgs
+  xbot_msgs
 )
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
@@ -101,6 +106,19 @@ add_dependencies(${PROJECT_NAME}_node
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
+  ${catkin_LIBRARIES}
+  ${PROJECT_NAME}
+)
+
+add_executable(moveit_xbot_bridge_node
+  src/moveit_xbot_bridge.cpp
+)
+
+add_dependencies(moveit_xbot_bridge_node
+  ${catkin_EXPORTED_TARGETS}
+)
+
+target_link_libraries(moveit_xbot_bridge_node
   ${catkin_LIBRARIES}
   ${PROJECT_NAME}
 )
