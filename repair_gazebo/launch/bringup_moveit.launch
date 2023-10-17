@@ -18,8 +18,8 @@
     <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
 
     <!-- Start moveit_rviz with the motion planning plugin -->
-    <include file="$(find repair_moveit_config)/launch/moveit_rviz.launch">
-        <arg name="rviz_config" value="$(find repair_moveit_config)/launch/moveit.rviz" />
+    <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
+        <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
     </include>
     <!--<include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>-->
 </launch>

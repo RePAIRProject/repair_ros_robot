@@ -80,6 +80,17 @@
         </actuator>
     </transmission>
 
+    <transmission name="trans_j_torso_1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="j_torso_1">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="j_torso_1_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
   </xacro:macro>
 
 </robot>

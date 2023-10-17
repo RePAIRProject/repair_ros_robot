@@ -257,3 +257,34 @@ both_arms:
     - BITstar
   projection_evaluator: joints(j_arm_1_1,j_arm_1_2)
   longest_valid_segment_fraction: 0.005
+torso:
+  planner_configs:
+    - AnytimePathShortening
+    - SBL
+    - EST
+    - LBKPIECE
+    - BKPIECE
+    - KPIECE
+    - RRT
+    - RRTConnect
+    - RRTstar
+    - TRRT
+    - PRM
+    - PRMstar
+    - FMT
+    - BFMT
+    - PDST
+    - STRIDE
+    - BiTRRT
+    - LBTRRT
+    - BiEST
+    - ProjEST
+    - LazyPRM
+    - LazyPRMstar
+    - SPARS
+    - SPARStwo
+    - AITstar
+    - ABITstar
+    - BITstar
+  projection_evaluator: joints(j_torso_1)
+  longest_valid_segment_fraction: 0.005
