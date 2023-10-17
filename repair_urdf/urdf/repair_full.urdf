@@ -734,6 +734,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+  <transmission name="trans_j_torso_1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_torso_1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="j_torso_1_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
   <link name="arm_1_1">
     <inertial>
       <origin xyz="0.010200651000000002 0.021560998 0.09876702500000001"/>
@@ -1008,6 +1018,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="j_arm_1_7_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_j_torso_1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_torso_1">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="j_torso_1_motor">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
