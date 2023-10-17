@@ -14,7 +14,9 @@
     <xacro:include filename="$(find repair_urdf)/urdf/inertial_properties.urdf.xacro" />
     <xacro:include filename="$(find repair_urdf)/urdf/limits.urdf.xacro" />
     
-    <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" />
+    <!-- Only when working with Gazebo Xbot Control -->
+    <!-- DO NOT USE WITH ROS_CONTROL AND MOVEIT -->
+    <!-- <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" /> -->
 
     <xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />
     <xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
