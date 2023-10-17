@@ -4,17 +4,8 @@
     
     <arg name="gui" default="true" />
     <arg name="rate" default="250.0"/>
-    <arg name="is_sliding_wrist" default="true"/>
-    <arg name="gen_coll" default="true"/>
-    <arg name="load_sol" default="false"/>
-    <arg name="use_updated_wrist" default="false"/>
     
-    <param name="robot_description" command="xacro '$(find repair_urdf)/urdf/repair_full.urdf.xacro'
-        is_sliding_wrist:=$(arg is_sliding_wrist)
-        gen_coll:=$(arg gen_coll)
-        load_sol:=$(arg load_sol)
-        use_updated_wrist:=$(arg use_updated_wrist)"/>
-        
+    <param name="robot_description" command="xacro '$(find repair_urdf)/urdf/repair_full.urdf.xacro'"/>
     <param name="use_gui" value="$(arg gui)"/>
 
     <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
