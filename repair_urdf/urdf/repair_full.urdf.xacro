@@ -18,6 +18,8 @@
 
     <xacro:include filename="$(find repair_urdf)/urdf/repair.transmission.xacro" />
     <xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
+
+    <xacro:include filename="$(find repair_urdf)/urdf/repair_hand_transmission.xacro" />
     
     <link name="world"/>
 
@@ -63,5 +65,8 @@
         <selfCollide> 1 </selfCollide>
     </gazebo> -->
 
+    <xacro:repair_hand_transmission id="left" />
+
+    <xacro:repair_hand_transmission id="right" />
 
 </robot>
