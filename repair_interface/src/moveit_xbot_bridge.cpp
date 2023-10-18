@@ -1,6 +1,6 @@
 #include "repair_interface/moveit_xbot_birdge.h"
 
-JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string arm_controller_name, double goal_execution_timeout, double joint_angle_tolerance):
+JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string arm_controller_name, double goal_execution_timeout, double joint_angle_tolerance, std::shared_ptr<xbot_msgs::JointState> current_joint_state_ptr):
     nh_(nh),
     follow_joint_trajectory_as_(nh, arm_controller_name + "follow_joint_trajectory", boost::bind(&JointTrajectoryExecutor::executeCB, this, _1), false)
 {
@@ -11,13 +11,15 @@ JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string
     joint_angle_tolerance_ = joint_angle_tolerance;
 
     // subscribers
-    joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &JointTrajectoryExecutor::jointStateCB, this);
+    // joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &JointTrajectoryExecutor::jointStateCB, this);
 
     // publishers
     xbot_joint_command_pub_ = nh_.advertise<xbot_msgs::JointCommand>("/xbotcore/command", 1);
 
     // start action server
     follow_joint_trajectory_as_.start();
+
+    current_joint_state_ptr_ = current_joint_state_ptr;
 
     ROS_INFO("Joint trajectory executor for %s started!", arm_controller_name.c_str());
 }
@@ -45,7 +47,7 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
     ROS_INFO("Trajectory length: %d", (int)trajectory_points.size());
 
     // get current robot state
-    std::vector<float> current_joint_positions = current_joint_state_.link_position;
+    std::vector<float> current_joint_positions = current_joint_state_ptr_->link_position;
 
     ROS_INFO("Executing trajectory...");
 
@@ -66,6 +68,7 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
         auto start_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         while (!reached && (std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - start_time) < goal_execution_timeout_)
         {
+            current_joint_positions = current_joint_state_ptr_->link_position;
             // check if joint positions have been reached
             reached = true;
             for (int j = 0; j < joint_positions.size(); j++)
@@ -77,11 +80,8 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
                 }
             }
 
-            // get current robot state
-            current_joint_positions = current_joint_state_.link_position;
-
             // sleep
-            ros::Duration(0.01).sleep();
+            ros::Duration(0.001).sleep();
         }
 
     }
@@ -116,15 +116,18 @@ void JointTrajectoryExecutor::publishJointCommand(std::vector<std::string> joint
 MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
     nh_(nh)
 {
-    arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
-    arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
-    torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
-
     // subscribe to xbot joint states
     xbot_joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &MoveitXbotBridge::xbotJointStateCB, this);
 
     // pubsliher for ros joint states
     ros_joint_state_pub_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
+
+    // create the pointer to the current joint state
+    current_joint_state_ptr_ = std::make_shared<xbot_msgs::JointState>();
+
+    arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
+    arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
+    torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
 
     ROS_INFO("MoveIt! Xbot Bridge started!");
 }
@@ -137,6 +140,9 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
 {
     // create joint state message
     sensor_msgs::JointState joint_state;
+
+    // set the joint state pointer
+    current_joint_state_ptr_->link_position = msg->link_position;
 
     // set time stamp
     joint_state.header.stamp = ros::Time::now();
