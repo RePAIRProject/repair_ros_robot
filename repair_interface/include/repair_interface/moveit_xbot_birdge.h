@@ -69,7 +69,7 @@ class MoveitXbotBridge
 {
 public:
   double goal_execution_timeout_ = 5.0; // goal execution timeout in seconds
-  double joint_angle_tolerance_ = 0.01; // joint angle tolerance in radians
+  double joint_angle_tolerance_ = 0.02; // joint angle tolerance in radians
 
   MoveitXbotBridge(ros::NodeHandle nh);
 

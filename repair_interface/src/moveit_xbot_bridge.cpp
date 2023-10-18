@@ -44,35 +44,56 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
     std::vector<trajectory_msgs::JointTrajectoryPoint> trajectory_points = goal->trajectory.points;
 
     // length of trajectory
-    ROS_INFO("Trajectory length: %d", (int)trajectory_points.size());
+    int amount_of_trajectory_points = (int)trajectory_points.size();
+    ROS_INFO("Trajectory length: %d", amount_of_trajectory_points);
 
     // get current robot state
     std::vector<float> current_joint_positions = current_joint_state_ptr_->link_position;
 
     ROS_INFO("Executing trajectory...");
 
+    std::vector<double> joint_positions;
+
     // loop through trajectory points
     for (int i = 0; i < trajectory_points.size(); i++)
     {
         // get joint positions from trajectory point
-        std::vector<double> joint_positions = trajectory_points[i].positions;
+        joint_positions = trajectory_points[i].positions;
 
         // publish joint command
         publishJointCommand(joint_names, joint_positions);
 
-        // wait for joint positions to be reached
-        bool reached = false;
+        // sleep
+        ros::Duration(0.005).sleep();
 
         // TODO: check if this is the best way to do this to avoid infinite loop
         // get the current time
+        /*
         auto start_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        while (!reached && (std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - start_time) < goal_execution_timeout_)
+        while (!reached) //&& (std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - start_time) < goal_execution_timeout_)
         {
             current_joint_positions = current_joint_state_ptr_->link_position;
             // check if joint positions have been reached
             reached = true;
+
             for (int j = 0; j < joint_positions.size(); j++)
             {
+                ROS_INFO("joint_no/joint_amount = %d/%d", j, joint_positions.size()-1);
+                ROS_INFO("current_joint_positions[j] = %f", current_joint_positions[j]);
+                ROS_INFO("joint_positions[j] = %f", joint_positions[j]);
+                ROS_INFO("joint_angle_tolerance_ = %f", joint_angle_tolerance_);
+                double test = fabs(joint_positions[j] - current_joint_positions[j]);
+                ROS_INFO("calc = %f", test);
+            }
+
+            for (int j = 0; j < joint_positions.size(); j++)
+            {
+                // ROS_INFO("joint_no/joint_amount = %d/%d", j, joint_positions.size()-1);
+                // ROS_INFO("current_joint_positions[j] = %f", current_joint_positions[j]);
+                // ROS_INFO("joint_positions[j] = %f", joint_positions[j]);
+                // ROS_INFO("joint_angle_tolerance_ = %f", joint_angle_tolerance_);
+                // double test = fabs(joint_positions[j] - current_joint_positions[j]);
+                // ROS_INFO("calc = %f", test);
                 if (fabs(joint_positions[j] - current_joint_positions[j]) > joint_angle_tolerance_)
                 {
                     reached = false;
@@ -81,11 +102,34 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
             }
 
             // sleep
-            ros::Duration(0.001).sleep();
+            // ros::Duration(0.001).sleep();
         }
+        */
 
     }
+/*
+    // Check if final joint positions were reached
+    bool reached = true;
+    current_joint_positions = current_joint_state_ptr_->link_position;
+    joint_positions = trajectory_points[amount_of_trajectory_points].positions;
 
+    for (int j = 0; j < joint_positions.size(); j++)
+    {
+        // ROS_INFO("joint_no/joint_amount = %d/%d", j, joint_positions.size()-1);
+        // ROS_INFO("current_joint_positions[j] = %f", current_joint_positions[j]);
+        // ROS_INFO("joint_positions[j] = %f", joint_positions[j]);
+        // ROS_INFO("joint_angle_tolerance_ = %f", joint_angle_tolerance_);
+        // double test = fabs(joint_positions[j] - current_joint_positions[j]);
+        // ROS_INFO("calc = %f", test);
+        if (fabs(joint_positions[j] - current_joint_positions[j]) > joint_angle_tolerance_)
+        {
+            reached = false;
+            break;
+        }
+    }
+
+    ROS_INFO("Final joint positions were reached? %d", reached);
+*/
     ROS_INFO("Trajectory execution complete!");
 
     // mark the goal as succeeded
