@@ -78,6 +78,14 @@ class MoveitXbotBridge
     std::shared_ptr<JointTrajectoryExecutor> arm_1_trajectory_executor_;
     std::shared_ptr<JointTrajectoryExecutor> arm_2_trajectory_executor_;
     std::shared_ptr<JointTrajectoryExecutor> torso_trajectory_executor_;
+
+    // subscriber 
+    ros::Subscriber xbot_joint_state_sub_;
+    // subscriber cb
+    void xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& msg);
+
+    // publisher
+    ros::Publisher ros_joint_state_pub_;
 };
 
 

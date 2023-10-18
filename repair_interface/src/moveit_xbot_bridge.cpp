@@ -81,7 +81,7 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
             current_joint_positions = current_joint_state_.link_position;
 
             // sleep
-            ros::Duration(trajectory_points[i].time_from_start).sleep();
+            ros::Duration(0.01).sleep();
         }
 
     }
@@ -103,6 +103,9 @@ void JointTrajectoryExecutor::publishJointCommand(std::vector<std::string> joint
     // set joint positions
     joint_command.position = std::vector<float>(joint_positions.begin(), joint_positions.end());
 
+    // set control mode unit8t
+    joint_command.ctrl_mode = std::vector<uint8_t>(joint_positions.size(), 1);
+
     // publish joint command
     xbot_joint_command_pub_.publish(joint_command);
 }
@@ -113,10 +116,33 @@ MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
     arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
     arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
     torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
+
+    // subscribe to xbot joint states
+    xbot_joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &MoveitXbotBridge::xbotJointStateCB, this);
+
+    // pubsliher for ros joint states
+    ros_joint_state_pub_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
+
+    ROS_INFO("MoveIt! Xbot Bridge started!");
 }
 
 MoveitXbotBridge::~MoveitXbotBridge()
 {
+}
+
+void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& msg)
+{
+    // create joint state message
+    sensor_msgs::JointState joint_state;
+
+    // set joint names
+    joint_state.name = msg->name;
+
+    // set joint positions
+    joint_state.position = std::vector<double>(msg->link_position.begin(), msg->link_position.end());
+
+    // publish joint state
+    ros_joint_state_pub_.publish(joint_state);
 }
 
 int main(int argc, char** argv)
@@ -126,7 +152,15 @@ int main(int argc, char** argv)
     ROS_INFO("Starting MoveIt! Xbot Bridge...");
     MoveitXbotBridge moveit_xbot_bridge(nh);
 
-    ros::spin();
+    // set the rate hz
+    ros::Rate rate(100);
+
+    // spin
+    while (ros::ok())
+    {
+        ros::spinOnce();
+        rate.sleep();
+    }
 
     return 0;
 }
