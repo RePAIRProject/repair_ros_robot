@@ -97,6 +97,9 @@ void JointTrajectoryExecutor::publishJointCommand(std::vector<std::string> joint
     // create joint command message
     xbot_msgs::JointCommand joint_command;
 
+    // set time stamp
+    joint_command.header.stamp = ros::Time::now();
+
     // set joint names
     joint_command.name = joint_names;
 
@@ -134,6 +137,9 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
 {
     // create joint state message
     sensor_msgs::JointState joint_state;
+
+    // set time stamp
+    joint_state.header.stamp = ros::Time::now();
 
     // set joint names
     joint_state.name = msg->name;
