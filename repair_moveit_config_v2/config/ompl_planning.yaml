@@ -194,7 +194,7 @@ arm_1:
     - ABITstar
     - BITstar
   projection_evaluator: joints(j_arm_1_1,j_arm_1_2)
-  longest_valid_segment_fraction: 0.005
+  longest_valid_segment_fraction: 0.0005
 arm_2:
   planner_configs:
     - AnytimePathShortening
@@ -225,7 +225,7 @@ arm_2:
     - ABITstar
     - BITstar
   projection_evaluator: joints(j_arm_2_1,j_arm_2_2)
-  longest_valid_segment_fraction: 0.005
+  longest_valid_segment_fraction: 0.0005
 both_arms:
   planner_configs:
     - AnytimePathShortening
@@ -256,7 +256,7 @@ both_arms:
     - ABITstar
     - BITstar
   projection_evaluator: joints(j_arm_1_1,j_arm_1_2)
-  longest_valid_segment_fraction: 0.005
+  longest_valid_segment_fraction: 0.0005
 torso:
   planner_configs:
     - AnytimePathShortening
@@ -287,4 +287,4 @@ torso:
     - ABITstar
     - BITstar
   projection_evaluator: joints(j_torso_1)
-  longest_valid_segment_fraction: 0.005
+  longest_valid_segment_fraction: 0.0005
