@@ -1,34 +1,39 @@
 #include "repair_interface/moveit_xbot_birdge.h"
 
-MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
+JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string arm_controller_name, double goal_execution_timeout, double joint_angle_tolerance):
     nh_(nh),
-    follow_joint_trajectory_as_(nh_, "follow_joint_trajectory", boost::bind(&MoveitXbotBridge::executeCB, this, _1), false)
+    follow_joint_trajectory_as_(nh, arm_controller_name + "follow_joint_trajectory", boost::bind(&JointTrajectoryExecutor::executeCB, this, _1), false)
 {
+    // set goal execution timeout
+    goal_execution_timeout_ = goal_execution_timeout;
+
+    // set joint angle tolerance
+    joint_angle_tolerance_ = joint_angle_tolerance;
+
     // subscribers
-    joint_state_sub_ = nh_.subscribe("/xbotcore/joint_state", 1, &MoveitXbotBridge::jointStateCB, this);
+    joint_state_sub_ = nh_.subscribe("/xbotcore/joint_state", 1, &JointTrajectoryExecutor::jointStateCB, this);
 
     // publishers
     xbot_joint_command_pub_ = nh_.advertise<xbot_msgs::JointCommand>("/xbotcore/command", 1);
 
     // start action server
     follow_joint_trajectory_as_.start();
+
+    ROS_INFO("Joint trajectory executor for %s started!", arm_controller_name.c_str());
 }
 
-MoveitXbotBridge::~MoveitXbotBridge()
+JointTrajectoryExecutor::~JointTrajectoryExecutor()
 {
 }
 
-void MoveitXbotBridge::jointStateCB(const xbot_msgs::JointState::ConstPtr& msg)
+void JointTrajectoryExecutor::jointStateCB(const xbot_msgs::JointState::ConstPtr& msg)
 {
     current_joint_state_ = *msg;
 }
 
-void MoveitXbotBridge::executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal)
+void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajectoryGoalConstPtr& goal)
 {
     ROS_INFO("Received trajectory from MoveIt!");
-
-    // accept the new goal
-    follow_joint_trajectory_as_.acceptNewGoal();
 
     // get joint names from goal
     std::vector<std::string> joint_names = goal->trajectory.joint_names;
@@ -36,8 +41,8 @@ void MoveitXbotBridge::executeCB(const control_msgs::FollowJointTrajectoryGoalCo
     // get trajectory points from goal
     std::vector<trajectory_msgs::JointTrajectoryPoint> trajectory_points = goal->trajectory.points;
 
-    // get joint angle tolerance from goal
-    joint_angle_tolerance_ = goal->path_tolerance[0].position;
+    // length of trajectory
+    ROS_INFO("Trajectory length: %d", (int)trajectory_points.size());
 
     // get current robot state
     std::vector<float> current_joint_positions = current_joint_state_.link_position;
@@ -57,8 +62,9 @@ void MoveitXbotBridge::executeCB(const control_msgs::FollowJointTrajectoryGoalCo
         bool reached = false;
 
         // TODO: check if this is the best way to do this to avoid infinite loop
-        time_t start_time = time(NULL);
-        while (!reached && (time(NULL) - start_time) < goal_execution_timeout_)
+        // get the current time
+        auto start_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        while (!reached && (std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) - start_time) < goal_execution_timeout_)
         {
             // check if joint positions have been reached
             reached = true;
@@ -77,6 +83,7 @@ void MoveitXbotBridge::executeCB(const control_msgs::FollowJointTrajectoryGoalCo
             // sleep
             ros::Duration(trajectory_points[i].time_from_start).sleep();
         }
+
     }
 
     ROS_INFO("Trajectory execution complete!");
@@ -85,7 +92,7 @@ void MoveitXbotBridge::executeCB(const control_msgs::FollowJointTrajectoryGoalCo
     follow_joint_trajectory_as_.setSucceeded();
 }
 
-void MoveitXbotBridge::publishJointCommand(std::vector<std::string> joint_names, std::vector<double> joint_positions)
+void JointTrajectoryExecutor::publishJointCommand(std::vector<std::string> joint_names, std::vector<double> joint_positions)
 {
     // create joint command message
     xbot_msgs::JointCommand joint_command;
@@ -100,11 +107,22 @@ void MoveitXbotBridge::publishJointCommand(std::vector<std::string> joint_names,
     xbot_joint_command_pub_.publish(joint_command);
 }
 
+MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
+    nh_(nh)
+{
+    arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
+    arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
+}
+
+MoveitXbotBridge::~MoveitXbotBridge()
+{
+}
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "moveit_xbot_bridge");
     ros::NodeHandle nh;
-
+    ROS_INFO("Starting MoveIt! Xbot Bridge...");
     MoveitXbotBridge moveit_xbot_bridge(nh);
 
     ros::spin();

@@ -20,13 +20,15 @@
 
 #include <vector>
 #include <string>
+#include <memory>
+#include <chrono>
 
-class MoveitXbotBridge
+class JointTrajectoryExecutor
 {
   public:
-    MoveitXbotBridge(ros::NodeHandle nh);
+    JointTrajectoryExecutor(ros::NodeHandle nh, std::string arm_controller_name, double goal_execution_timeout, double joint_angle_tolerance);
 
-    virtual ~MoveitXbotBridge();
+    virtual ~JointTrajectoryExecutor();
 
     ros::NodeHandle nh_;
 
@@ -51,8 +53,29 @@ class MoveitXbotBridge
   private:
     xbot_msgs::JointState current_joint_state_; // current robot state
     double joint_angle_tolerance_; // joint angle tolerance in radians
-    // goal execution timeout in seconds
-    double goal_execution_timeout_ = 5.0;
+    double goal_execution_timeout_; // goal execution timeout in seconds
+    std::string arm_name_; // name of arm
+};
+
+class MoveitXbotBridge
+{
+  public:
+    double goal_execution_timeout_ = 5.0; // goal execution timeout in seconds
+    double joint_angle_tolerance_ = 0.01; // joint angle tolerance in radians
+
+    MoveitXbotBridge(ros::NodeHandle nh);
+
+    virtual ~MoveitXbotBridge();
+
+    ros::NodeHandle nh_;
+
+    // repair controller names
+    std::string arm_1_controller_name_ = "/arm_1_trajectory_controller/";
+    std::string arm_2_controller_name_ = "/arm_2_trajectory_controller/";
+
+    // trajectory executors
+    std::shared_ptr<JointTrajectoryExecutor> arm_1_trajectory_executor_;
+    std::shared_ptr<JointTrajectoryExecutor> arm_2_trajectory_executor_;
 };
 
 
