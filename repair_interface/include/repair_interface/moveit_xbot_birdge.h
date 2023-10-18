@@ -72,10 +72,12 @@ class MoveitXbotBridge
     // repair controller names
     std::string arm_1_controller_name_ = "/arm_1_trajectory_controller/";
     std::string arm_2_controller_name_ = "/arm_2_trajectory_controller/";
+    std::string torso_controller_name_ = "/torso_trajectory_controller/";
 
     // trajectory executors
     std::shared_ptr<JointTrajectoryExecutor> arm_1_trajectory_executor_;
     std::shared_ptr<JointTrajectoryExecutor> arm_2_trajectory_executor_;
+    std::shared_ptr<JointTrajectoryExecutor> torso_trajectory_executor_;
 };
 
 

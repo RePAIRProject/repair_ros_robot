@@ -1,9 +1,16 @@
 <?xml version="1.0"?>
 <launch>
+
+    <!-- Set the param that trajectory_execution_manager needs to find the controller plugin -->
+    <arg name="moveit_controller_manager" default="moveit_simple_controller_manager/MoveItSimpleControllerManager" />
+    <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
+    <!-- load controller_list -->
+    <rosparam file="$(find repair_gazebo)/config/controllers.yaml"/>
+
     <!-- Run the main MoveIt executable with trajectory execution -->
     <include file="$(find repair_moveit_config_v2)/launch/move_group.launch">
         <arg name="allow_trajectory_execution" value="true" />
-        <arg name="moveit_controller_manager" value="ros_control" />
+        <!-- <arg name="moveit_controller_manager" value="fake" /> -->
         <arg name="fake_execution_type" value="interpolate" />
         <arg name="info" value="true" />
         <arg name="debug" value="false" />
@@ -11,11 +18,19 @@
         <arg name="load_robot_description" value="true" />
     </include>
 
+    <!-- TODO: this has to be come from robot -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+    </node>
+  
+    <!-- Given the published joint states, publish tf for the robot links -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
     <!-- Start the controllers and robot state publisher-->
-    <include file="$(find repair_gazebo)/launch/control_utils.launch"/>
+    <!-- <include file="$(find repair_gazebo)/launch/control_utils.launch"/> -->
 
     <!-- Start the simulated robot in an empty Gazebo world -->
-    <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
+    <!-- <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/> -->
 
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">

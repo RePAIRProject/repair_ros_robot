@@ -11,7 +11,7 @@ JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string
     joint_angle_tolerance_ = joint_angle_tolerance;
 
     // subscribers
-    joint_state_sub_ = nh_.subscribe("/xbotcore/joint_state", 1, &JointTrajectoryExecutor::jointStateCB, this);
+    joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &JointTrajectoryExecutor::jointStateCB, this);
 
     // publishers
     xbot_joint_command_pub_ = nh_.advertise<xbot_msgs::JointCommand>("/xbotcore/command", 1);
@@ -112,6 +112,7 @@ MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
 {
     arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
     arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
+    torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_);
 }
 
 MoveitXbotBridge::~MoveitXbotBridge()
