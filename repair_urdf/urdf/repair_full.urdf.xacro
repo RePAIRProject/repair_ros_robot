@@ -31,7 +31,7 @@
     </xacro:repair_cage>
 
     <xacro:sensor_d435 parent='torso_1'>
-        <origin xyz="0.09 0 -0.305" rpy="0 0.7535 0" />  
+        <origin xyz="0.09 0 -0.305" rpy="0 0.9535 0" />  
     </xacro:sensor_d435>
 
     <xacro:repair_torso parent="sliding_guide_link">

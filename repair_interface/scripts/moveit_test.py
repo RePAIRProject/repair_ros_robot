@@ -5,15 +5,24 @@ from __future__ import print_function
 import sys
 import rospy
 import tf
-from geometry_msgs.msg import PoseStamped, Quaternion
+from geometry_msgs.msg import PoseStamped, Quaternion, Pose
 #from sensor_msgs.msg import JointState
+import tf2_geometry_msgs  # **Do not use geometry_msgs. Use this instead for PoseStamped
 import math
 from enum import Enum
 
 from repair_interface.srv import *
 
+import sensor_msgs.point_cloud2 as pc2
+import tf2_ros
 from typing import Union, List
+from scipy.spatial.transform import Rotation as R
+import numpy as np
+import open3d as o3d
+import pytransform3d.transformations as pytr
+import pytransform3d.rotations as pyrot
 
+from sensor_msgs.msg import PointCloud2, PointField
 class ARM_ENUM(Enum):
     ARM_1 = 0
     ARM_2 = 1
@@ -57,29 +66,29 @@ class MoveItTest:
         else:
             rospy.logwarn("Could not send gripper command")
 
-    def test_srv(self):
+    def test_srv(self, target_pose):
         # get current pose
-        rospy.loginfo("Waiting for get current pose service")
-        rospy.wait_for_service('/get_current_pose_srv')
-        rospy.loginfo("Service found")
+        # rospy.loginfo("Waiting for get current pose service")
+        # # rospy.wait_for_service('/get_current_pose_srv')
+        # rospy.loginfo("Service found")
 
         # create service proxy
-        get_current_pose_srv = rospy.ServiceProxy('/get_current_pose_srv', GetCurrentPose)
+        # get_current_pose_srv = rospy.ServiceProxy('/get_current_pose_srv', GetCurrentPose)
 
-        # create request
-        get_current_pose_req = GetCurrentPoseRequest()
+        # # create request
+        # get_current_pose_req = GetCurrentPoseRequest()
 
-        # call service
-        get_current_pose_resp = get_current_pose_srv(get_current_pose_req)
+        # # call service
+        # get_current_pose_resp = get_current_pose_srv(get_current_pose_req)
 
-        arm1_pose = get_current_pose_resp.current_pose_1
-        arm2_pose = get_current_pose_resp.current_pose_2
+        # arm1_pose = get_current_pose_resp.current_pose_1
+        # arm2_pose = get_current_pose_resp.current_pose_2
 
-        self.go_to_pos_1(arm1_pose)
+        self.go_to_pos_1(target_pose)
         #arm1_pose = get_current_pose_resp.current_pose_1
-        self.go_to_pos_2(arm1_pose)
-        self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.VALUE, 1.0)
-        self.go_to_pos_1(arm1_pose)
+        # self.go_to_pos_2(arm1_pose)
+        # self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.VALUE, 1.0)
+        # self.go_to_pos_1(arm1_pose)
         #rospy.sleep(1)
 
     def go_to_pos_2(self, target_pose):
@@ -93,20 +102,20 @@ class MoveItTest:
         self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
     def go_to_pos_1(self, target_pose):
-        fragment_pose = self.get_fragment_pose()
-        target_pose.pose.position.x = fragment_pose[0]
-        target_pose.pose.position.y = fragment_pose[1]
-        target_pose.pose.position.z = fragment_pose[2] + 0.15
+        # fragment_pose = self.get_fragment_pose()
+        # target_pose.pose.position.x = fragment_pose[0]
+        # target_pose.pose.position.y = fragment_pose[1]
+        # target_pose.pose.position.z = fragment_pose[2] + 0.15
 
-        euler = tf.transformations.euler_from_quaternion(
-            [target_pose.pose.orientation.x,
-             target_pose.pose.orientation.y,
-             target_pose.pose.orientation.z,
-             target_pose.pose.orientation.w]
-        )
+        # euler = tf.transformations.euler_from_quaternion(
+        #     [target_pose.pose.orientation.x,
+        #      target_pose.pose.orientation.y,
+        #      target_pose.pose.orientation.z,
+        #      target_pose.pose.orientation.w]
+        # )
         # = tf.transformations.quaternion_from_euler(math.pi / 2, -math.pi / 2, euler[2])
-        q = tf.transformations.quaternion_from_euler(euler[0], math.pi / 2, euler[2])
-        target_pose.pose.orientation = Quaternion(*q)
+        # q = tf.transformations.quaternion_from_euler(euler[0], euler[1], euler[2])
+        # target_pose.pose.orientation = Quaternion(*q)
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
@@ -228,17 +237,204 @@ class MoveItTest:
             rospy.logwarn("Exception occurred: {0}".format(error))
             return None
 
+def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
+    tfBuffer = tf2_ros.Buffer()
+    listener = tf2_ros.TransformListener(tfBuffer)
+
+    rate = rospy.Rate(10.0)
+    while not rospy.is_shutdown():
+        try:
+            transform = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time(0))
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            rate.sleep()
+            continue
+
+        return transform
+
+def get_hand_tf():
+    quatR = R.from_quat([0, 0, 0, 1])
+    quat_to_mat = quatR.as_matrix()
+
+    transf1 = R.from_euler('y', -90, degrees=True)
+    # transf2 = R.from_euler('z', -90, degrees=True)
+    matF = transf1.apply(quat_to_mat)
+    # matF = transf2.apply(matF)
+    matF_to_quat = R.from_matrix(matF).as_quat()
+
+    return matF_to_quat
+
+def publish_tf_np(pose, par_frame="world", child_frame="goal_frame"):
+    broadcaster = tf2_ros.StaticTransformBroadcaster()
+    static_transformStamped = geometry_msgs.msg.TransformStamped()
+
+    static_transformStamped.header.stamp = rospy.Time.now()
+    static_transformStamped.header.frame_id = par_frame
+    static_transformStamped.child_frame_id = child_frame
+
+    static_transformStamped.transform.translation.x = float(pose[0])
+    static_transformStamped.transform.translation.y = float(pose[1])
+    static_transformStamped.transform.translation.z = float(pose[2])
+
+    static_transformStamped.transform.rotation.x = float(pose[3])
+    static_transformStamped.transform.rotation.y = float(pose[4])
+    static_transformStamped.transform.rotation.z = float(pose[5])
+    static_transformStamped.transform.rotation.w = float(pose[6])
+
+    broadcaster.sendTransform(static_transformStamped)
+    rospy.sleep(1)
+
+    return True
+
+def get_pose_from_arr(arr):
+    pose = Pose()
+    pose.position.x = arr[0]
+    pose.position.y = arr[1]
+    pose.position.z = arr[2]
+    pose.orientation.x = arr[3]
+    pose.orientation.y = arr[4]
+    pose.orientation.z = arr[5]
+    pose.orientation.w = arr[6]
+    
+    return pose
+
+def get_pose_stamped_from_arr(arr):
+    p = PoseStamped()
+    p.header.frame_id = "world"
+    p.header.stamp = rospy.Time(0)
+    p.pose.position.x = arr[0]
+    p.pose.position.y = arr[1]
+    p.pose.position.z = arr[2]
+    p.pose.orientation.x = arr[3]
+    p.pose.orientation.y = arr[4]
+    p.pose.orientation.z = arr[5]
+    p.pose.orientation.w = arr[6]
+    return p
+
+def get_arr_from_pose(pose):
+    arr = np.array([pose.position.x,
+                    pose.position.y,
+                    pose.position.z,
+                    pose.orientation.x,
+                    pose.orientation.y,
+                    pose.orientation.z,
+                    pose.orientation.w])
+
+    return arr
+
+def get_point_cloud_from_ros(debug=False):
+    point_cloud = rospy.wait_for_message("/camera/depth/color/points", PointCloud2)
+    pc = []
+    for p in pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True):
+        # print " x : %f  y: %f  z: %f" %(p[0],p[1],p[2])
+        pc.append([p[0], p[1], p[2]])
+
+    # Segmentation of Point Cloud
+    xyz = np.asarray(pc)
+    #idx = np.where(xyz[:, 2] < 0.8)     # Prune point cloud to 0.8 meters from camera in z direction
+    #xyz = xyz[idx]
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(xyz)
+    print ('Received point cloud')
+
+    if debug:
+        o3d.visualization.draw_geometries([pcd])
+
+    return pcd
+
+def segment_table(pcd):
+    plane_model, inliers = pcd.segment_plane(distance_threshold=0.005,
+                                             ransac_n=5,
+                                             num_iterations=1000)
+    [a, b, c, d] = plane_model
+
+    # Partial Point Cloud
+    inlier_cloud = pcd.select_by_index(inliers)
+    outlier_cloud = pcd.select_by_index(inliers, invert=True)
+
+    return inlier_cloud, outlier_cloud
+
+def transform_pose_vislab(input_pose, from_frame, to_frame):
+    # **Assuming /tf2 topic is being broadcasted
+    tf_buffer = tf2_ros.Buffer()
+    listener = tf2_ros.TransformListener(tf_buffer)
+
+    pose_stamped = tf2_geometry_msgs.PoseStamped()
+    pose_stamped.pose = input_pose
+    pose_stamped.header.frame_id = from_frame
+    # pose_stamped.header.stamp = rospy.Time.now()
+    rospy.sleep(1)
+    try:
+        # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
+        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1))
+        return output_pose_stamped.pose
+    except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        raise
+
+def get_pose_from_transform(T):
+    quat = pyrot.quaternion_xyzw_from_wxyz(pyrot.quaternion_from_matrix(T[:3, :3]))
+    pos = T[:3, 3]
+    return np.concatenate((pos, quat))
+
 if __name__ == '__main__':
     rospy.init_node('moveit_test')
+    # tf = get_transform(parent_frame='arm_1_tcp', child_frame='left_hand_v1s_grasp_link')
+    # tf = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
+    # print (tf)
+
+    hand_tf = get_hand_tf()
+
+    initial_pose = np.concatenate(([1., 1., 1.], hand_tf))
+
+    debug = False
+    print('Starting Point Cloud Processing')
+    pcd = get_point_cloud_from_ros(debug)
+
+    print ('Table Segmentation')
+    table_cloud, object_cloud = segment_table(pcd)
+
+    voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+
+    object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+    object_cloud.paint_uniform_color([0, 1, 0])
+    table_cloud.paint_uniform_color([1, 0, 0])
+
+    if debug:
+        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+
+    initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
+    initial_pose = get_pose_from_arr(initial_pose)
+
+    # Transform the pose from the camera frame to the base frame (world)
+    hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
+    hand_pose_world_np = get_arr_from_pose(hand_pose_world)
+    hand_pose_world_np[2] += 0.15
+    hand_pose_world_np[3:] = hand_tf
+    publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
+
+    hand_arm_transform = pytr.transform_from_pq([-0.002,
+                                                 -0.00695,
+                                                 -0.1085,
+                                                 0.,
+                                                 0.,
+                                                 0.,
+                                                 -1.])
+
+    hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
+    T0 = pytr.transform_from_pq(hand_pose_world_np)
+    T1 = pytr.concat(hand_arm_transform, T0)
+
+    arm_target_pose_np = get_pose_from_transform(T1)
+
+    # hand_target_pose = get_pose_from_arr(hand_pose_world_np)
+    # arm_target_pose = transform_pose_vislab(hand_target_pose,
+    #                                         from_frame='left_hand_v1s_grasp_link',
+    #                                         to_frame='arm_1_tcp')
+
+    # arm_target_pose_np = get_arr_from_pose(arm_target_pose)
+    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
     moveit_test = MoveItTest()
-    moveit_test.test_srv()
-    # h = HAND_ENUM.HAND_1
-    # hs = HAND_STATE_ENUM.OPEN
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.sleep(1)
-    # hs = HAND_STATE_ENUM.CLOSE
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.sleep(1)
-    # hs = HAND_STATE_ENUM.OPEN
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.spin()
+    print ("Planning trajectory")
+    moveit_test.test_srv(arm_target_pose)
