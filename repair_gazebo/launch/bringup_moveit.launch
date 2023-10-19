@@ -34,7 +34,7 @@
 
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
-        <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
+        <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
     </include>
     <!-- <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/> -->
 </launch>

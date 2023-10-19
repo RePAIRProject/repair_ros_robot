@@ -52,75 +52,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <!-- 1.8854765e+00 -->
   <!-- 2.4405495 -->
   <!-- Origin -->
-  <gazebo>
-    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
-    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
-    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
-    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
-    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
-    <plugin filename="libxbot2_gz_joint_server.so" name="xbot2_joint_driver">
-      <pid>
-        <gain d="1" name="fake_mot" p="10"/>
-        <gain d="10" name="small_mot" p="1000"/>
-        <gain d="20" name="medium_mot" p="2000"/>
-        <pid name="j_torso_1" profile="medium_mot"/>
-        <pid name="j_arm_1_1" profile="medium_mot"/>
-        <pid name="j_arm_1_2" profile="medium_mot"/>
-        <pid name="j_arm_1_3" profile="medium_mot"/>
-        <pid name="j_arm_1_4" profile="medium_mot"/>
-        <pid name="j_arm_1_5" profile="small_mot"/>
-        <pid name="j_arm_1_6" profile="small_mot"/>
-        <pid name="j_arm_1_7" profile="small_mot"/>
-        <pid name="j_arm_2_1" profile="medium_mot"/>
-        <pid name="j_arm_2_2" profile="medium_mot"/>
-        <pid name="j_arm_2_3" profile="medium_mot"/>
-        <pid name="j_arm_2_4" profile="medium_mot"/>
-        <pid name="j_arm_2_5" profile="small_mot"/>
-        <pid name="j_arm_2_6" profile="small_mot"/>
-        <pid name="j_arm_2_7" profile="small_mot"/>
-      </pid>
-      <ignore_joints>
-        <joint name="right_hand_v1s_thumb_knuckle_joint"/>
-        <joint name="right_hand_v1s_thumb_proximal_joint"/>
-        <joint name="right_hand_v1s_thumb_distal_joint"/>
-        <joint name="right_hand_v1s_index_distal_joint"/>
-        <joint name="right_hand_v1s_index_proximal_joint"/>
-        <joint name="right_hand_v1s_index_middle_joint"/>
-        <joint name="right_hand_v1s_index_distal_joint"/>
-        <joint name="right_hand_v1s_middle_distal_joint"/>
-        <joint name="right_hand_v1s_middle_proximal_joint"/>
-        <joint name="right_hand_v1s_middle_middle_joint"/>
-        <joint name="right_hand_v1s_middle_distal_joint"/>
-        <joint name="right_hand_v1s_ring_distal_joint"/>
-        <joint name="right_hand_v1s_ring_proximal_joint"/>
-        <joint name="right_hand_v1s_ring_middle_joint"/>
-        <joint name="right_hand_v1s_ring_distal_joint"/>
-        <joint name="right_hand_v1s_little_distal_joint"/>
-        <joint name="right_hand_v1s_little_proximal_joint"/>
-        <joint name="right_hand_v1s_little_middle_joint"/>
-        <joint name="right_hand_v1s_little_distal_joint"/>
-        <joint name="left_hand_v1s_thumb_knuckle_joint"/>
-        <joint name="left_hand_v1s_thumb_proximal_joint"/>
-        <joint name="left_hand_v1s_thumb_distal_joint"/>
-        <joint name="left_hand_v1s_index_distal_joint"/>
-        <joint name="left_hand_v1s_index_proximal_joint"/>
-        <joint name="left_hand_v1s_index_middle_joint"/>
-        <joint name="left_hand_v1s_index_distal_joint"/>
-        <joint name="left_hand_v1s_middle_distal_joint"/>
-        <joint name="left_hand_v1s_middle_proximal_joint"/>
-        <joint name="left_hand_v1s_middle_middle_joint"/>
-        <joint name="left_hand_v1s_middle_distal_joint"/>
-        <joint name="left_hand_v1s_ring_distal_joint"/>
-        <joint name="left_hand_v1s_ring_proximal_joint"/>
-        <joint name="left_hand_v1s_ring_middle_joint"/>
-        <joint name="left_hand_v1s_ring_distal_joint"/>
-        <joint name="left_hand_v1s_little_distal_joint"/>
-        <joint name="left_hand_v1s_little_proximal_joint"/>
-        <joint name="left_hand_v1s_little_middle_joint"/>
-        <joint name="left_hand_v1s_little_distal_joint"/>
-      </ignore_joints>
-    </plugin>
-  </gazebo>
+  <!-- Only when working with Gazebo Xbot Control -->
+  <!-- DO NOT USE WITH ROS_CONTROL AND MOVEIT -->
+  <!-- <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" /> -->
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="ros_control">
       <!--robotNamespace>/</robotNamespace-->
@@ -1096,7 +1030,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Thumb finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_thumb_knuckle_joint" type="continuous">
+  <joint name="left_hand_v1s_thumb_knuckle_joint" type="fixed">
     <origin rpy="0.0 -0.38397275793662144 -1.5707963267948966" xyz="0.005669722 -0.029616 0.055314"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_thumb_knuckle_link"/>
@@ -1121,7 +1055,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_thumb_proximal_joint" type="continuous">
+  <joint name="left_hand_v1s_thumb_proximal_joint" type="fixed">
     <origin rpy="-0.426627741408745 0 0.0" xyz="0.033500000 0.0033 0.0"/>
     <parent link="left_hand_v1s_thumb_knuckle_link"/>
     <child link="left_hand_v1s_thumb_proximal_link"/>
@@ -1146,7 +1080,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_thumb_distal_joint" type="continuous">
+  <joint name="left_hand_v1s_thumb_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0.0"/>
     <parent link="left_hand_v1s_thumb_proximal_link"/>
     <child link="left_hand_v1s_thumb_distal_link"/>
@@ -1174,7 +1108,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Index finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_index_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_index_knuckle_joint" type="fixed">
     <origin rpy="-1.5707963267948966 -1.4835299330931884 -1.5707963267948966" xyz="-0.0033 -0.0195 0.0936994"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_index_knuckle_link"/>
@@ -1200,7 +1134,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_index_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_index_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_index_knuckle_link"/>
     <child link="left_hand_v1s_index_proximal_link"/>
@@ -1225,7 +1159,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_index_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_index_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_index_proximal_link"/>
     <child link="left_hand_v1s_index_middle_link"/>
@@ -1251,7 +1185,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_index_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_index_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_index_middle_link"/>
     <child link="left_hand_v1s_index_distal_link"/>
@@ -1280,7 +1214,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Middle finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_middle_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_knuckle_joint" type="fixed">
     <origin rpy="3.1415 -1.5707963267948966 0.0" xyz="-0.0033 0.0 0.100699"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_middle_knuckle_link"/>
@@ -1306,7 +1240,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_middle_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_middle_knuckle_link"/>
     <child link="left_hand_v1s_middle_proximal_link"/>
@@ -1331,7 +1265,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_middle_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_middle_proximal_link"/>
     <child link="left_hand_v1s_middle_middle_link"/>
@@ -1357,7 +1291,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_middle_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_middle_middle_link"/>
     <child link="left_hand_v1s_middle_distal_link"/>
@@ -1386,7 +1320,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Ring finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_ring_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_knuckle_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.5184364298870514 1.5707963267948966" xyz="-0.0033 0.0195 0.0936994"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_ring_knuckle_link"/>
@@ -1412,7 +1346,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_ring_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_ring_knuckle_link"/>
     <child link="left_hand_v1s_ring_proximal_link"/>
@@ -1437,7 +1371,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_ring_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_ring_proximal_link"/>
     <child link="left_hand_v1s_ring_middle_link"/>
@@ -1463,7 +1397,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_ring_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_ring_middle_link"/>
     <child link="left_hand_v1s_ring_distal_link"/>
@@ -1492,7 +1426,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Little finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_little_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_little_knuckle_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.4835299330931884 1.5707963267948966" xyz="-0.0033 0.039 0.0836994"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_little_knuckle_link"/>
@@ -1518,7 +1452,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_little_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_little_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_little_knuckle_link"/>
     <child link="left_hand_v1s_little_proximal_link"/>
@@ -1543,7 +1477,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_little_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_little_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_little_proximal_link"/>
     <child link="left_hand_v1s_little_middle_link"/>
@@ -1569,7 +1503,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_little_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_little_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_little_middle_link"/>
     <child link="left_hand_v1s_little_distal_link"/>
@@ -1680,7 +1614,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Thumb finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_thumb_knuckle_joint" type="continuous">
+  <joint name="right_hand_v1s_thumb_knuckle_joint" type="fixed">
     <origin rpy="0.0 -0.38397275793662144 1.5707963267948966" xyz="0.00566972 0.0296160 0.0553140"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_thumb_knuckle_link"/>
@@ -1705,7 +1639,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_thumb_proximal_joint" type="continuous">
+  <joint name="right_hand_v1s_thumb_proximal_joint" type="fixed">
     <origin rpy="0.426627741408745 0 0.0" xyz="0.033500000 -0.0033 0.0"/>
     <parent link="right_hand_v1s_thumb_knuckle_link"/>
     <child link="right_hand_v1s_thumb_proximal_link"/>
@@ -1730,7 +1664,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_thumb_distal_joint" type="continuous">
+  <joint name="right_hand_v1s_thumb_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0.0"/>
     <parent link="right_hand_v1s_thumb_proximal_link"/>
     <child link="right_hand_v1s_thumb_distal_link"/>
@@ -1758,7 +1692,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Index finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_index_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_index_knuckle_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.4835299330931884 1.5707963267948966" xyz="-0.0033 0.0195 0.0936994"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_index_knuckle_link"/>
@@ -1784,7 +1718,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_index_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_index_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_index_knuckle_link"/>
     <child link="right_hand_v1s_index_proximal_link"/>
@@ -1809,7 +1743,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_index_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_index_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_index_proximal_link"/>
     <child link="right_hand_v1s_index_middle_link"/>
@@ -1835,7 +1769,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_index_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_index_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_index_middle_link"/>
     <child link="right_hand_v1s_index_distal_link"/>
@@ -1864,7 +1798,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Middle finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_middle_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_knuckle_joint" type="fixed">
     <origin rpy="3.141592 -1.5707963267948966 0.0" xyz="-0.003300000 0.0 0.100699"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_middle_knuckle_link"/>
@@ -1890,7 +1824,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_middle_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_middle_knuckle_link"/>
     <child link="right_hand_v1s_middle_proximal_link"/>
@@ -1915,7 +1849,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_middle_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_middle_proximal_link"/>
     <child link="right_hand_v1s_middle_middle_link"/>
@@ -1941,7 +1875,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_middle_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_middle_middle_link"/>
     <child link="right_hand_v1s_middle_distal_link"/>
@@ -1970,7 +1904,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Ring finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_ring_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_knuckle_joint" type="fixed">
     <origin rpy="-1.5707963267948966 -1.5184364298870514 -1.5707963267948966" xyz="-0.0033 -0.0195 0.0936994"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_ring_knuckle_link"/>
@@ -1996,7 +1930,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_ring_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_ring_knuckle_link"/>
     <child link="right_hand_v1s_ring_proximal_link"/>
@@ -2021,7 +1955,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_ring_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_ring_proximal_link"/>
     <child link="right_hand_v1s_ring_middle_link"/>
@@ -2047,7 +1981,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_ring_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_ring_middle_link"/>
     <child link="right_hand_v1s_ring_distal_link"/>
@@ -2076,7 +2010,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Little finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_little_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_little_knuckle_joint" type="fixed">
     <origin rpy="-1.5707963267948966 -1.4835299330931884 -1.5707963267948966" xyz="-0.0033 -0.039 0.0836994"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_little_knuckle_link"/>
@@ -2102,7 +2036,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_little_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_little_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_little_knuckle_link"/>
     <child link="right_hand_v1s_little_proximal_link"/>
@@ -2127,7 +2061,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_little_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_little_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_little_proximal_link"/>
     <child link="right_hand_v1s_little_middle_link"/>
@@ -2153,7 +2087,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_little_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_little_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_little_middle_link"/>
     <child link="right_hand_v1s_little_distal_link"/>
@@ -2209,4 +2143,384 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <!-- <gazebo reference="table_top_link">
         <selfCollide> 1 </selfCollide>
     </gazebo> -->
+  <transmission name="trans_left_hand_v1s_index_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_index_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_index_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_index_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_index_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_index_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_index_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_index_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_index_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_index_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_index_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_index_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_middle_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_middle_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_middle_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_middle_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_middle_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_middle_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_middle_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_middle_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_middle_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_middle_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_middle_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_middle_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_ring_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_ring_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_ring_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_ring_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_ring_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_ring_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_ring_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_ring_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_ring_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_ring_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_ring_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_ring_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_little_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_little_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_little_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_little_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_little_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_little_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_little_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_little_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_little_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_little_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_little_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_little_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_thumb_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_thumb_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_thumb_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_thumb_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_thumb_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_thumb_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_hand_v1s_thumb_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_hand_v1s_thumb_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_hand_v1s_thumb_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_index_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_index_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_index_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_index_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_index_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_index_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_index_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_index_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_index_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_index_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_index_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_index_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_middle_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_middle_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_middle_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_middle_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_middle_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_middle_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_middle_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_middle_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_middle_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_middle_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_middle_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_middle_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_ring_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_ring_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_ring_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_ring_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_ring_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_ring_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_ring_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_ring_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_ring_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_ring_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_ring_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_ring_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_little_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_little_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_little_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_little_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_little_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_little_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_little_middle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_little_middle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_little_middle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_little_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_little_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_little_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_thumb_knuckle_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_thumb_knuckle_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_thumb_knuckle_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_thumb_proximal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_thumb_proximal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_thumb_proximal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_hand_v1s_thumb_distal_joint">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_hand_v1s_thumb_distal_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_hand_v1s_thumb_distal_joint_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 </robot>

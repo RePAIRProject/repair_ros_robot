@@ -26,7 +26,7 @@ xbotcore_plugins:
 
     ros_io: {thread: nrt_main, type: ros_io}
 
-    ros_control: {thread: nrt_main, type: ros_control}
+    ros_control: {thread: nrt_main, type: ros_control, params: {autostart: {type: bool, value: true}}}
     
 # global parameters
 xbotcore_param:

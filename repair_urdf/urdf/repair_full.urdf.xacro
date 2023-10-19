@@ -50,7 +50,7 @@
         orientation="0 0.0 ${PI}" 
         translation="0"
         operation_mode="0" 
-        fixed_hands="false">
+        fixed_hands="true">
     </xacro:softhands>
 
     <xacro:softhands type="right" 
@@ -60,7 +60,7 @@
         orientation="0 0 ${PI}" 
         translation="0"
         operation_mode="0" 
-        fixed_hands="false">
+        fixed_hands="true">
     </xacro:softhands>
 
     <!-- <gazebo reference="table_top_link">

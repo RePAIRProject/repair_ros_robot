@@ -4,11 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /RobotModel1
-        - /TF1
         - /TF1/Tree1
       Splitter Ratio: 0.7998605370521545
-    Tree Height: 1103
+    Tree Height: 392
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -1247,162 +1245,12 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Filter (blacklist): ""
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        arm_1_1:
-          Value: false
-        arm_1_2:
-          Value: false
-        arm_1_3:
-          Value: false
-        arm_1_4:
-          Value: false
-        arm_1_5:
-          Value: false
-        arm_1_6:
-          Value: false
-        arm_1_7:
-          Value: false
-        arm_1_tcp:
-          Value: false
-        arm_2_1:
-          Value: false
-        arm_2_2:
-          Value: false
-        arm_2_3:
-          Value: false
-        arm_2_4:
-          Value: false
-        arm_2_5:
-          Value: false
-        arm_2_6:
-          Value: false
-        arm_2_7:
-          Value: false
-        arm_2_tcp:
-          Value: false
-        left_hand_v1s_index_distal_link:
-          Value: true
-        left_hand_v1s_index_knuckle_link:
-          Value: true
-        left_hand_v1s_index_middle_link:
-          Value: true
-        left_hand_v1s_index_proximal_link:
-          Value: true
-        left_hand_v1s_little_distal_link:
-          Value: true
-        left_hand_v1s_little_knuckle_link:
-          Value: true
-        left_hand_v1s_little_middle_link:
-          Value: true
-        left_hand_v1s_little_proximal_link:
-          Value: true
-        left_hand_v1s_middle_distal_link:
-          Value: true
-        left_hand_v1s_middle_knuckle_link:
-          Value: true
-        left_hand_v1s_middle_middle_link:
-          Value: true
-        left_hand_v1s_middle_proximal_link:
-          Value: true
-        left_hand_v1s_palm_base:
-          Value: false
-        left_hand_v1s_palm_link:
-          Value: false
-        left_hand_v1s_ring_distal_link:
-          Value: true
-        left_hand_v1s_ring_knuckle_link:
-          Value: true
-        left_hand_v1s_ring_middle_link:
-          Value: true
-        left_hand_v1s_ring_proximal_link:
-          Value: true
-        left_hand_v1s_thumb_distal_link:
-          Value: true
-        left_hand_v1s_thumb_knuckle_link:
-          Value: true
-        left_hand_v1s_thumb_proximal_link:
-          Value: true
-        leg1_link:
-          Value: false
-        leg2_link:
-          Value: false
-        leg3_link:
-          Value: false
-        leg4_link:
-          Value: false
-        obar1_link:
-          Value: false
-        obar2_link:
-          Value: false
-        obar3_link:
-          Value: false
-        obar4_link:
-          Value: false
-        right_hand_v1s_index_distal_link:
-          Value: true
-        right_hand_v1s_index_knuckle_link:
-          Value: true
-        right_hand_v1s_index_middle_link:
-          Value: true
-        right_hand_v1s_index_proximal_link:
-          Value: true
-        right_hand_v1s_little_distal_link:
-          Value: true
-        right_hand_v1s_little_knuckle_link:
-          Value: true
-        right_hand_v1s_little_middle_link:
-          Value: true
-        right_hand_v1s_little_proximal_link:
-          Value: true
-        right_hand_v1s_middle_distal_link:
-          Value: true
-        right_hand_v1s_middle_knuckle_link:
-          Value: true
-        right_hand_v1s_middle_middle_link:
-          Value: true
-        right_hand_v1s_middle_proximal_link:
-          Value: true
-        right_hand_v1s_palm_base:
-          Value: false
-        right_hand_v1s_palm_link:
-          Value: false
-        right_hand_v1s_ring_distal_link:
-          Value: true
-        right_hand_v1s_ring_knuckle_link:
-          Value: true
-        right_hand_v1s_ring_middle_link:
-          Value: true
-        right_hand_v1s_ring_proximal_link:
-          Value: true
-        right_hand_v1s_thumb_distal_link:
-          Value: true
-        right_hand_v1s_thumb_knuckle_link:
-          Value: true
-        right_hand_v1s_thumb_proximal_link:
-          Value: true
-        sliding_guide_link:
-          Value: false
-        table_top_link:
-          Value: false
-        torso_1:
-          Value: false
-        vbar1_link:
-          Value: false
-        vbar2_link:
-          Value: false
-        vbar3_link:
-          Value: false
-        vbar4_link:
-          Value: false
-        working_surface_link:
-          Value: false
-        world:
-          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -1410,100 +1258,9 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        world:
-          table_top_link:
-            leg1_link:
-              vbar1_link:
-                obar1_link:
-                  {}
-            leg2_link:
-              vbar2_link:
-                {}
-            leg3_link:
-              vbar3_link:
-                obar2_link:
-                  sliding_guide_link:
-                    torso_1:
-                      arm_1_1:
-                        arm_1_2:
-                          arm_1_3:
-                            arm_1_4:
-                              arm_1_5:
-                                arm_1_6:
-                                  arm_1_7:
-                                    arm_1_tcp:
-                                      {}
-                                    left_hand_v1s_palm_base:
-                                      left_hand_v1s_palm_link:
-                                        left_hand_v1s_index_knuckle_link:
-                                          left_hand_v1s_index_proximal_link:
-                                            left_hand_v1s_index_middle_link:
-                                              left_hand_v1s_index_distal_link:
-                                                {}
-                                        left_hand_v1s_little_knuckle_link:
-                                          left_hand_v1s_little_proximal_link:
-                                            left_hand_v1s_little_middle_link:
-                                              left_hand_v1s_little_distal_link:
-                                                {}
-                                        left_hand_v1s_middle_knuckle_link:
-                                          left_hand_v1s_middle_proximal_link:
-                                            left_hand_v1s_middle_middle_link:
-                                              left_hand_v1s_middle_distal_link:
-                                                {}
-                                        left_hand_v1s_ring_knuckle_link:
-                                          left_hand_v1s_ring_proximal_link:
-                                            left_hand_v1s_ring_middle_link:
-                                              left_hand_v1s_ring_distal_link:
-                                                {}
-                                        left_hand_v1s_thumb_knuckle_link:
-                                          left_hand_v1s_thumb_proximal_link:
-                                            left_hand_v1s_thumb_distal_link:
-                                              {}
-                      arm_2_1:
-                        arm_2_2:
-                          arm_2_3:
-                            arm_2_4:
-                              arm_2_5:
-                                arm_2_6:
-                                  arm_2_7:
-                                    arm_2_tcp:
-                                      {}
-                                    right_hand_v1s_palm_base:
-                                      right_hand_v1s_palm_link:
-                                        right_hand_v1s_index_knuckle_link:
-                                          right_hand_v1s_index_proximal_link:
-                                            right_hand_v1s_index_middle_link:
-                                              right_hand_v1s_index_distal_link:
-                                                {}
-                                        right_hand_v1s_little_knuckle_link:
-                                          right_hand_v1s_little_proximal_link:
-                                            right_hand_v1s_little_middle_link:
-                                              right_hand_v1s_little_distal_link:
-                                                {}
-                                        right_hand_v1s_middle_knuckle_link:
-                                          right_hand_v1s_middle_proximal_link:
-                                            right_hand_v1s_middle_middle_link:
-                                              right_hand_v1s_middle_distal_link:
-                                                {}
-                                        right_hand_v1s_ring_knuckle_link:
-                                          right_hand_v1s_ring_proximal_link:
-                                            right_hand_v1s_ring_middle_link:
-                                              right_hand_v1s_ring_distal_link:
-                                                {}
-                                        right_hand_v1s_thumb_knuckle_link:
-                                          right_hand_v1s_thumb_proximal_link:
-                                            right_hand_v1s_thumb_distal_link:
-                                              {}
-                    working_surface_link:
-                      {}
-                obar3_link:
-                  {}
-            leg4_link:
-              vbar4_link:
-                obar4_link:
-                  {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1536,14 +1293,14 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.25999996066093445
+      Pitch: 0.24999989569187164
       Target Frame: world
-      Yaw: 6.074948310852051
+      Yaw: 4.559913635253906
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 2272
+  Height: 1376
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -1552,9 +1309,9 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000059c0000083efc0200000007fb000000100044006900730070006c00610079007301000000710000054d0000018800fffffffb0000000800480065006c00700000000342000000bb000000d700fffffffb0000000a00560069006500770073000000010c000000a40000013b00fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000002900000029fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000005ca000002e5000002d400ffffff000008c80000083e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000059c00000504fc0200000007fb000000100044006900730070006c006100790073010000003e00000250000000ca00fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a600fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670100000294000002ae0000018900ffffff000007860000050400000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 3696
-  X: 144
-  Y: 54
+  Width: 3368
+  X: 72
+  Y: 27
