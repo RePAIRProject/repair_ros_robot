@@ -126,6 +126,85 @@ def get_point_cloud_from_ros(debug=False):
 
     return pcd
 
+def get_point_cloud_from_real_rs(debug=False):
+    # Segmentation of Point Cloud
+    xyz = np.asarray(pc)
+
+    # Configure depth and color streams
+    pipeline = rs.pipeline()
+    config = rs.config()
+
+    pipeline_wrapper = rs.pipeline_wrapper(pipeline)
+    pipeline_profile = config.resolve(pipeline_wrapper)
+    device = pipeline_profile.get_device()
+
+    found_rgb = False
+    for s in device.sensors:
+        if s.get_info(rs.camera_info.name) == 'RGB Camera':
+            found_rgb = True
+            break
+    if not found_rgb:
+        print("The demo requires Depth camera with Color sensor")
+        exit(0)
+
+    config.enable_stream(rs.stream.depth, rs.format.z16, 30)
+    config.enable_stream(rs.stream.color, rs.format.bgr8, 30)
+
+    # Start streaming
+    pipeline.start(config)
+
+    # Get stream profile and camera intrinsics
+    profile = pipeline.get_active_profile()
+    depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.depth))
+    depth_intrinsics = depth_profile.get_intrinsics()
+    w, h = depth_intrinsics.width, depth_intrinsics.height
+
+    # Processing blocks
+    pc = rs.pointcloud()
+    decimate = rs.decimation_filter()
+    # decimate.set_option(rs.option.filter_magnitude, 2 ** state.decimate)
+    colorizer = rs.colorizer()
+
+    ### Warm-up time discard first 9 frames
+    for i in range(10):
+        frames = pipeline.wait_for_frames()
+
+    frames = pipeline.wait_for_frames()
+
+    depth_frame = frames.get_depth_frame()
+    color_frame = frames.get_color_frame()
+
+    depth_frame = decimate.process(depth_frame)
+
+    # Grab new intrinsics (may be changed by decimation)
+    depth_intrinsics = rs.video_stream_profile(
+        depth_frame.profile).get_intrinsics()
+    w, h = depth_intrinsics.width, depth_intrinsics.height
+
+    depth_image = np.asanyarray(depth_frame.get_data())
+    color_image = np.asanyarray(color_frame.get_data())
+
+    depth_colormap = np.asanyarray(
+        colorizer.colorize(depth_frame).get_data())
+
+    mapped_frame, color_source = depth_frame, depth_colormap
+
+    points = pc.calculate(depth_frame)
+    pc.map_to(mapped_frame)
+
+    # Pointcloud data to arrays
+    v, t = points.get_vertices(), points.get_texture_coordinates()
+    verts = np.asanyarray(v).view(np.float32).reshape(-1, 3)  # xyz
+    texcoords = np.asanyarray(t).view(np.float32).reshape(-1, 2)  # uv
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(verts)
+    print ('Received point cloud')
+
+    if debug:
+        o3d.visualization.draw_geometries([pcd])
+
+    return pcd
 
 def segment_table(pcd):
     plane_model, inliers = pcd.segment_plane(distance_threshold=0.005,

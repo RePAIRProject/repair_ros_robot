@@ -20,7 +20,7 @@ import pytransform3d.transformations as pytr
 
 from vision_utils import get_transform, get_hand_tf, publish_tf_np
 from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
-from vision_utils import get_arr_from_pose, get_point_cloud_from_ros
+from vision_utils import get_arr_from_pose, get_point_cloud_from_ros, get_point_cloud_from_real_rs
 from vision_utils import segment_table, transform_pose_vislab, get_pose_from_transform
 
 
@@ -218,7 +218,11 @@ if __name__ == '__main__':
     hand_tf = get_hand_tf()
 
     print('Starting Point Cloud Processing')
-    pcd = get_point_cloud_from_ros(debug)
+    use_real_camera = False
+    if use_real_camera:
+        pcd = get_point_cloud_from_real_rs(debug)
+    else:
+        pcd = get_point_cloud_from_ros(debug)
 
     print ('Table Segmentation')
     table_cloud, object_cloud = segment_table(pcd)
