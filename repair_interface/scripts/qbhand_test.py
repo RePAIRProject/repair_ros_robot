@@ -2,14 +2,16 @@
 
 # this version works on python3 ubuntu 20
 import rospy
-from std_msgs.msg import Float64
+
+from std_msgs.msg import Float32
+from ec_msgs.msg import HandCmd
 
 FREQ = 200
 
 
 class QbHand:
     def __init__(self):
-        self.gripperMsg = Float64()
+        self.gripperMsg = HandCmd()
         self.init_ros()
         self.init_params()
 
@@ -18,8 +20,8 @@ class QbHand:
     def close_hand(self, aperture, secs=1):
         # close
         print('Closing qb Soft Hand..')
-        self.gripper_open = aperture
-        self.gripperMsg.data = self.gripper_open
+        pose = aperture
+        self.gripperMsg.pos_ref = pose
         # print(self.gripperMsg)
         self.GripperPub.publish(self.gripperMsg)
 
@@ -29,8 +31,8 @@ class QbHand:
     def open_hand(self, secs=1):
         # open
         print('Opening..')
-        self.gripper_open = 0
-        self.gripperMsg.data = self.gripper_open
+        pose = 0
+        self.gripperMsg.pos_ref = pose
         # print(self.gripperMsg)
         self.GripperPub.publish(self.gripperMsg)
 
@@ -47,12 +49,20 @@ class QbHand:
             var = 0  # print("Node has already been initialized, do nothing")
 
         self.rate = rospy.Rate(FREQ)
-        self.GripperPub = rospy.Publisher("/left_hand_v1s/synergy_command",
-                                          Float64, queue_size=3)
+        # Simulation topic
+        # hand_topic = "/left_hand_v1s/synergy_command"
 
+        #rostopic pub /xbotcore/left_hand/command ec_msgs/HandCmd "{pos_ref: 0.0, pos_ref_2: 0.0, pos_ref_3: 0.0, vel_ref: 0.0, tor_ref: 0.0}"
+        # 19000 close
+
+        # real tobot topic
+        hand_topic = "/xbotcore/right_hand/command"
+        self.GripperPub = rospy.Publisher(hand_topic,
+                                          HandCmd, queue_size=3)
+        
 if __name__ == "__main__":
     hand = QbHand()
-    value = 0.7
+    value = 19000
     hand.close_hand(value)
     hand.open_hand()
     print('Finish!')

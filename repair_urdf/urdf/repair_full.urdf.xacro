@@ -52,8 +52,8 @@
     <xacro:softhands type="left"
         version="v1.0_simple" 
         parent="arm_1_7" 
-        position="0 0 -0.015" 
-        orientation="0 0.0 ${PI}" 
+        position="0 0 0" 
+        orientation="0 0.0 ${PI/2}" 
         translation="0"
         operation_mode="0" 
         fixed_hands="false">
@@ -62,8 +62,8 @@
     <xacro:softhands type="right" 
         version="v1.0_simple" 
         parent="arm_2_7" 
-        position="0 -0.013900 -0.015"  
-        orientation="0 0 ${PI}" 
+        position="0 0 0"  
+        orientation="0 0 ${-PI/2}" 
         translation="0"
         operation_mode="0" 
         fixed_hands="false">

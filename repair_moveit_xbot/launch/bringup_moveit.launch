@@ -25,4 +25,7 @@
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
     </include>
 
+    <!-- launch the repair_interface node -->
+    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
+
 </launch>

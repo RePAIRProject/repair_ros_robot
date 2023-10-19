@@ -26,6 +26,9 @@ import pytransform3d.rotations as pyrot
 from qbhand_test import QbHand
 
 from sensor_msgs.msg import PointCloud2, PointField
+
+import time
+
 class ARM_ENUM(Enum):
     ARM_1 = 0
     ARM_2 = 1
@@ -121,10 +124,10 @@ class MoveItTest:
         # target_pose.pose.orientation = Quaternion(*q)
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
-        move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
+        move_arm_to_pose_req.arm = ARM_ENUM.ARM_2.value
         move_arm_to_pose_req.target_pose = target_pose
 
-        self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
+        self.move_to_pose(ARM_ENUM.ARM_2, target_pose)
 
     def move_to_pose(self, arm: ARM_ENUM, 
                         pose: PoseStamped):
@@ -387,26 +390,26 @@ if __name__ == '__main__':
     hand_api = QbHand()
     print('Connected!')
 
-    tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
-    # tf_right = get_transform(parent_frame='arm_2_tcp', child_frame='right_hand_v1s_grasp_link')
+    #tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
+    tf_right = get_transform(parent_frame='right_hand_v1s_grasp_link', child_frame='arm_2_tcp')
     # print (tf)
 
     # get hand orientation
     hand_tf = get_hand_tf()
 
     #hand_pose_world_np = get_arr_from_pose(hand_pose_world)
-    hand_pose_world_np = [0.0, 0.0, 1.0, 0, 0, 0]
+    hand_pose_world_np = [0.0, 0.0, 1.15, 0, 0, 0]
     hand_pose_world_np[2] += 0.15
     hand_pose_world_np[3:] = hand_tf
     publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
 
-    hand_arm_transform = pytr.transform_from_pq([tf_left.transform.translation.x,
-                                                      tf_left.transform.translation.y,
-                                                      tf_left.transform.translation.z,
-                                                      tf_left.transform.rotation.w,
-                                                      tf_left.transform.rotation.x,
-                                                      tf_left.transform.rotation.y,
-                                                      tf_left.transform.rotation.z
+    hand_arm_transform = pytr.transform_from_pq([tf_right.transform.translation.x,
+                                                      tf_right.transform.translation.y,
+                                                      tf_right.transform.translation.z,
+                                                      tf_right.transform.rotation.w,
+                                                      tf_right.transform.rotation.x,
+                                                      tf_right.transform.rotation.y,
+                                                      tf_right.transform.rotation.z
                                                      ])
 
     hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
@@ -434,50 +437,111 @@ if __name__ == '__main__':
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    moveit_test = MoveItTest()
     print ("Planning trajectory")
     moveit_test.test_srv(arm_target_pose)
 
     # go down to grasp (return to parallel, go down, then rotate again)
-    q_rot = quaternion_from_euler(0, -y_ang, 0)
-    q_orig = arm_target_pose_np[3:]
-    q_new = quaternion_multiply(q_rot, q_orig)
-    arm_target_pose_np[3:] = q_new
-    arm_target_pose_np[2] = arm_target_pose_np[2] - 0.055
-    q_rot = quaternion_from_euler(0, y_ang, 0)
-    q_orig = arm_target_pose_np[3:]
-    q_new = quaternion_multiply(q_rot, q_orig)
+    arm_target_pose_np = [-0.114, -0.083, 1.162, 0, 0, 0, 0]
     arm_target_pose_np[3:] = q_new
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    moveit_test = MoveItTest()
     print ("Planning trajectory")
     moveit_test.test_srv(arm_target_pose)
+
+    # - Translation: [-0.114, -0.083, 1.162]
+    # - Rotation: in Quaternion [0.794, 0.004, 0.607, 0.002]
+    #             in RPY (radian) [3.112, -1.305, 0.032]
+    #             in RPY (degree) [178.304, -74.793, 1.817]
+
 
     # close hand
-    hand_api.close_hand(0.95)
+    time.sleep(0.5)
+    hand_api.close_hand(19000)
     print('Closed!')
 
-    # lift hand
-    q_rot = quaternion_from_euler(0, -y_ang, 0)
-    q_orig = arm_target_pose_np[3:]
-    q_new = quaternion_multiply(q_rot, q_orig)
-    arm_target_pose_np[3:] = q_new
-    arm_target_pose_np[2] = arm_target_pose_np[2] + 0.07
-    q_rot = quaternion_from_euler(0, y_ang, 0)
-    q_orig = arm_target_pose_np[3:]
-    q_new = quaternion_multiply(q_rot, q_orig)
-    arm_target_pose_np[3:] = q_new
+    # # lift hand
+    # q_rot = quaternion_from_euler(0, -y_ang, 0)
+    # q_orig = arm_target_pose_np[3:]
+    # q_new = quaternion_multiply(q_rot, q_orig)
+    # arm_target_pose_np[3:] = q_new
+    # arm_target_pose_np[2] = arm_target_pose_np[2] + 0.07
+    # q_rot = quaternion_from_euler(0, y_ang, 0)
+    # q_orig = arm_target_pose_np[3:]
+    # q_new = quaternion_multiply(q_rot, q_orig)
+    # arm_target_pose_np[3:] = q_new
+
+    # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+    # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+    # print ("Planning trajectory")
+    # moveit_test.test_srv(arm_target_pose)
+
+    # lift up
+    arm_target_pose_np[:3] = [-0.087, -0.084, 1.335]
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    moveit_test = MoveItTest()
     print ("Planning trajectory")
     moveit_test.test_srv(arm_target_pose)
 
-    # close more
-    hand_api.close_hand(0.9)
-    print('Closed!')
+    # move side
+    arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
+
+    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+    print ("Planning trajectory")
+    moveit_test.test_srv(arm_target_pose)
+
+    # go down
+    arm_target_pose_np[:3] = [-0.110, -0.609, 1.257]
+
+    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+    print ("Planning trajectory")
+    moveit_test.test_srv(arm_target_pose)
+
+    # open hand
+    hand_api.close_hand(0)
+    print('Opened!')
+
+    # go up
+    arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
+
+    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+    print ("Planning trajectory")
+    moveit_test.test_srv(arm_target_pose)
+
+# lift up
+# - Translation: [-0.087, -0.084, 1.335]
+# - Rotation: in Quaternion [0.559, 0.564, 0.428, 0.432]
+#             in RPY (radian) [1.835, 0.009, 1.573]
+#             in RPY (degree) [105.111, 0.536, 90.099]
+
+# # move side
+# - Translation: [-0.087, -0.610, 1.337]
+# - Rotation: in Quaternion [0.561, 0.562, 0.429, 0.431]
+#             in RPY (radian) [1.835, 0.004, 1.570]
+#             in RPY (degree) [105.134, 0.205, 89.966]
+
+# # go down
+# - Translation: [-0.110, -0.609, 1.257]
+# - Rotation: in Quaternion [0.562, 0.562, 0.428, 0.429]
+#             in RPY (radian) [1.839, 0.002, 1.570]
+#             in RPY (degree) [105.370, 0.106, 89.933]
+
+# open hand
+
+# move up
+
+# At time 1697730613.938
+# - Translation: [-0.086, -0.609, 1.345]
+# - Rotation: in Quaternion [0.562, 0.563, 0.428, 0.430]
+#             in RPY (radian) [1.838, 0.003, 1.570]
+#             in RPY (degree) [105.328, 0.174, 89.933]
