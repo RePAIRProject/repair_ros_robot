@@ -1,4 +1,4 @@
-#include "repair_interface/moveit_xbot_birdge.h"
+#include "repair_moveit_xbot/moveit_xbot_bridge.h"
 
 JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string arm_controller_name, double goal_execution_timeout, double joint_angle_tolerance, std::shared_ptr<xbot_msgs::JointState> current_joint_state_ptr):
     nh_(nh),

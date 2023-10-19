@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(repair_interface)
+project(repair_moveit_xbot)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Release)
@@ -29,19 +29,6 @@ find_package(catkin REQUIRED COMPONENTS
   xbot_msgs
 )
 
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-
-catkin_python_setup()
-
-## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  GetCurrentPose.srv
-  MoveArmToPose.srv
-  MoveBothArms.srv
-  GripperCommand.srv
-)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
@@ -52,17 +39,10 @@ generate_messages(
   xbot_msgs
 )
 
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
-
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES repair_interface
  CATKIN_DEPENDS dynamic_reconfigure geometry_msgs roscpp rospy sensor_msgs std_msgs message_runtime
-#  DEPENDS system_lib
 )
 
 ###########
@@ -76,38 +56,16 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-add_library(${PROJECT_NAME}
-  src/moveit_client.cpp
+add_executable(moveit_xbot_bridge_node
+  src/moveit_xbot_bridge.cpp
 )
 
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
-
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node
-  src/repair_interface_node.cpp
-)
-
-## Add cmake target dependencies of the executable
-## same as for the library above
-add_dependencies(${PROJECT_NAME}_node
+add_dependencies(moveit_xbot_bridge_node
   ${catkin_EXPORTED_TARGETS}
 )
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
+target_link_libraries(moveit_xbot_bridge_node
   ${catkin_LIBRARIES}
-  ${PROJECT_NAME}
 )
 
 #############
@@ -128,5 +86,7 @@ target_link_libraries(${PROJECT_NAME}_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-install(DIRECTORY config launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(DIRECTORY
+  config launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
