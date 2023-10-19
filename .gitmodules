@@ -13,3 +13,6 @@
 [submodule "roboticsgroup_upatras_gazebo_plugins"]
 	path = roboticsgroup_upatras_gazebo_plugins
 	url = https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
+[submodule "realsense_gazebo_plugin"]
+	path = realsense_gazebo_plugin
+	url = https://github.com/issaiass/realsense_gazebo_plugin
