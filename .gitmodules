@@ -10,3 +10,6 @@
 [submodule "xbot_msgs"]
 	path = xbot_msgs
 	url = https://github.com/ADVRHumanoids/xbot_msgs.git
+[submodule "roboticsgroup_upatras_gazebo_plugins"]
+	path = roboticsgroup_upatras_gazebo_plugins
+	url = https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
