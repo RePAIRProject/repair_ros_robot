@@ -14,6 +14,8 @@
     <xacro:include filename="$(find repair_urdf)/urdf/inertial_properties.urdf.xacro" />
     <xacro:include filename="$(find repair_urdf)/urdf/limits.urdf.xacro" />
     
+    <xacro:include filename="$(find repair_urdf)/urdf/_d435.urdf.xacro"/>
+    
     <!-- Only when working with Gazebo Xbot Control -->
     <!-- DO NOT USE WITH ROS_CONTROL AND MOVEIT -->
     <!-- <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" /> -->
@@ -27,6 +29,10 @@
 
     <xacro:repair_cage parent="world">
     </xacro:repair_cage>
+
+    <xacro:sensor_d435 parent='torso_1'>
+        <origin xyz="0.09 0 -0.305" rpy="0 1.178097 0" />  
+    </xacro:sensor_d435>
 
     <xacro:repair_torso parent="sliding_guide_link">
     <origin xyz="${Torso_Ox} ${Torso_Oy} ${Torso_Oz}"

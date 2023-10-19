@@ -6,13 +6,23 @@ import sys
 import rospy
 import tf
 from geometry_msgs.msg import PoseStamped, Quaternion
-#from sensor_msgs.msg import JointState
+# from sensor_msgs.msg import JointState
 import math
 from enum import Enum
 
 from repair_interface.srv import *
 
 from typing import Union, List
+import numpy as np
+import open3d as o3d
+import pytransform3d.transformations as pytr
+
+
+from vision_utils import get_transform, get_hand_tf, publish_tf_np
+from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
+from vision_utils import get_arr_from_pose, get_point_cloud_from_ros
+from vision_utils import segment_table, transform_pose_vislab, get_pose_from_transform
+
 
 class ARM_ENUM(Enum):
     ARM_1 = 0
@@ -43,10 +53,10 @@ class MoveItTest:
         gripper_command_srv = rospy.ServiceProxy('/gripper_command_srv', GripperCommand)
 
         # create request
-        gripper_command_req = GripperCommandRequest()
-        gripper_command_req.hand = hand.value
-        gripper_command_req.command = hand_state.value
-        gripper_command_req.value = value
+        # gripper_command_req = GripperCommandRequest()
+        # gripper_command_req.hand = hand.value
+        # gripper_command_req.command = hand_state.value
+        # gripper_command_req.value = value
 
         # call service
         gripper_command_resp = gripper_command_srv(gripper_command_req)
@@ -56,32 +66,6 @@ class MoveItTest:
             rospy.loginfo("Successfully sent gripper command")
         else:
             rospy.logwarn("Could not send gripper command")
-
-
-    def test_srv(self):
-        # get current pose
-        rospy.loginfo("Waiting for get current pose service")
-        rospy.wait_for_service('/get_current_pose_srv')
-        rospy.loginfo("Service found")
-
-        # create service proxy
-        get_current_pose_srv = rospy.ServiceProxy('/get_current_pose_srv', GetCurrentPose)
-
-        # create request
-        get_current_pose_req = GetCurrentPoseRequest()
-
-        # call service
-        get_current_pose_resp = get_current_pose_srv(get_current_pose_req)
-
-        arm1_pose = get_current_pose_resp.current_pose_1
-        arm2_pose = get_current_pose_resp.current_pose_2
-
-        self.go_to_pos_1(arm1_pose)
-        #arm1_pose = get_current_pose_resp.current_pose_1
-        self.go_to_pos_2(arm1_pose)
-        self.send_gripper_command(HAND_ENUM.HAND_1, HAND_STATE_ENUM.VALUE, 1.0)
-        self.go_to_pos_1(arm1_pose)
-        #rospy.sleep(1)
 
     def go_to_pos_2(self, target_pose):
         # target_pose.pose.position.x -= 0.025
@@ -93,26 +77,10 @@ class MoveItTest:
         move_arm_to_pose_req.target_pose = target_pose
         self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
-    def go_to_pos_1(self, target_pose):
-        fragment_pose = self.get_fragment_pose()
-        target_pose.pose.position.x = fragment_pose[0]
-        target_pose.pose.position.y = fragment_pose[1]
-        target_pose.pose.position.z = fragment_pose[2] + 0.15
-
-        euler = tf.transformations.euler_from_quaternion(
-            [target_pose.pose.orientation.x,
-             target_pose.pose.orientation.y,
-             target_pose.pose.orientation.z,
-             target_pose.pose.orientation.w]
-        )
-        # = tf.transformations.quaternion_from_euler(math.pi / 2, -math.pi / 2, euler[2])
-        q = tf.transformations.quaternion_from_euler(euler[0], math.pi / 2, euler[2])
-        target_pose.pose.orientation = Quaternion(*q)
-        # create request
+    def go_to_pos(self, target_pose):
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
         move_arm_to_pose_req.target_pose = target_pose
-
         self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
     def move_to_pose(self, arm: ARM_ENUM, 
@@ -229,17 +197,61 @@ class MoveItTest:
             rospy.logwarn("Exception occurred: {0}".format(error))
             return None
 
+
 if __name__ == '__main__':
     rospy.init_node('moveit_test')
+    tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
+    # tf_right = get_transform(parent_frame='arm_2_tcp', child_frame='right_hand_v1s_grasp_link')
+    print (tf)
+
+    left_hand_arm_transform = pytr.transform_from_pq([tf_left.transform.translation.x,
+                                                      tf_left.transform.translation.y,
+                                                      tf_left.transform.translation.z,
+                                                      tf_left.transform.rotation.w,
+                                                      tf_left.transform.rotation.x,
+                                                      tf_left.transform.rotation.y,
+                                                      tf_left.transform.rotation.z
+                                                     ])
+
+    debug = False
+
+    hand_tf = get_hand_tf()
+
+    print('Starting Point Cloud Processing')
+    pcd = get_point_cloud_from_ros(debug)
+
+    print ('Table Segmentation')
+    table_cloud, object_cloud = segment_table(pcd)
+
+    voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+
+    object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+    object_cloud.paint_uniform_color([0, 1, 0])
+    table_cloud.paint_uniform_color([1, 0, 0])
+
+    if debug:
+        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+
+    initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
+    initial_pose = get_pose_from_arr(initial_pose)
+
+    # Transform the pose from the camera frame to the base frame (world)
+    hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
+    hand_pose_world_np = get_arr_from_pose(hand_pose_world)
+    hand_pose_world_np[2] += 0.15
+    hand_pose_world_np[3:] = hand_tf
+    publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
+
+    hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
+    T0 = pytr.transform_from_pq(hand_pose_world_np)
+    T1 = pytr.concat(left_hand_arm_transform, T0)
+
+    arm_target_pose_np = get_pose_from_transform(T1)
+
+    # arm_target_pose_np = get_arr_from_pose(arm_target_pose)
+    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
     moveit_test = MoveItTest()
-    moveit_test.test_srv()
-    # h = HAND_ENUM.HAND_1
-    # hs = HAND_STATE_ENUM.OPEN
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.sleep(1)
-    # hs = HAND_STATE_ENUM.CLOSE
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.sleep(1)
-    # hs = HAND_STATE_ENUM.OPEN
-    # moveit_test.send_gripper_command(h, hs)
-    # rospy.spin()
+    print ("Planning trajectory")
+    moveit_test.go_to_pos(arm_target_pose)

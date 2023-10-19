@@ -11,6 +11,8 @@
 - [roboticsgroup_upatras_gazebo_plugins](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins)
 - [gazebo2rviz](https://github.com/andreasBihlmaier/gazebo2rviz)
 - [pysdf](https://github.com/andreasBihlmaier/pysdf)
+- [realsense] (https://github.com/issaiass/realsense2_description)
+
 ### Setup
 
 - Clone the repository along with the submodules
@@ -81,6 +83,18 @@ roslaunch repair_gazebo bringup_moveit.launch
 ``` 
 
 - You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
+
+### To view the point cloud in simulation:
+
+- Install the realsense gazebo plugin:
+
+```bash
+cd ~/catkin_ws/src
+git clone https://github.com/issaiass/realsense_gazebo_plugin
+
+cd ~/catkin_ws/
+catkin build
+``` 
 
 
 ### To run pick and Place Demo:
