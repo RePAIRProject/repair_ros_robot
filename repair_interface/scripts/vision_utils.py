@@ -13,6 +13,7 @@ import pytransform3d.rotations as pyrot
 from scipy.spatial.transform import Rotation as R
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PoseStamped, Pose
+import pyrealsense2 as rs
 
 
 def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
