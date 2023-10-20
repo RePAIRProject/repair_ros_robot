@@ -208,7 +208,7 @@ def get_point_cloud_from_real_rs(debug=False):
     return pcd
 
 def segment_table(pcd):
-    plane_model, inliers = pcd.segment_plane(distance_threshold=0.005,
+    plane_model, inliers = pcd.segment_plane(distance_threshold=0.015,
                                              ransac_n=5,
                                              num_iterations=1000)
     [a, b, c, d] = plane_model
