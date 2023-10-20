@@ -1248,7 +1248,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Thumb finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_thumb_knuckle_joint" type="continuous">
+  <joint name="left_hand_v1s_thumb_knuckle_joint" type="fixed">
     <origin rpy="0.0 -0.38397275793662144 -1.5707963267948966" xyz="0.005669722 -0.029616 0.055314"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_thumb_knuckle_link"/>
@@ -1273,7 +1273,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_thumb_proximal_joint" type="continuous">
+  <joint name="left_hand_v1s_thumb_proximal_joint" type="fixed">
     <origin rpy="-0.426627741408745 0 0.0" xyz="0.033500000 0.0033 0.0"/>
     <parent link="left_hand_v1s_thumb_knuckle_link"/>
     <child link="left_hand_v1s_thumb_proximal_link"/>
@@ -1298,7 +1298,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_thumb_distal_joint" type="continuous">
+  <joint name="left_hand_v1s_thumb_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0.0"/>
     <parent link="left_hand_v1s_thumb_proximal_link"/>
     <child link="left_hand_v1s_thumb_distal_link"/>
@@ -1326,7 +1326,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Index finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_index_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_index_knuckle_joint" type="fixed">
     <origin rpy="-1.5707963267948966 -1.4835299330931884 -1.5707963267948966" xyz="-0.0033 -0.0195 0.0936994"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_index_knuckle_link"/>
@@ -1352,7 +1352,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_index_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_index_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_index_knuckle_link"/>
     <child link="left_hand_v1s_index_proximal_link"/>
@@ -1377,7 +1377,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_index_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_index_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_index_proximal_link"/>
     <child link="left_hand_v1s_index_middle_link"/>
@@ -1403,7 +1403,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_index_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_index_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_index_middle_link"/>
     <child link="left_hand_v1s_index_distal_link"/>
@@ -1432,7 +1432,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Middle finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_middle_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_knuckle_joint" type="fixed">
     <origin rpy="3.1415 -1.5707963267948966 0.0" xyz="-0.0033 0.0 0.100699"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_middle_knuckle_link"/>
@@ -1458,7 +1458,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_middle_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_middle_knuckle_link"/>
     <child link="left_hand_v1s_middle_proximal_link"/>
@@ -1483,7 +1483,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_middle_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_middle_proximal_link"/>
     <child link="left_hand_v1s_middle_middle_link"/>
@@ -1509,7 +1509,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_middle_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_middle_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_middle_middle_link"/>
     <child link="left_hand_v1s_middle_distal_link"/>
@@ -1538,7 +1538,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Ring finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_ring_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_knuckle_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.5184364298870514 1.5707963267948966" xyz="-0.0033 0.0195 0.0936994"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_ring_knuckle_link"/>
@@ -1564,7 +1564,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_ring_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_ring_knuckle_link"/>
     <child link="left_hand_v1s_ring_proximal_link"/>
@@ -1589,7 +1589,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_ring_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_ring_proximal_link"/>
     <child link="left_hand_v1s_ring_middle_link"/>
@@ -1615,7 +1615,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_ring_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_ring_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_ring_middle_link"/>
     <child link="left_hand_v1s_ring_distal_link"/>
@@ -1644,7 +1644,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Little finger
 			
   <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_little_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1s_little_knuckle_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.4835299330931884 1.5707963267948966" xyz="-0.0033 0.039 0.0836994"/>
     <parent link="left_hand_v1s_palm_link"/>
     <child link="left_hand_v1s_little_knuckle_link"/>
@@ -1670,7 +1670,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_little_proximal_joint" type="revolute">
+  <joint name="left_hand_v1s_little_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_little_knuckle_link"/>
     <child link="left_hand_v1s_little_proximal_link"/>
@@ -1695,7 +1695,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_little_middle_joint" type="revolute">
+  <joint name="left_hand_v1s_little_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_little_proximal_link"/>
     <child link="left_hand_v1s_little_middle_link"/>
@@ -1721,7 +1721,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_little_distal_joint" type="revolute">
+  <joint name="left_hand_v1s_little_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="left_hand_v1s_little_middle_link"/>
     <child link="left_hand_v1s_little_distal_link"/>
@@ -1843,7 +1843,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Thumb finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_thumb_knuckle_joint" type="continuous">
+  <joint name="right_hand_v1s_thumb_knuckle_joint" type="fixed">
     <origin rpy="0.0 -0.38397275793662144 1.5707963267948966" xyz="0.00566972 0.0296160 0.0553140"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_thumb_knuckle_link"/>
@@ -1868,7 +1868,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_thumb_proximal_joint" type="continuous">
+  <joint name="right_hand_v1s_thumb_proximal_joint" type="fixed">
     <origin rpy="0.426627741408745 0 0.0" xyz="0.033500000 -0.0033 0.0"/>
     <parent link="right_hand_v1s_thumb_knuckle_link"/>
     <child link="right_hand_v1s_thumb_proximal_link"/>
@@ -1893,7 +1893,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_thumb_distal_joint" type="continuous">
+  <joint name="right_hand_v1s_thumb_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0.0"/>
     <parent link="right_hand_v1s_thumb_proximal_link"/>
     <child link="right_hand_v1s_thumb_distal_link"/>
@@ -1921,7 +1921,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Index finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_index_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_index_knuckle_joint" type="fixed">
     <origin rpy="1.5707963267948966 -1.4835299330931884 1.5707963267948966" xyz="-0.0033 0.0195 0.0936994"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_index_knuckle_link"/>
@@ -1947,7 +1947,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_index_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_index_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_index_knuckle_link"/>
     <child link="right_hand_v1s_index_proximal_link"/>
@@ -1972,7 +1972,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_index_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_index_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_index_proximal_link"/>
     <child link="right_hand_v1s_index_middle_link"/>
@@ -1998,7 +1998,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_index_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_index_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_index_middle_link"/>
     <child link="right_hand_v1s_index_distal_link"/>
@@ -2027,7 +2027,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Middle finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_middle_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_knuckle_joint" type="fixed">
     <origin rpy="3.141592 -1.5707963267948966 0.0" xyz="-0.003300000 0.0 0.100699"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_middle_knuckle_link"/>
@@ -2053,7 +2053,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_middle_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_middle_knuckle_link"/>
     <child link="right_hand_v1s_middle_proximal_link"/>
@@ -2078,7 +2078,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_middle_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_middle_proximal_link"/>
     <child link="right_hand_v1s_middle_middle_link"/>
@@ -2104,7 +2104,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_middle_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_middle_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_middle_middle_link"/>
     <child link="right_hand_v1s_middle_distal_link"/>
@@ -2133,7 +2133,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Ring finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_ring_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_knuckle_joint" type="fixed">
     <origin rpy="-1.5707963267948966 -1.5184364298870514 -1.5707963267948966" xyz="-0.0033 -0.0195 0.0936994"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_ring_knuckle_link"/>
@@ -2159,7 +2159,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_ring_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_ring_knuckle_link"/>
     <child link="right_hand_v1s_ring_proximal_link"/>
@@ -2184,7 +2184,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_ring_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_ring_proximal_link"/>
     <child link="right_hand_v1s_ring_middle_link"/>
@@ -2210,7 +2210,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_ring_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_ring_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_ring_middle_link"/>
     <child link="right_hand_v1s_ring_distal_link"/>
@@ -2239,7 +2239,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
 			# Little finger
 			
   <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_little_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1s_little_knuckle_joint" type="fixed">
     <origin rpy="-1.5707963267948966 -1.4835299330931884 -1.5707963267948966" xyz="-0.0033 -0.039 0.0836994"/>
     <parent link="right_hand_v1s_palm_link"/>
     <child link="right_hand_v1s_little_knuckle_link"/>
@@ -2265,7 +2265,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_little_proximal_joint" type="revolute">
+  <joint name="right_hand_v1s_little_proximal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_little_knuckle_link"/>
     <child link="right_hand_v1s_little_proximal_link"/>
@@ -2290,7 +2290,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_little_middle_joint" type="revolute">
+  <joint name="right_hand_v1s_little_middle_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_little_proximal_link"/>
     <child link="right_hand_v1s_little_middle_link"/>
@@ -2316,7 +2316,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_little_distal_joint" type="revolute">
+  <joint name="right_hand_v1s_little_distal_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.020 0 0"/>
     <parent link="right_hand_v1s_little_middle_link"/>
     <child link="right_hand_v1s_little_distal_link"/>

@@ -24,6 +24,13 @@
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
     </include>
+    
+    <!-- start realsense node -->    
+    <!--<include file="$(find realsense2_camera)/launch/rs_camera.launch.launch" />
+    	<arg name="filters" value="pointcloud" />
+    	<arg name="initial_reset" value="true" />
+    </include>
+    -->	
 
     <!-- launch the repair_interface node -->
     <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
