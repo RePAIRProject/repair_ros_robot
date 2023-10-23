@@ -390,12 +390,11 @@ if __name__ == '__main__':
     side = str(rospy.get_param("/"+node_name+"/side"))
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
-    print()
-    print("Parameters")
-    print("side =", side)
-    print("gazebo =", gazebo)
-    print("type(gazebo) =", type(gazebo))
-    print()
+    # print()
+    # print("Parameters")
+    # print("side =", side)
+    # print("gazebo =", gazebo)
+    # print()
 
     # Create QbHand object for controlling the hand
     print('Connecting to qb Soft Hand')

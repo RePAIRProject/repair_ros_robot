@@ -203,31 +203,57 @@ class MoveItTest:
 
 
 if __name__ == '__main__':
-    rospy.init_node('moveit_test')
+    node_name = "moveit_test"
+    rospy.init_node(node_name)
+
+    # Get and print parameters
+    side = str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+
+    # print()
+    # print("Parameters")
+    # print("side =", side)
+    # print("gazebo =", gazebo)
+    # print()
 
     # Create QbHand object for controlling the hand
     print('Connecting to qb Soft Hand')
-    hand_api = QbHand()
-    hand_api.open_hand()
+
+    if side == "right":
+        arm_no = 2
+    elif side == "left":
+        arm_no = 1
+    else:
+        print("Error:Side value has to be left or right")
+        raise ValueError
+    
+    hand_api = QbHand(side, gazebo)
     print('Connected!')
 
-    # tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
-    #tf_right = get_transform(parent_frame='arm_2_tcp', child_frame='right_hand_v1s_grasp_link')
-    tf_right = get_transform(parent_frame='right_hand_v1s_grasp_link', child_frame='arm_2_tcp')
+    # open hand
+    hand_api.open_hand()
+    print('Opened!')
+
+    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
-    hand_arm_transform = pytr.transform_from_pq([tf_right.transform.translation.x,
-                                                      tf_right.transform.translation.y,
-                                                      tf_right.transform.translation.z,
-                                                      tf_right.transform.rotation.w,
-                                                      tf_right.transform.rotation.x,
-                                                      tf_right.transform.rotation.y,
-                                                      tf_right.transform.rotation.z
+
+
+    hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
+                                                      tf_hand.transform.translation.y,
+                                                      tf_hand.transform.translation.z,
+                                                      tf_hand.transform.rotation.w,
+                                                      tf_hand.transform.rotation.x,
+                                                      tf_hand.transform.rotation.y,
+                                                      tf_hand.transform.rotation.z
                                                      ])
 
-    debug = True
+    
 
+    # get hand orientation
     hand_tf = get_hand_tf()
+
+    debug = True
 
     print('Starting Point Cloud Processing')
     use_pyrealsense = False
@@ -304,7 +330,7 @@ if __name__ == '__main__':
 
     ### 4. close hand
     time.sleep(0.5)
-    hand_api.close_hand(19000)
+    hand_api.close_hand()
     print('Closed!')
 
     ### 5. Lift up
@@ -335,7 +361,7 @@ if __name__ == '__main__':
     moveit_test.go_to_pos(arm_target_pose)
 
     ### 7. Open hand
-    hand_api.close_hand(0)
+    hand_api.open_hand()
     print('Opened!')
 
     ### 8. Go up
