@@ -24,6 +24,11 @@ This repository contains the software to control the simulated and real RePAIR r
 
 	git clone --recurse-submodules -j8 https://github.com/RePAIRProject/repair_ros_robot.git
 	```
+- Install required Python packages
+	```bash
+	cd ~/repair_robot_ws/src/repair_ros_robot
+	pip3 install -r requirements.txt
+	```
 - Build the workspace
 	- source ROS (`source /opt/ros/noetic/setup.bash`) in all terminals
 	```bash
