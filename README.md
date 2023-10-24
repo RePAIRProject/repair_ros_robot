@@ -41,7 +41,7 @@ This repository contains the software to control the simulated and real RePAIR r
 	- Copy the fragment model folder from ```repair_urdf/sdf/frag3``` to ```~/.gazebo/models/frag3```.
 	- Change the path in file `pysdf/src/pysdf/parser.py` line `26` to your `catkin_ws` src path.
 
-- Install XBot2 to use the real robot drivers ([Source]([Xbot2](https://advrhumanoids.github.io/xbot2/master/index.html)))
+- Install XBot2 to use the real robot drivers ([Source](https://advrhumanoids.github.io/xbot2/master/index.html))
 	```bash
 	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 
@@ -103,7 +103,7 @@ roslaunch repair_gazebo bringup_moveit.launch
 
 - You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
 
-## Use XBot2
+## XBot2
 XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
 
 ### Dummy mode
