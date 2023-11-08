@@ -10,7 +10,10 @@
 <!-- use_updated_wrist: visual parameter. if true, we load the latest meshes (which are adapted to the
 results of the optimization), otherwise we go with the old ones (generated for a spherical wrist) -->
 
-    <xacro:macro name="repair_arm" params="id rot parent *origin">
+
+    <xacro:include filename="$(find repair_urdf)/urdf/repair_arm_collision.urdf.xacro" />
+
+    <xacro:macro name="repair_arm" params="id rot parent *origin useCollisionMesh">
 
         <xacro:property name="limit_index" value="0" />
         
@@ -33,11 +36,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_1_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_2"> 
@@ -55,11 +54,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_2_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_3">
@@ -77,11 +72,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_3_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_4"> 
@@ -99,11 +90,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_4_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_5"> 
@@ -121,11 +108,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_5_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_6"> 
@@ -143,11 +126,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_6_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_7"> 
@@ -165,11 +144,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
                 <material name="dark"/>
             </visual>
 
-            <collision>
-                <geometry>
-                    <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 ${rot*0.001} 0.001"/>
-                </geometry>
-            </collision>
+            <xacro:arm_7_collision id="${id}" rot="${rot}" isMesh="${useCollisionMesh}" />
         </link>
 
         <link name="arm_${id}_tcp">

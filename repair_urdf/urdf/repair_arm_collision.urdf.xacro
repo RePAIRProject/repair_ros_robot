@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair_arm_collision">
+
+  <xacro:macro name="collision_mesh" params="link_name mesh_filename scale">
+    <collision name="${link_name}_collision">
+      <geometry>
+        <mesh filename="${mesh_filename}" scale="${scale}" />
+      </geometry>
+    </collision>
+  </xacro:macro>
+
+  <xacro:macro name="collision_sphere" params="origin radius">
+    <collision>
+      <origin xyz="${origin}" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="${radius}" />
+      </geometry>
+    </collision>
+  </xacro:macro>
+
+  <!-- map link to collision mesh -->
+  <xacro:macro name="arm_1_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_1" mesh_filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 0 0.025" radius="0.05" />
+      <xacro:collision_sphere origin="0.03 ${rot*-0.025} 0.125" radius="0.05" />
+    </xacro:unless>
+  </xacro:macro>
+
+  <xacro:macro name="arm_2_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_2" mesh_filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 0 -0.02" radius="0.05" />
+      <xacro:collision_sphere origin="0 ${rot*-0.085} -0.06" radius="0.05" />
+    </xacro:unless>
+  </xacro:macro>
+
+  <xacro:macro name="arm_3_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_3" mesh_filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 0 -0.1" radius="0.05" />
+      <xacro:collision_sphere origin="-0.025 0 -0.2" radius="0.05" />
+      <xacro:collision_sphere origin="0.025 ${rot*0.03} -0.3" radius="0.05" />
+    </xacro:unless>
+  </xacro:macro>
+
+  <xacro:macro name="arm_4_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_4" mesh_filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 0 -0.025" radius="0.05" />
+      <xacro:collision_sphere origin="0 ${rot*-0.05} -0.05" radius="0.05" />
+    </xacro:unless>
+  </xacro:macro>
+
+  <xacro:macro name="arm_5_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_5" mesh_filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 0 -0.07" radius="0.05" />
+      <xacro:collision_sphere origin="0 ${rot*-0.07} -0.15" radius="0.05" />
+      <xacro:collision_sphere origin="0 ${rot*-0.1} -0.25" radius="0.05" />
+    </xacro:unless>
+  </xacro:macro>
+
+  <xacro:macro name="arm_6_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_6" mesh_filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 ${rot*-0.025} 0.05" radius="0.07" />
+    </xacro:unless>
+  </xacro:macro>
+
+  <xacro:macro name="arm_7_collision" params="id rot isMesh">
+    <xacro:if value="${isMesh}">
+      <xacro:collision_mesh link_name="arm_${id}_7" mesh_filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 ${rot*0.001} 0.001" />
+    </xacro:if>
+    <xacro:unless value="${isMesh}">
+      <xacro:collision_sphere origin="0 0 0.0" radius="0.05" />
+    </xacro:unless>
+  </xacro:macro>
+
+</robot>
