@@ -39,17 +39,17 @@
             rpy="${Torso_roll} ${Torso_pitch} ${Torso_yaw}" />
     </xacro:repair_torso>
 
-    <xacro:repair_arm id="2"  rot="1"  parent="torso_1" useCollisionMesh="false">
+    <xacro:repair_arm id="2"  rot="1"  parent="torso_1" useCollisionMesh="true">
       <origin xyz="${Shoulder_1_Ox} ${Shoulder_1_Oy} ${Shoulder_1_Oz}"
               rpy="${Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
     </xacro:repair_arm>
 
-    <xacro:repair_arm id="1"  rot="-1"  parent="torso_1" useCollisionMesh="false">
+    <xacro:repair_arm id="1"  rot="-1"  parent="torso_1" useCollisionMesh="true">
         <origin xyz="${Shoulder_1_Ox} ${-Shoulder_1_Oy} ${Shoulder_1_Oz}"
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
       </xacro:repair_arm>
     
-    <xacro:softhands type="left"
+    <!-- <xacro:softhands type="left"
         version="v1.0_simple" 
         parent="arm_1_7" 
         position="0 0 0" 
@@ -67,14 +67,14 @@
         translation="0"
         operation_mode="0" 
         fixed_hands="false">
-    </xacro:softhands>
+    </xacro:softhands> -->
 
     <!-- <gazebo reference="table_top_link">
         <selfCollide> 1 </selfCollide>
     </gazebo> -->
 
-    <xacro:repair_hand_transmission id="left" />
+    <!-- <xacro:repair_hand_transmission id="left" />
 
-    <xacro:repair_hand_transmission id="right" />
+    <xacro:repair_hand_transmission id="right" /> -->
 
 </robot>

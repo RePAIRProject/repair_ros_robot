@@ -1,4 +1,3 @@
-fake_interpolating_controller_rate: 10
 controller_list:
   - name: fake_arm_1_controller
     type: $(arg fake_execution_type)
