@@ -86,6 +86,7 @@
     </xacro:if>
     <xacro:unless value="${isMesh}">
       <xacro:collision_sphere origin="0 0 0.0" radius="0.05" />
+      <xacro:collision_sphere origin="${rot*0.01} 0 0.14" radius="0.11" />
     </xacro:unless>
   </xacro:macro>
 
