@@ -64,15 +64,14 @@
     <disable_collisions link1="arm_1_1" link2="arm_1_2" reason="Adjacent"/>
     <disable_collisions link1="arm_1_1" link2="arm_1_3" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_1_4" reason="Never"/>
+    <disable_collisions link1="arm_1_1" link2="arm_1_5" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_1_6" reason="Never"/>
-    <disable_collisions link1="arm_1_1" link2="arm_1_7" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_2_1" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_2_2" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_2_3" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_2_4" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_2_5" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="arm_2_6" reason="Never"/>
-    <disable_collisions link1="arm_1_1" link2="arm_2_7" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_1" link2="leg2_link" reason="Never"/>
@@ -93,14 +92,12 @@
     <disable_collisions link1="arm_1_2" link2="arm_1_4" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_1_5" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_1_6" reason="Never"/>
-    <disable_collisions link1="arm_1_2" link2="arm_1_7" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_2_1" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_2_2" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_2_3" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_2_4" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_2_5" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="arm_2_6" reason="Never"/>
-    <disable_collisions link1="arm_1_2" link2="arm_2_7" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="leg2_link" reason="Never"/>
@@ -118,12 +115,14 @@
     <disable_collisions link1="arm_1_2" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="arm_1_2" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="arm_1_4" reason="Adjacent"/>
+    <disable_collisions link1="arm_1_3" link2="arm_1_5" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="arm_1_6" reason="Never"/>
-    <disable_collisions link1="arm_1_3" link2="arm_1_7" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="arm_2_1" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="arm_2_2" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="arm_2_3" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="arm_2_4" reason="Never"/>
+    <disable_collisions link1="arm_1_3" link2="arm_2_5" reason="Never"/>
+    <disable_collisions link1="arm_1_3" link2="arm_2_6" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_3" link2="leg2_link" reason="Never"/>
@@ -140,11 +139,12 @@
     <disable_collisions link1="arm_1_3" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="arm_1_5" reason="Adjacent"/>
     <disable_collisions link1="arm_1_4" link2="arm_1_6" reason="Never"/>
-    <disable_collisions link1="arm_1_4" link2="arm_1_7" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="arm_2_1" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="arm_2_2" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="arm_2_3" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="arm_2_4" reason="Never"/>
+    <disable_collisions link1="arm_1_4" link2="arm_2_5" reason="Never"/>
+    <disable_collisions link1="arm_1_4" link2="arm_2_6" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="leg2_link" reason="Never"/>
@@ -160,8 +160,11 @@
     <disable_collisions link1="arm_1_4" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="arm_1_4" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_1_5" link2="arm_1_6" reason="Adjacent"/>
+    <disable_collisions link1="arm_1_5" link2="arm_1_7" reason="Default"/>
     <disable_collisions link1="arm_1_5" link2="arm_2_1" reason="Never"/>
     <disable_collisions link1="arm_1_5" link2="arm_2_2" reason="Never"/>
+    <disable_collisions link1="arm_1_5" link2="arm_2_3" reason="Never"/>
+    <disable_collisions link1="arm_1_5" link2="arm_2_4" reason="Never"/>
     <disable_collisions link1="arm_1_5" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_5" link2="leg2_link" reason="Never"/>
     <disable_collisions link1="arm_1_5" link2="leg3_link" reason="Never"/>
@@ -176,6 +179,8 @@
     <disable_collisions link1="arm_1_6" link2="arm_1_7" reason="Adjacent"/>
     <disable_collisions link1="arm_1_6" link2="arm_2_1" reason="Never"/>
     <disable_collisions link1="arm_1_6" link2="arm_2_2" reason="Never"/>
+    <disable_collisions link1="arm_1_6" link2="arm_2_3" reason="Never"/>
+    <disable_collisions link1="arm_1_6" link2="arm_2_4" reason="Never"/>
     <disable_collisions link1="arm_1_6" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_6" link2="leg2_link" reason="Never"/>
     <disable_collisions link1="arm_1_6" link2="leg3_link" reason="Never"/>
@@ -187,8 +192,6 @@
     <disable_collisions link1="arm_1_6" link2="vbar2_link" reason="Never"/>
     <disable_collisions link1="arm_1_6" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="arm_1_6" link2="vbar4_link" reason="Never"/>
-    <disable_collisions link1="arm_1_7" link2="arm_2_1" reason="Never"/>
-    <disable_collisions link1="arm_1_7" link2="arm_2_2" reason="Never"/>
     <disable_collisions link1="arm_1_7" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_1_7" link2="leg2_link" reason="Never"/>
     <disable_collisions link1="arm_1_7" link2="leg3_link" reason="Never"/>
@@ -197,14 +200,13 @@
     <disable_collisions link1="arm_1_7" link2="obar2_link" reason="Never"/>
     <disable_collisions link1="arm_1_7" link2="table_top_link" reason="Default"/>
     <disable_collisions link1="arm_1_7" link2="vbar1_link" reason="Never"/>
-    <disable_collisions link1="arm_1_7" link2="vbar2_link" reason="Never"/>
     <disable_collisions link1="arm_1_7" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="arm_1_7" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_2_1" link2="arm_2_2" reason="Adjacent"/>
     <disable_collisions link1="arm_2_1" link2="arm_2_3" reason="Never"/>
     <disable_collisions link1="arm_2_1" link2="arm_2_4" reason="Never"/>
+    <disable_collisions link1="arm_2_1" link2="arm_2_5" reason="Never"/>
     <disable_collisions link1="arm_2_1" link2="arm_2_6" reason="Never"/>
-    <disable_collisions link1="arm_2_1" link2="arm_2_7" reason="Never"/>
     <disable_collisions link1="arm_2_1" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_2_1" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_2_1" link2="leg2_link" reason="Never"/>
@@ -225,7 +227,6 @@
     <disable_collisions link1="arm_2_2" link2="arm_2_4" reason="Never"/>
     <disable_collisions link1="arm_2_2" link2="arm_2_5" reason="Never"/>
     <disable_collisions link1="arm_2_2" link2="arm_2_6" reason="Never"/>
-    <disable_collisions link1="arm_2_2" link2="arm_2_7" reason="Never"/>
     <disable_collisions link1="arm_2_2" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_2_2" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_2_2" link2="leg2_link" reason="Never"/>
@@ -243,8 +244,8 @@
     <disable_collisions link1="arm_2_2" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="arm_2_2" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_2_3" link2="arm_2_4" reason="Adjacent"/>
+    <disable_collisions link1="arm_2_3" link2="arm_2_5" reason="Never"/>
     <disable_collisions link1="arm_2_3" link2="arm_2_6" reason="Never"/>
-    <disable_collisions link1="arm_2_3" link2="arm_2_7" reason="Never"/>
     <disable_collisions link1="arm_2_3" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_2_3" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_2_3" link2="leg2_link" reason="Never"/>
@@ -261,7 +262,6 @@
     <disable_collisions link1="arm_2_3" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_2_4" link2="arm_2_5" reason="Adjacent"/>
     <disable_collisions link1="arm_2_4" link2="arm_2_6" reason="Never"/>
-    <disable_collisions link1="arm_2_4" link2="arm_2_7" reason="Never"/>
     <disable_collisions link1="arm_2_4" link2="camera_link" reason="Never"/>
     <disable_collisions link1="arm_2_4" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_2_4" link2="leg2_link" reason="Never"/>
@@ -277,6 +277,7 @@
     <disable_collisions link1="arm_2_4" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="arm_2_4" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="arm_2_5" link2="arm_2_6" reason="Adjacent"/>
+    <disable_collisions link1="arm_2_5" link2="arm_2_7" reason="Default"/>
     <disable_collisions link1="arm_2_5" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="arm_2_5" link2="leg2_link" reason="Never"/>
     <disable_collisions link1="arm_2_5" link2="leg3_link" reason="Never"/>
@@ -310,7 +311,6 @@
     <disable_collisions link1="arm_2_7" link2="vbar1_link" reason="Never"/>
     <disable_collisions link1="arm_2_7" link2="vbar2_link" reason="Never"/>
     <disable_collisions link1="arm_2_7" link2="vbar3_link" reason="Never"/>
-    <disable_collisions link1="arm_2_7" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="camera_link" link2="leg1_link" reason="Never"/>
     <disable_collisions link1="camera_link" link2="leg2_link" reason="Never"/>
     <disable_collisions link1="camera_link" link2="leg3_link" reason="Never"/>
