@@ -3,8 +3,9 @@ Panels:
     Help Height: 216
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
-      Splitter Ratio: 0.6032448410987854
+      Expanded:
+        - /Traj1
+      Splitter Ratio: 0.5973451137542725
     Tree Height: 1019
   - Class: rviz/Help
     Name: Help
@@ -125,8 +126,14 @@ Visualization Manager:
           Value: false
         camera_right_ir_optical_frame:
           Value: false
-        left_hand_v1s_grasp_link:
+        frag3__fragment_base_link:
           Value: true
+        gazebo_world:
+          Value: false
+        ground_plane__link:
+          Value: false
+        left_hand_v1s_grasp_link:
+          Value: false
         left_hand_v1s_index_distal_link:
           Value: false
         left_hand_v1s_index_knuckle_link:
@@ -184,6 +191,114 @@ Visualization Manager:
         obar3_link:
           Value: false
         obar4_link:
+          Value: false
+        repair__arm_1_1:
+          Value: false
+        repair__arm_1_2:
+          Value: false
+        repair__arm_1_3:
+          Value: false
+        repair__arm_1_4:
+          Value: false
+        repair__arm_1_5:
+          Value: false
+        repair__arm_1_6:
+          Value: false
+        repair__arm_1_7:
+          Value: false
+        repair__arm_2_1:
+          Value: false
+        repair__arm_2_2:
+          Value: false
+        repair__arm_2_3:
+          Value: false
+        repair__arm_2_4:
+          Value: false
+        repair__arm_2_5:
+          Value: false
+        repair__arm_2_6:
+          Value: false
+        repair__arm_2_7:
+          Value: false
+        repair__left_hand_v1s_index_distal_link:
+          Value: false
+        repair__left_hand_v1s_index_knuckle_link:
+          Value: false
+        repair__left_hand_v1s_index_middle_link:
+          Value: false
+        repair__left_hand_v1s_index_proximal_link:
+          Value: false
+        repair__left_hand_v1s_little_distal_link:
+          Value: false
+        repair__left_hand_v1s_little_knuckle_link:
+          Value: false
+        repair__left_hand_v1s_little_middle_link:
+          Value: false
+        repair__left_hand_v1s_little_proximal_link:
+          Value: false
+        repair__left_hand_v1s_middle_distal_link:
+          Value: false
+        repair__left_hand_v1s_middle_knuckle_link:
+          Value: false
+        repair__left_hand_v1s_middle_middle_link:
+          Value: false
+        repair__left_hand_v1s_middle_proximal_link:
+          Value: false
+        repair__left_hand_v1s_ring_distal_link:
+          Value: false
+        repair__left_hand_v1s_ring_knuckle_link:
+          Value: false
+        repair__left_hand_v1s_ring_middle_link:
+          Value: false
+        repair__left_hand_v1s_ring_proximal_link:
+          Value: false
+        repair__left_hand_v1s_thumb_distal_link:
+          Value: false
+        repair__left_hand_v1s_thumb_knuckle_link:
+          Value: false
+        repair__left_hand_v1s_thumb_proximal_link:
+          Value: false
+        repair__right_hand_v1s_index_distal_link:
+          Value: false
+        repair__right_hand_v1s_index_knuckle_link:
+          Value: false
+        repair__right_hand_v1s_index_middle_link:
+          Value: false
+        repair__right_hand_v1s_index_proximal_link:
+          Value: false
+        repair__right_hand_v1s_little_distal_link:
+          Value: false
+        repair__right_hand_v1s_little_knuckle_link:
+          Value: false
+        repair__right_hand_v1s_little_middle_link:
+          Value: false
+        repair__right_hand_v1s_little_proximal_link:
+          Value: false
+        repair__right_hand_v1s_middle_distal_link:
+          Value: false
+        repair__right_hand_v1s_middle_knuckle_link:
+          Value: false
+        repair__right_hand_v1s_middle_middle_link:
+          Value: false
+        repair__right_hand_v1s_middle_proximal_link:
+          Value: false
+        repair__right_hand_v1s_ring_distal_link:
+          Value: false
+        repair__right_hand_v1s_ring_knuckle_link:
+          Value: false
+        repair__right_hand_v1s_ring_middle_link:
+          Value: false
+        repair__right_hand_v1s_ring_proximal_link:
+          Value: false
+        repair__right_hand_v1s_thumb_distal_link:
+          Value: false
+        repair__right_hand_v1s_thumb_knuckle_link:
+          Value: false
+        repair__right_hand_v1s_thumb_proximal_link:
+          Value: false
+        repair__table_top_link:
+          Value: false
+        repair__torso_1:
           Value: false
         right_hand_v1s_grasp_link:
           Value: true
@@ -246,7 +361,7 @@ Visualization Manager:
         working_surface_link:
           Value: false
         world:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -255,6 +370,119 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
+          gazebo_world:
+            frag3__fragment_base_link:
+              {}
+            ground_plane__link:
+              {}
+            repair__arm_1_1:
+              {}
+            repair__arm_1_2:
+              {}
+            repair__arm_1_3:
+              {}
+            repair__arm_1_4:
+              {}
+            repair__arm_1_5:
+              {}
+            repair__arm_1_6:
+              {}
+            repair__arm_1_7:
+              {}
+            repair__arm_2_1:
+              {}
+            repair__arm_2_2:
+              {}
+            repair__arm_2_3:
+              {}
+            repair__arm_2_4:
+              {}
+            repair__arm_2_5:
+              {}
+            repair__arm_2_6:
+              {}
+            repair__arm_2_7:
+              {}
+            repair__left_hand_v1s_index_distal_link:
+              {}
+            repair__left_hand_v1s_index_knuckle_link:
+              {}
+            repair__left_hand_v1s_index_middle_link:
+              {}
+            repair__left_hand_v1s_index_proximal_link:
+              {}
+            repair__left_hand_v1s_little_distal_link:
+              {}
+            repair__left_hand_v1s_little_knuckle_link:
+              {}
+            repair__left_hand_v1s_little_middle_link:
+              {}
+            repair__left_hand_v1s_little_proximal_link:
+              {}
+            repair__left_hand_v1s_middle_distal_link:
+              {}
+            repair__left_hand_v1s_middle_knuckle_link:
+              {}
+            repair__left_hand_v1s_middle_middle_link:
+              {}
+            repair__left_hand_v1s_middle_proximal_link:
+              {}
+            repair__left_hand_v1s_ring_distal_link:
+              {}
+            repair__left_hand_v1s_ring_knuckle_link:
+              {}
+            repair__left_hand_v1s_ring_middle_link:
+              {}
+            repair__left_hand_v1s_ring_proximal_link:
+              {}
+            repair__left_hand_v1s_thumb_distal_link:
+              {}
+            repair__left_hand_v1s_thumb_knuckle_link:
+              {}
+            repair__left_hand_v1s_thumb_proximal_link:
+              {}
+            repair__right_hand_v1s_index_distal_link:
+              {}
+            repair__right_hand_v1s_index_knuckle_link:
+              {}
+            repair__right_hand_v1s_index_middle_link:
+              {}
+            repair__right_hand_v1s_index_proximal_link:
+              {}
+            repair__right_hand_v1s_little_distal_link:
+              {}
+            repair__right_hand_v1s_little_knuckle_link:
+              {}
+            repair__right_hand_v1s_little_middle_link:
+              {}
+            repair__right_hand_v1s_little_proximal_link:
+              {}
+            repair__right_hand_v1s_middle_distal_link:
+              {}
+            repair__right_hand_v1s_middle_knuckle_link:
+              {}
+            repair__right_hand_v1s_middle_middle_link:
+              {}
+            repair__right_hand_v1s_middle_proximal_link:
+              {}
+            repair__right_hand_v1s_ring_distal_link:
+              {}
+            repair__right_hand_v1s_ring_knuckle_link:
+              {}
+            repair__right_hand_v1s_ring_middle_link:
+              {}
+            repair__right_hand_v1s_ring_proximal_link:
+              {}
+            repair__right_hand_v1s_thumb_distal_link:
+              {}
+            repair__right_hand_v1s_thumb_knuckle_link:
+              {}
+            repair__right_hand_v1s_thumb_proximal_link:
+              {}
+            repair__table_top_link:
+              {}
+            repair__torso_1:
+              {}
           table_top_link:
             leg1_link:
               vbar1_link:
@@ -380,8 +608,7 @@ Visualization Manager:
       Marker Topic: /arm_1/dawn_ik_solver/robot_monitor_visualization
       Name: MarkerArray
       Namespaces:
-        internal_collision: true
-        robot_collision_body: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -831,9 +1058,25 @@ Visualization Manager:
       Marker Topic: /arm_2/dawn_ik_solver/robot_monitor_visualization
       Name: MarkerArray
       Namespaces:
-        internal_collision: true
-        robot_collision_body: true
+        {}
       Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Arrow Length: 0.30000001192092896
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
+      Class: rviz/PoseArray
+      Color: 114; 159; 207
+      Enabled: true
+      Head Length: 0.07000000029802322
+      Head Radius: 0.029999999329447746
+      Name: Traj
+      Queue Size: 10
+      Shaft Length: 0.23000000417232513
+      Shaft Radius: 0.009999999776482582
+      Shape: Arrow (3D)
+      Topic: /tu_pose_array
+      Unreliable: false
       Value: true
   Enabled: true
   Global Options:
@@ -851,7 +1094,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.82647442817688
+      Distance: 2.197007656097412
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -859,17 +1102,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.75
       Focal Point:
-        X: -0.07893235981464386
-        Y: 0.18048854172229767
-        Z: 1.1418992280960083
+        X: -0.007782433182001114
+        Y: 0.061850160360336304
+        Z: 1.1373741626739502
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.24979738891124725
+      Pitch: -0.10020259767770767
       Target Frame: world
-      Yaw: 6.26312780380249
+      Yaw: 0.28494149446487427
     Saved: ~
 Window Geometry:
   Displays:
@@ -883,5 +1126,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 2407
-  X: 1642
-  Y: 54
+  X: 4172
+  Y: 373

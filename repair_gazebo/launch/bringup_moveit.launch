@@ -27,7 +27,7 @@
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
     </include>
 
-    <!-- <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/> -->
+    <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
 
     <!-- launch the repair_interface node -->
     <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
