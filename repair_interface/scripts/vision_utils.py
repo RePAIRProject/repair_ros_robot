@@ -14,7 +14,7 @@ from scipy.spatial.transform import Rotation as R
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PoseStamped, Pose
 import pyrealsense2 as rs
-
+import pdb 
 
 def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
     tfBuffer = tf2_ros.Buffer()
@@ -108,6 +108,7 @@ def get_arr_from_pose(pose):
 def get_point_cloud_from_ros(debug=False):
     point_cloud = rospy.wait_for_message("/camera/depth/color/points", PointCloud2)
     pc = []
+
     for p in pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True):
         if np.linalg.norm(p) > 0.65:
             pc.append([p[0], p[1], p[2]])

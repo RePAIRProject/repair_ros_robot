@@ -36,6 +36,55 @@ This repository contains the software to control the simulated and real RePAIR r
 
 	catkin build
 	```
+	
+	<summary>Troubleshooting
+	<details>
+	If you get errors during build similar to (where package name is some name):
+
+	```bash
+	CMake Error at /opt/ros/noetic/share/catkin/cmake/catkinConfig.cmake:83 (find_package):
+	Could not find a package configuration file provided by
+	"package_name" with any of the following names:
+
+		package_nameConfig.cmake
+		package_name-config.cmake
+
+	Add the installation prefix of "package_name" to CMAKE_PREFIX_PATH
+	or set "package_name" to a directory containing one of the
+	above files.  If "package_name" provides a separate development
+	package or SDK, be sure it has been installed.
+	```
+
+	Check the list below:
+	<h3>Failure for realsense2 (missing "ddynamic_reconfigure")</h3>
+	
+	From [this issue](https://github.com/IntelRealSense/realsense-ros/issues/812) it looks like it should be installed by running:
+	```bash
+	sudo apt-get install ros-noetic-ddynamic-reconfigure 
+	```
+
+	<h3>Failure for repair_moveit_xbot (missing "moveit_ros_planning")</h3>
+	
+	Install moveit by
+	```
+	sudo apt-get install ros-noetic-moveit
+	```
+	<h3>Failure for repair_moveit_xbot (missing "rviz_visual_tools")</h3>
+	
+	Install it by
+	```
+	sudo apt-get install ros-noetic-rviz-visual-tools
+	```
+	<h3>Failure for repair_moveit_xbot (missing "moveit_visual_tools")</h3>
+	
+	Install it by
+	```
+	sudo apt-get install ros-noetic-moveit-visual-tools 
+	```
+	</details>
+	</summary>
+	
+
 	- After successful build, source the workspace in all the terminals
 	```
 	cd ~/repair_robot_ws

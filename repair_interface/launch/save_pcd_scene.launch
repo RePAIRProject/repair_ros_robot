@@ -1,0 +1,8 @@
+<launch>
+    <arg name="side" default="right"/>
+    <arg name="gazebo" default="true"/>
+    <node name="moveit_test" pkg="repair_interface" type="save_pcd.py" output="screen">
+    <param name="side" value="right" />
+    <param name="gazebo" value="false" />
+    </node>
+</launch>

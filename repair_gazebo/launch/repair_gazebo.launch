@@ -30,10 +30,40 @@
   <param name="robot_description_gz"
          command="$(find xacro)/xacro $(find repair_urdf)/urdf/repair_full.urdf.xacro"/>
 
+  <!-- spawn the first fragment    
+  <arg name="fragment2_model" default="$(find repair_urdf)/sdf/frag2/model.sdf"/>
+  <node name="fragment2_description1" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg fragment2_model) -sdf -model frag2 -x 0.0 -y 0.0 -z 1.5" />
+
+  <arg name="fragment1_model" default="$(find repair_urdf)/sdf/frag/model.sdf"/>
+  <node name="fragment1_description1" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg fragment1_model) -sdf -model frag -x -1.0 -y 1.0 -z 2.5" /> -->
+  
+  <!-- spawn the rpf 123 fragment -->
+   <arg name="RPf_00123_model" default="$(find repair_urdf)/sdf/RPf_00123/model.sdf"/>
+  <node name="RPf_00123_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg RPf_00123_model) -sdf -model RPf_00123 -x 0.2 -y 0.2 -z 1.5" />
+
+  <arg name="RPf_00124_model" default="$(find repair_urdf)/sdf/RPf_00124/model.sdf"/>
+  <node name="RPf_00124_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg RPf_00124_model) -sdf -model RPf_00124 -x 0.2 -y -0.2 -z 1.5" />
+
+  <arg name="RPf_00125_model" default="$(find repair_urdf)/sdf/RPf_00125/model.sdf"/>
+  <node name="RPf_00125_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg RPf_00125_model) -sdf -model RPf_00125 -x -0.2 -y 0.2 -z 1.5" />
+
+  <arg name="RPf_00126_model" default="$(find repair_urdf)/sdf/RPf_00126/model.sdf"/>
+  <node name="RPf_00126_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg RPf_00126_model) -sdf -model RPf_00126 -x -0.2 -y -0.2 -z 1.5" />
+
+  <!-- <arg name="frag2_model" default="$(find repair_urdf)/sdf/frag2/model.sdf"/>
+  <node name="frag2_description" pkg="gazebo_ros" type="spawn_model" 
+  args="-file $(arg frag2_model) -sdf -model frag2 -x 0.0 -y 0.0 -z 1.5" /> -->
+
   <!-- spawn the second fragment -->
-  <arg name="fragment_model" default="$(find repair_urdf)/sdf/frag3/model.sdf"/>
+  <!-- <arg name="fragment_model" default="$(find repair_urdf)/sdf/frag3/model.sdf"/>
   <node name="fragment_description" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(arg fragment_model) -sdf -model frag3 -x 0.0 -y 0.0 -z 1.5" />
+  args="-file $(arg fragment_model) -sdf -model frag3 -x 0.0 -y 0.0 -z 1.5" /> -->
   
   <group if="$(arg gazebo)">
   <!-- start gazebo server-->

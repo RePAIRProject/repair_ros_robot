@@ -27,6 +27,7 @@ from vision_utils import segment_table, transform_pose_vislab, get_pose_from_tra
 
 from qbhand_test import QbHand
 
+import pdb 
 
 class ARM_ENUM(Enum):
     ARM_1 = 0
@@ -210,11 +211,13 @@ if __name__ == '__main__':
     side = str(rospy.get_param("/"+node_name+"/side"))
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
-    # print()
-    # print("Parameters")
-    # print("side =", side)
-    # print("gazebo =", gazebo)
-    # print()
+    print()
+    print("Parameters")
+    print("side =", side)
+    print("gazebo =", gazebo)
+    print()
+
+    #pdb.set_trace()
 
     # Create QbHand object for controlling the hand
     print('Connecting to qb Soft Hand')
@@ -257,6 +260,7 @@ if __name__ == '__main__':
 
     print('Starting Point Cloud Processing')
     use_pyrealsense = False
+    pdb.set_trace()
     if use_pyrealsense:
         pcd = get_point_cloud_from_real_rs(debug)
     else:
