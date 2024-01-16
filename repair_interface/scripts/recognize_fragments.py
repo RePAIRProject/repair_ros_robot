@@ -146,7 +146,7 @@ def main():
                 fpfh_db_obj = fpfh_feats(db_obj)
                 # distance
                 pdb.set_trace()
-                dist = np.linalg.norm(fpfh_cl_obj - fpfh_db_obj)
+                dist = np.linalg.norm(fpfh_cl_obj.data - fpfh_db_obj.data)
                 dist_matrix[j, k] = dist #np.linalg.norm(np.array(ico.points), np.array(ido.points))
         
 
