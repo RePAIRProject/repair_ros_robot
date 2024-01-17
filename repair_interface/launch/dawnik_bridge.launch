@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- launch the dawnik_bridge node -->
+    <node name="dawnik_bridge_node" pkg="repair_interface" type="dawnik_bridge_node" output="screen" >
+        <remap from="/dawnik/arm1/command" to="/dawnik_bridge/arm1/command" />
+        <remap from="/dawnik/arm2/command" to="/dawnik_bridge/arm2/command" />
+    </node>
+</launch>

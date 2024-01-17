@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(repair_interface)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "-fpermissive")
 add_compile_options(
@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   control_msgs
+  trajectory_msgs
   std_msgs
   tf2_ros
   moveit_core
@@ -91,21 +92,29 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
+## Declare C++ executable
 add_executable(${PROJECT_NAME}_node
   src/repair_interface_node.cpp
 )
 
-## Add cmake target dependencies of the executable
-## same as for the library above
 add_dependencies(${PROJECT_NAME}_node
   ${catkin_EXPORTED_TARGETS}
 )
 
-## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
+  ${catkin_LIBRARIES}
+  ${PROJECT_NAME}
+)
+
+add_executable(dawnik_bridge_node
+  src/dawnik_bridge_node.cpp
+)
+
+add_dependencies(dawnik_bridge_node
+  ${catkin_EXPORTED_TARGETS}
+)
+
+target_link_libraries(dawnik_bridge_node
   ${catkin_LIBRARIES}
   ${PROJECT_NAME}
 )
