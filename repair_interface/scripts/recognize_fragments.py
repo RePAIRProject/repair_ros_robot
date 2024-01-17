@@ -3,6 +3,7 @@ import os
 import pdb 
 import numpy as np 
 import matplotlib.pyplot as plt 
+from open3d.visualization import draw_geometries as gdraw
 
 def load_from_db(folder, names_list):
     """
@@ -58,43 +59,20 @@ def cluster_objects(pcd):
 
     return pcd, labels, objects
 
-def fpfh_feats(pcd):
+def fpfh_feats(pcd, max_nn=30):
+    r1 = 0.5
     # Estimate normals
-    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-
+    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=r1, max_nn=30))
+    r2 = 0.8
     # Compute FPFH feature
-    fpfh = o3d.pipelines.registration.compute_fpfh_feature(pcd, o3d.geometry.KDTreeSearchParamHybrid(radius=0.2, max_nn=100))
-
+    fpfh = o3d.pipelines.registration.compute_fpfh_feature(pcd, o3d.geometry.KDTreeSearchParamHybrid(radius=r2, max_nn=100))
     return fpfh
 
 def normalize_point_cloud(pcd):
-    # Compute the centroid of the point cloud
     centroid = np.asarray(pcd.get_center())
-
-    # Translate the point cloud to the origin
-    pcd.translate(-centroid, relative=False)
-
-    # # Compute the covariance matrix
-    # covariance_matrix = np.cov(np.asarray(pcd.points))
-
-    # # Compute the eigenvalues and eigenvectors of the covariance matrix
-    # eigenvalues, eigenvectors = np.linalg.eig(covariance_matrix)
-
-    # # Sort the eigenvalues and eigenvectors
-    # sorted_indices = np.argsort(eigenvalues)[::-1]
-    # sorted_eigenvalues = eigenvalues[sorted_indices]
-    # sorted_eigenvectors = eigenvectors[:, sorted_indices]
-
-    # # Compute the rotation matrix
-    # rotation_matrix = np.dot(sorted_eigenvectors, np.diag(np.sqrt(1 / sorted_eigenvalues)))
-
-    # # Rotate the point cloud
-    # pcd.rotate(rotation_matrix, center=(0, 0, 0))
-
-    # Scale the point cloud to the unit sphere
-    max_distance = np.max(np.asarray(pcd.compute_nearest_neighbor_distance()))
-    pcd.scale(1 / max_distance, center=(0, 0, 0))
-
+    pcd.translate(-centroid)
+    max_val = np.max(np.abs(np.array(pcd.points)))
+    pcd.scale(1/max_val, center=(0,0,0))
     return pcd
 
 def sample_to(pcd, num_points=1000):
@@ -104,7 +82,23 @@ def sample_to(pcd, num_points=1000):
 
 def main():
 
-    scenes_folder = '/home/lucap/repair_robot_ws/pcds'
+    pc = 'home'
+
+    id_list = ['RPf_00123', 'RPf_00124', 'RPf_00125', 'RPf_00126']
+    names_list = [f"{id_p}b.ply" for id_p in id_list]
+    if pc == 'uni':
+        scenes_folder = '/home/lucap/repair_robot_ws/pcds'
+        db_folder = '/media/lucap/big_data/datasets/repair/group_16/raw/3D'
+    elif pc == 'home':
+        scenes_folder = '/home/palma/Unive/RePAIR/int_week_2/RoboticScenes/pcds'
+        db_folder = '/home/palma/Unive/RePAIR/Datasets/RePAIR_dataset/group_16/raw/3D'
+    elif pc == 'laptop':
+        scenes_folder = ''
+        db_folder = ''
+    else:
+        scenes_folder = ''
+        db_folder = ''
+
     scenes = os.listdir(scenes_folder)
     for scene_name in scenes:
         print('#' * 50)
@@ -112,10 +106,7 @@ def main():
         scene_pcd = o3d.io.read_point_cloud(os.path.join(scenes_folder, scene_name))
 
         print("loading database fragments")
-        db_pcds = load_from_db(folder='/media/lucap/big_data/datasets/repair/group_16/raw/3D', \
-            names_list=['RPf_00123b.ply', 'RPf_00124b.ply', 'RPf_00125b.ply', 'RPf_00126b.ply'])
-        # print("extracting features")
-        # db_feats = get_iss(db_pcds)
+        db_pcds = load_from_db(folder=db_folder, names_list=names_list)
 
         print('working on the scene')
         table, objects = extract_fragments_from_scene(scene_pcd)
@@ -125,32 +116,52 @@ def main():
         objects, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
         #objects.paint_uniform_color([0, 1, 0])
         table.paint_uniform_color([1, 0, 0])
-
+        
         print("clustering")
         colored_scene, labels, clustered_objects = cluster_objects(objects)
         print(f'got {len(clustered_objects)} objects!')
 
-        print("distances")
-        dist_matrix = np.zeros((len(clustered_objects), len(db_pcds)))
-        # iss_cl_objs = get_iss(clustered_objects)
+        gdraw(clustered_objects, window_name='clustered')
+
+        # debug 
+        print('resampling clustered objects')
+        resampled_objs = []
+        resampled_objs_feats = []
         for j, cl_obj in enumerate(clustered_objects):
-            for k, db_obj in enumerate(db_pcds):
-                # normalize pcd
+            if len(cl_obj.points) > 1000:
                 cl_obj = normalize_point_cloud(cl_obj)
-                db_obj = normalize_point_cloud(db_obj)
-                # down sample pcd
                 cl_obj = sample_to(cl_obj)
-                db_obj = sample_to(db_obj)
-                # compute descriptors
+                resampled_objs.append(cl_obj)
                 fpfh_cl_obj = fpfh_feats(cl_obj)
-                fpfh_db_obj = fpfh_feats(db_obj)
+                resampled_objs_feats.append(fpfh_cl_obj.data)
+
+        gdraw(resampled_objs, window_name=f'resampled ({len(resampled_objs)} objects)')
+        
+        print('resampling db objects')
+        resampled_db_objs = []
+        resampled_db_objs_feats = []
+        for k, db_obj in enumerate(db_pcds):
+            db_obj = normalize_point_cloud(db_obj)
+            db_obj = sample_to(db_obj)
+            resampled_db_objs.append(db_obj)
+            fpfh_db_obj = fpfh_feats(db_obj)
+            resampled_db_objs_feats.append(fpfh_db_obj.data)
+        
+        gdraw(resampled_db_objs, window_name='after down sampling')
+
+        print("distances")
+        dist_matrix = np.zeros((len(resampled_objs), len(db_pcds)))
+        # iss_cl_objs = get_iss(clustered_objects)
+        for j, cl_obj in enumerate(resampled_objs):
+            for k, db_obj in enumerate(db_pcds):
                 # distance
-                pdb.set_trace()
-                dist = np.linalg.norm(fpfh_cl_obj.data - fpfh_db_obj.data)
+                dist = np.linalg.norm(resampled_objs_feats[j] - resampled_db_objs_feats[k])
                 dist_matrix[j, k] = dist #np.linalg.norm(np.array(ico.points), np.array(ido.points))
         
-
+        print("### DISTANCE MATRIX ###")
         print(dist_matrix)
+
+        print('assigning id')
         pdb.set_trace()
 
         o3d.visualization.draw_geometries([table, clustered_objects], window_name=f"{scene_name}")
