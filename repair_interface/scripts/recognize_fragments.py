@@ -82,7 +82,8 @@ def sample_to(pcd, num_points=1000):
 
 def main():
 
-    pc = 'home'
+    pc = 'laptop'
+    num_points = 1000
 
     id_list = ['RPf_00123', 'RPf_00124', 'RPf_00125', 'RPf_00126']
     names_list = [f"{id_p}b.ply" for id_p in id_list]
@@ -93,8 +94,8 @@ def main():
         scenes_folder = '/home/palma/Unive/RePAIR/int_week_2/RoboticScenes/pcds'
         db_folder = '/home/palma/Unive/RePAIR/Datasets/RePAIR_dataset/group_16/raw/3D'
     elif pc == 'laptop':
-        scenes_folder = ''
-        db_folder = ''
+        scenes_folder = '/home/palma/repair/int_week_2/RoboticScenes/pcds'
+        db_folder = '/home/palma/repair/int_week_2/dataset'
     else:
         scenes_folder = ''
         db_folder = ''
@@ -128,13 +129,14 @@ def main():
         resampled_objs = []
         resampled_objs_feats = []
         for j, cl_obj in enumerate(clustered_objects):
-            if len(cl_obj.points) > 1000:
+            if len(cl_obj.points) > num_points:
                 cl_obj = normalize_point_cloud(cl_obj)
-                cl_obj = sample_to(cl_obj)
+                cl_obj = sample_to(cl_obj, num_points)
                 resampled_objs.append(cl_obj)
                 fpfh_cl_obj = fpfh_feats(cl_obj)
                 resampled_objs_feats.append(fpfh_cl_obj.data)
 
+        print(f"left with {len(resampled_objs)} objects with more than {num_points} points after resampling")
         gdraw(resampled_objs, window_name=f'resampled ({len(resampled_objs)} objects)')
         
         print('resampling db objects')
@@ -142,7 +144,7 @@ def main():
         resampled_db_objs_feats = []
         for k, db_obj in enumerate(db_pcds):
             db_obj = normalize_point_cloud(db_obj)
-            db_obj = sample_to(db_obj)
+            db_obj = sample_to(db_obj, num_points)
             resampled_db_objs.append(db_obj)
             fpfh_db_obj = fpfh_feats(db_obj)
             resampled_db_objs_feats.append(fpfh_db_obj.data)
@@ -162,6 +164,19 @@ def main():
         print(dist_matrix)
 
         print('assigning id')
+        # greedy 
+        # psuedo code
+        assignments = {}
+        while len(assignments.keys()) < np.minimum(len(db_pcds), len(resampled_objs)):
+            min_pos = np.unravel_index(np.argmin(dist_matrix), (len(resampled_objs), len(db_pcds)))
+            assignments[id_list[min_pos[1]]] = resampled_objs[min_pos[0]]
+            # remove possible clones
+            dist_matrix[min_pos[0], :] = np.max(dist_matrix)
+            dist_matrix[:, min_pos[1]] = np.max(dist_matrix)
+            print(f"assigned {id_list[min_pos[1]]} with the resampled object number {min_pos[0]}")
+
+        print("FINAL ASSIGNMENT")
+        print(assignments)
         pdb.set_trace()
 
         o3d.visualization.draw_geometries([table, clustered_objects], window_name=f"{scene_name}")
