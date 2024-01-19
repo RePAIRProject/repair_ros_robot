@@ -217,13 +217,13 @@ if __name__ == '__main__':
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_right.transform.translation.x,
-                                                      tf_right.transform.translation.y,
-                                                      tf_right.transform.translation.z,
-                                                      tf_right.transform.rotation.w,
-                                                      tf_right.transform.rotation.x,
-                                                      tf_right.transform.rotation.y,
-                                                      tf_right.transform.rotation.z
-                                                     ])
+                                                 tf_right.transform.translation.y,
+                                                 tf_right.transform.translation.z,
+                                                 tf_right.transform.rotation.w,
+                                                 tf_right.transform.rotation.x,
+                                                 tf_right.transform.rotation.y,
+                                                 tf_right.transform.rotation.z
+                                                 ])
 
     debug = True
 
@@ -235,6 +235,33 @@ if __name__ == '__main__':
         pcd = get_point_cloud_from_real_rs(debug)
     else:
         pcd = get_point_cloud_from_ros(debug)
+
+   
+    # == Transform pointcloud to table frame
+    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
+    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
+                                                                    tf_camera_to_world.transform.rotation.x,
+                                                                    tf_camera_to_world.transform.rotation.y,
+                                                                    tf_camera_to_world.transform.rotation.z]))
+    
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+
+
+    # == Remove points above a certain height
+    points = np.asarray(pcd.points)
+    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+    o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+   
+    # == Transform back to camera frame
+    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+                                                                    tf_world_to_camera.transform.rotation.x,
+                                                                    tf_world_to_camera.transform.rotation.y,
+                                                                    tf_world_to_camera.transform.rotation.z]))
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
 
     print ('Table Segmentation')
     table_cloud, object_cloud = segment_table(pcd)
