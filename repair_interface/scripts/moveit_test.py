@@ -44,8 +44,8 @@ class HAND_STATE_ENUM(Enum):
 class MoveItTest:
     def __init__(self):
         self.listener = tf.TransformListener()
-        self.wait_for_transform = 5
-        self.transform_tries = 5
+        self.wait_for_transform = 1
+        self.transform_tries = 1
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
@@ -91,9 +91,9 @@ class MoveItTest:
                         pose: PoseStamped):
        
         # wait for service
-        rospy.loginfo("Waiting for move arm to pose service")
-        rospy.wait_for_service('/move_arm_to_pose_srv')
-        rospy.loginfo("Service found")
+        #rospy.loginfo("Waiting for move arm to pose service")
+        #rospy.wait_for_service('/move_arm_to_pose_srv')
+        #rospy.loginfo("Service found")
 
         # create service proxy
         move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
@@ -205,11 +205,13 @@ class MoveItTest:
 if __name__ == '__main__':
     rospy.init_node('moveit_test')
 
-    # Create QbHand object for controlling the hand
-    print('Connecting to qb Soft Hand')
-    hand_api = QbHand()
-    hand_api.open_hand()
-    print('Connected!')
+    hand = True
+    if hand:
+        # Create QbHand object for controlling the hand
+        print('Connecting to qb Soft Hand')
+        hand_api = QbHand()
+        hand_api.open_hand()
+        print('Connected!')
 
     # tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
     #tf_right = get_transform(parent_frame='arm_2_tcp', child_frame='right_hand_v1s_grasp_link')
@@ -225,7 +227,7 @@ if __name__ == '__main__':
                                                  tf_right.transform.rotation.z
                                                  ])
 
-    debug = True
+    debug = False
 
     hand_tf = get_hand_tf()
 
@@ -269,10 +271,10 @@ if __name__ == '__main__':
     voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
 
     object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
-    object_cloud.paint_uniform_color([0, 1, 0])
-    table_cloud.paint_uniform_color([1, 0, 0])
 
     if debug:
+        object_cloud.paint_uniform_color([0, 1, 0])
+        table_cloud.paint_uniform_color([1, 0, 0])
         o3d.visualization.draw_geometries([table_cloud, object_cloud])
 
     initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
@@ -329,10 +331,10 @@ if __name__ == '__main__':
     print ("Planning trajectory")
     moveit_test.go_to_pos(arm_target_pose)
 
-    ### 4. close hand
-    time.sleep(0.5)
-    hand_api.close_hand(19000)
-    print('Closed!')
+    if hand:
+        ### 4. close hand
+        hand_api.close_hand(1)
+        print('Closed!')
 
     ### 5. Lift up
     arm_target_pose_np[2] += 0.173
@@ -361,9 +363,10 @@ if __name__ == '__main__':
     print ("Planning trajectory")
     moveit_test.go_to_pos(arm_target_pose)
 
-    ### 7. Open hand
-    hand_api.close_hand(0)
-    print('Opened!')
+    if hand:
+        ### 7. Open hand
+        hand_api.open_hand()
+        print('Opened!')
 
     ### 8. Go up
     arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
