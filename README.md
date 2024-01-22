@@ -12,6 +12,11 @@
 - [gazebo2rviz](https://github.com/andreasBihlmaier/gazebo2rviz)
 - [pysdf](https://github.com/andreasBihlmaier/pysdf)
 - [realsense] (https://github.com/issaiass/realsense2_description)
+- moveit
+- install ddynamical reconfigure
+ ``` sudo apt-get install ros-noetic-ddynamic-reconfigure```
+- realsense2_camera is available as a debian package of ROS distribution. It can be installed by typing:
+```sudo apt-get install ros-$ROS_DISTRO-realsense2-camera```
 
 ### Setup
 
