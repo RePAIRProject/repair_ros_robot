@@ -383,15 +383,38 @@ def get_pose_from_transform(T):
     return np.concatenate((pos, quat))
 
 if __name__ == '__main__':
-    rospy.init_node('manual_test')
+    node_name = "manual_test"
+    rospy.init_node(node_name)
+
+    # Get and print parameters
+    side = str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+
+    # print()
+    # print("Parameters")
+    # print("side =", side)
+    # print("gazebo =", gazebo)
+    # print()
 
     # Create QbHand object for controlling the hand
     print('Connecting to qb Soft Hand')
-    hand_api = QbHand()
+
+    if side == "right":
+        arm_no = 2
+    elif side == "left":
+        arm_no = 1
+    else:
+        print("Error:Side value has to be left or right")
+        raise ValueError
+    
+    hand_api = QbHand(side, gazebo)
     print('Connected!')
 
-    #tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
-    tf_right = get_transform(parent_frame='right_hand_v1s_grasp_link', child_frame='arm_2_tcp')
+    # open hand
+    hand_api.open_hand()
+    print('Opened!')
+
+    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     # get hand orientation
@@ -403,13 +426,13 @@ if __name__ == '__main__':
     hand_pose_world_np[3:] = hand_tf
     publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
 
-    hand_arm_transform = pytr.transform_from_pq([tf_right.transform.translation.x,
-                                                      tf_right.transform.translation.y,
-                                                      tf_right.transform.translation.z,
-                                                      tf_right.transform.rotation.w,
-                                                      tf_right.transform.rotation.x,
-                                                      tf_right.transform.rotation.y,
-                                                      tf_right.transform.rotation.z
+    hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
+                                                      tf_hand.transform.translation.y,
+                                                      tf_hand.transform.translation.z,
+                                                      tf_hand.transform.rotation.w,
+                                                      tf_hand.transform.rotation.x,
+                                                      tf_hand.transform.rotation.y,
+                                                      tf_hand.transform.rotation.z
                                                      ])
 
     hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
@@ -458,7 +481,7 @@ if __name__ == '__main__':
 
     # close hand
     time.sleep(0.5)
-    hand_api.close_hand(19000)
+    hand_api.close_hand()
     print('Closed!')
 
     # # lift hand
@@ -506,7 +529,7 @@ if __name__ == '__main__':
     moveit_test.test_srv(arm_target_pose)
 
     # open hand
-    hand_api.close_hand(0)
+    hand_api.open_hand()
     print('Opened!')
 
     # go up

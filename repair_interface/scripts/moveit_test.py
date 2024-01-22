@@ -203,19 +203,39 @@ class MoveItTest:
 
 
 if __name__ == '__main__':
-    rospy.init_node('moveit_test')
+    node_name = "moveit_test"
+    rospy.init_node(node_name)
 
+    # Get and print parameters
+    side = str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+
+    # print()
+    # print("Parameters")
+    # print("side =", side)
+    # print("gazebo =", gazebo)
+    # print()
+
+    if side == "right":
+        arm_no = 2
+    elif side == "left":
+        arm_no = 1
+    else:
+        print("Error:Side value has to be left or right")
+        raise ValueError
+    
     hand = True
     if hand:
-        # Create QbHand object for controlling the hand
-        print('Connecting to qb Soft Hand')
-        hand_api = QbHand()
-        hand_api.open_hand()
-        print('Connected!')
+      # Create QbHand object for controlling the hand
+      print('Connecting to qb Soft Hand')
+      hand_api = QbHand(side, gazebo)
+      print('Connected!')
 
-    # tf_left = get_transform(parent_frame='left_hand_v1s_grasp_link', child_frame='arm_1_tcp')
-    #tf_right = get_transform(parent_frame='arm_2_tcp', child_frame='right_hand_v1s_grasp_link')
-    tf_right = get_transform(parent_frame='right_hand_v1s_grasp_link', child_frame='arm_2_tcp')
+      # open hand
+      hand_api.open_hand()
+      print('Opened!')
+
+    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_right.transform.translation.x,
@@ -229,7 +249,10 @@ if __name__ == '__main__':
 
     debug = False
 
+    # get hand orientation
     hand_tf = get_hand_tf()
+
+    debug = True
 
     print('Starting Point Cloud Processing')
     use_pyrealsense = False
