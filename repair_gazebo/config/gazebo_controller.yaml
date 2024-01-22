@@ -1,22 +1,37 @@
-left_hand_v1s:
+left_hand_v1_wide:
   gazebo_ros_control:
     pid_gains:
+      # palm
+      left_hand_v1_wide_palm_central_joint:
+        p: 20.0
+        i: 0.1
+        d: 0.0
+        i_clamp: 0.2
+        antiwindup: false
+        publish_state: true
+      left_hand_v1_wide_palm_central_thumb_joint:
+        p: 20.0
+        i: 0.1
+        d: 0.0
+        i_clamp: 0.2
+        antiwindup: false
+        publish_state: true
       # thumb
-      left_hand_v1s_thumb_knuckle_joint:
+      left_hand_v1_wide_thumb_knuckle_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_thumb_proximal_joint:
+      left_hand_v1_wide_thumb_proximal_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_thumb_distal_joint:
+      left_hand_v1_wide_thumb_distal_joint:
         p: 20.0
         i: 0.1
         d: 0.0
@@ -24,28 +39,28 @@ left_hand_v1s:
         antiwindup: false
         publish_state: true
       # index
-      left_hand_v1s_index_knuckle_joint:
+      left_hand_v1_wide_index_knuckle_joint:
         p: 0.0
         i: 0.0
         d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_index_proximal_joint:
+      left_hand_v1_wide_index_proximal_joint:
         p: 0.0
         i: 0.0
         d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_index_middle_joint:
+      left_hand_v1_wide_index_middle_joint:
         p: 0.0
         i: 0.0
         d: 10.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_index_distal_joint:
+      left_hand_v1_wide_index_distal_joint:
         p: 0.0
         i: 0.0
         d: 10.0
@@ -53,28 +68,28 @@ left_hand_v1s:
         antiwindup: false
         publish_state: true
       # middle
-      left_hand_v1s_middle_knuckle_joint:
+      left_hand_v1_wide_middle_knuckle_joint:
         p: 0.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_middle_proximal_joint:
+      left_hand_v1_wide_middle_proximal_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_middle_middle_joint:
+      left_hand_v1_wide_middle_middle_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_middle_distal_joint:
+      left_hand_v1_wide_middle_distal_joint:
         p: 20.0
         i: 0.1
         d: 0.0
@@ -82,28 +97,28 @@ left_hand_v1s:
         antiwindup: false
         publish_state: true
       # ring
-      left_hand_v1s_ring_knuckle_joint:
+      left_hand_v1_wide_ring_knuckle_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_ring_proximal_joint:
+      left_hand_v1_wide_ring_proximal_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_ring_middle_joint:
+      left_hand_v1_wide_ring_middle_joint:
         p: 20.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_ring_distal_joint:
+      left_hand_v1_wide_ring_distal_joint:
         p: 20.0
         i: 0.1
         d: 0.0
@@ -111,28 +126,28 @@ left_hand_v1s:
         antiwindup: false
         publish_state: true
       # little
-      left_hand_v1s_little_knuckle_joint:
+      left_hand_v1_wide_little_knuckle_joint:
         p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_little_proximal_joint:
+      left_hand_v1_wide_little_proximal_joint:
         p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_little_middle_joint:
+      left_hand_v1_wide_little_middle_joint:
         p: 1.0
         i: 0.1
         d: 0.0
         i_clamp: 0.2
         antiwindup: false
         publish_state: true
-      left_hand_v1s_little_distal_joint:
+      left_hand_v1_wide_little_distal_joint:
         p: 1.0
         i: 0.1
         d: 0.0
