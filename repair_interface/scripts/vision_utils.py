@@ -62,7 +62,7 @@ def publish_tf_np(pose, par_frame="world", child_frame="goal_frame"):
     static_transformStamped.transform.rotation.w = float(pose[6])
 
     broadcaster.sendTransform(static_transformStamped)
-    rospy.sleep(1)
+    # rospy.sleep(1)
 
     return True
 
@@ -229,10 +229,10 @@ def transform_pose_vislab(input_pose, from_frame, to_frame):
     pose_stamped.pose = input_pose
     pose_stamped.header.frame_id = from_frame
     # pose_stamped.header.stamp = rospy.Time.now()
-    rospy.sleep(1)
+    # rospy.sleep(1)
     try:
         # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
-        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1))
+        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(0.5))
         return output_pose_stamped.pose
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         raise

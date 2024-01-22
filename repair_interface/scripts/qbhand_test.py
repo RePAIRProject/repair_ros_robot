@@ -4,7 +4,6 @@
 import rospy
 
 from std_msgs.msg import Float64
-from std_msgs.msg import Float32
 from ec_msgs.msg import HandCmd
 
 FREQ = 200
@@ -22,10 +21,11 @@ class QbHand:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
             self.close_value = 19000.0
+
         self.init_ros()
         self.init_params()
         
-        rospy.sleep(1)
+        rospy.sleep(0.5)
 
     def move_hand(self, aperture, secs=1):
         # moving
@@ -39,7 +39,7 @@ class QbHand:
 
         print('wait to finish')
         rospy.sleep(secs)
-
+        
     def close_hand(self):
         # close
         print('Closing qb Soft Hand..')
