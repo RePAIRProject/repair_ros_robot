@@ -49,7 +49,7 @@
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
       </xacro:repair_arm>
     
-    <xacro:softhands type="left"
+    <!-- <xacro:softhands type="left"
         version="v1.0_simple" 
         parent="arm_1_7" 
         position="0 0 0" 
@@ -67,7 +67,17 @@
         translation="0"
         operation_mode="0" 
         fixed_hands="false">
+    </xacro:softhands> -->
+
+    <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand)-->
+    <xacro:softhands 
+        version="v1_wide" 
+        position="0 0 0" 
+        orientation="${PI/2}" 
+        fixed_hands="false">
     </xacro:softhands>
+
+
 
     <!-- <gazebo reference="table_top_link">
         <selfCollide> 1 </selfCollide>

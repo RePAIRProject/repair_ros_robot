@@ -1,0 +1,14 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/devel/lib/python3/dist-packages",
+        "/home/caesar753rtk/Documenti/centro_piaggio/prova_repair_update/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/opt/openrobots/lib/python3.8/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/devel/lib/python3/dist-packages",
+        "/home/caesar753rtk/Documenti/centro_piaggio/prova_repair_update/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/opt/openrobots/lib/python3.8/site-packages"
+    ]
+}
