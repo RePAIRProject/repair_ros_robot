@@ -24,7 +24,7 @@ from vision_utils import get_transform, get_hand_tf, publish_tf_np
 from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
 from vision_utils import get_arr_from_pose
 from vision_utils import transform_pose_vislab, get_pose_from_transform
-from vision_utils import segment_table, get_number_of_frescos, get_max_cluster
+from vision_utils import segment_table, get_number_of_frescos, get_max_cluster, check_frescos_left
 
 from qbhand_test import QbHand
 
@@ -248,11 +248,9 @@ if __name__ == '__main__':
     # get hand orientation
     hand_tf = get_hand_tf()
 
-    num_frescos, pcd = get_number_of_frescos(debug, use_pyrealsense)
+    num_frescos, pcd, table_cloud, object_cloud = get_number_of_frescos(debug, use_pyrealsense)
     print (f'Number of frescos detected: {num_frescos}')
     
-    fresco_release = 0.
-
     # print ('Table Segmentation')
     # table_cloud, object_cloud = segment_table(pcd)
 
@@ -265,7 +263,8 @@ if __name__ == '__main__':
     #     table_cloud.paint_uniform_color([1, 0, 0])
     #     o3d.visualization.draw_geometries([table_cloud, object_cloud])
 
-    while (num_frescos > 0):
+    fresco_release = 0
+    while num_frescos > 0:
 
         table_cloud, object_cloud = segment_table(pcd)
         voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
@@ -349,7 +348,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         # 6. Go down
-        arm_target_pose_np[:3] = [-0.110, -0.609, 1.257]
+        arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.257]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -370,3 +369,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         moveit_test.go_to_pos(arm_target_pose)
+
+        fresco_release += 1.
+        num_frescos = check_frescos_left(True, False)
+        print (f'Objects left: {num_frescos}')
+
