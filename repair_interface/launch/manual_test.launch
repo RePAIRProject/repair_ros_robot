@@ -1,0 +1,8 @@
+<launch>
+    <arg name="side" default="right"/>
+    <arg name="gazebo" default="false"/>
+    <node name="manual_test" pkg="repair_interface" type="manual_test.py" output="screen">
+    <param name="side" value="$(arg side)" />
+    <param name="gazebo" value="$(arg gazebo)" />
+    </node>
+</launch>
