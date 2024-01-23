@@ -46,6 +46,8 @@ class MoveItTest:
         self.listener = tf.TransformListener()
         self.wait_for_transform = 5
         self.transform_tries = 5
+        self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
+        # self.move_arm_to_pose_topic = "/move_arm_to_pose_srv" # for c++ client
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
@@ -92,11 +94,11 @@ class MoveItTest:
        
         # wait for service
         rospy.loginfo("Waiting for move arm to pose service")
-        rospy.wait_for_service('/move_arm_to_pose_srv')
+        rospy.wait_for_service(self.move_arm_to_pose_topic)
         rospy.loginfo("Service found")
 
         # create service proxy
-        move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
+        move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
 
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
