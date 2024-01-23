@@ -27,7 +27,7 @@ class QbHand:
         
         rospy.sleep(0.5)
 
-    def move_hand(self, aperture, secs=1):
+    def move_hand(self, aperture, secs=0.5):
         # moving
         #print('Moving qb Soft Hand..')
         if self.gazebo:
@@ -44,7 +44,6 @@ class QbHand:
         # close
         print('Closing qb Soft Hand..')
         self.move_hand(self.close_value)
-
 
     def open_hand(self, secs=1):
         # open
@@ -75,7 +74,7 @@ class QbHand:
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
         
 if __name__ == "__main__":
-    gazebo = True
+    gazebo = False
     side = "right"
     hand_api = QbHand(side, gazebo)
 
