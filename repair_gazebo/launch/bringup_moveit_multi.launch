@@ -14,9 +14,9 @@
     <!-- Start the controllers and robot state publisher-->
     <include file="$(find repair_gazebo)/launch/control_utils.launch"/>
 
-    <!-- Start the simulated robot with one fresco -->
-    <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
-    
+    <!-- Start the simulated robot with three fresco -->
+    <include file="$(find repair_gazebo)/launch/repair_3_frescos.launch"/>
+
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
