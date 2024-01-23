@@ -9,6 +9,7 @@ import tf
 import sys
 from traj_utils import TrajectoryUtils
 from trajectory_msgs.msg import JointTrajectoryPoint, JointTrajectory
+from xbot_msgs.msg import JointCommand
 
 
 # Class definition
@@ -20,7 +21,7 @@ class MoveitClient:
     def init_moveit_client(self):
         self.robot = RobotCommander()
         # Initialize MoveGroupCommander for each arm
-        self.move_group_arm_1 = MoveGroupCommander("arm_1")
+        self.move_group_arm_1 = MoveGroupCommander("arm_1", wait_for_servers=10)
         self.move_group_arm_2 = MoveGroupCommander("arm_2")
 
     def send_pose_to_single_arm(self, pose, arm):
@@ -104,6 +105,10 @@ if __name__ == "__main__":
         f"/{arm_name}_trajectory_controller/command", JointTrajectory, queue_size=10
     )
 
+    xbot_pub = rospy.Publisher(
+        "/xbotcore/command", JointCommand, queue_size=10
+    )
+
     # get current pose
     current_pose = moveit_client.get_current_pose(arm_name).pose
 
@@ -129,18 +134,28 @@ if __name__ == "__main__":
 
         # publish each point in the trajectory
         for q in qs_sample:
-            # create a joint trajectory point
-            point = JointTrajectoryPoint()
-            point.positions = q
-            point.time_from_start = rospy.Duration(0.1)
+            # # create a joint trajectory point
+            # point = JointTrajectoryPoint()
+            # point.positions = q
+            # point.time_from_start = rospy.Duration(0.1)
 
-            # create a joint trajectory
-            traj = JointTrajectory()
-            traj.joint_names = plan.joint_trajectory.joint_names
-            traj.points.append(point)
+            # # create a joint trajectory
+            # traj = JointTrajectory()
+            # traj.joint_names = plan.joint_trajectory.joint_names
+            # traj.points.append(point)
 
-            # publish the joint trajectory
-            pub.publish(traj)
-            rospy.sleep(0.1)
+            # # publish the joint trajectory
+            # pub.publish(traj)
+            # rospy.sleep(0.1)
+
+            # create a joint command
+            joint_command = JointCommand()
+            joint_command.ctrl_mode = [1, 1, 1, 1, 1, 1, 1]
+            joint_command.name = plan.joint_trajectory.joint_names
+            joint_command.position = q
+            joint_command.header.stamp = rospy.Time.now()
+
+            # publish the joint command
+            xbot_pub.publish(joint_command)
 
         print("Done!")

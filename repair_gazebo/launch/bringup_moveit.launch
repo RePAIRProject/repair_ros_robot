@@ -30,5 +30,5 @@
     <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
 
     <!-- launch the repair_interface node -->
-    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
+    <!-- <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" /> -->
 </launch>
