@@ -238,13 +238,13 @@ if __name__ == '__main__':
     tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
-    hand_arm_transform = pytr.transform_from_pq([tf_right.transform.translation.x,
-                                                 tf_right.transform.translation.y,
-                                                 tf_right.transform.translation.z,
-                                                 tf_right.transform.rotation.w,
-                                                 tf_right.transform.rotation.x,
-                                                 tf_right.transform.rotation.y,
-                                                 tf_right.transform.rotation.z
+    hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
+                                                 tf_hand.transform.translation.y,
+                                                 tf_hand.transform.translation.z,
+                                                 tf_hand.transform.rotation.w,
+                                                 tf_hand.transform.rotation.x,
+                                                 tf_hand.transform.rotation.y,
+                                                 tf_hand.transform.rotation.z
                                                  ])
 
     debug = False
@@ -356,7 +356,7 @@ if __name__ == '__main__':
 
     if hand:
         ### 4. close hand
-        hand_api.close_hand(1)
+        hand_api.close_hand()
         print('Closed!')
 
     ### 5. Lift up
