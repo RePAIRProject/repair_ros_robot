@@ -32,7 +32,7 @@
     </include>
     -->	
 
-    <!-- launch the repair_interface node -->
-    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
+    <!-- launch the repair_interface node
+    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />-->
 
 </launch>

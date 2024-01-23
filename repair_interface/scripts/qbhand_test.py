@@ -45,7 +45,6 @@ class QbHand:
         print('Closing qb Soft Hand..')
         self.move_hand(self.close_value)
 
-
     def open_hand(self, secs=0.5):
         # open
         print("Opening qb Soft Hand..")
@@ -75,7 +74,7 @@ class QbHand:
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
         
 if __name__ == "__main__":
-    gazebo = True
+    gazebo = False
     side = "right"
     hand_api = QbHand(side, gazebo)
 

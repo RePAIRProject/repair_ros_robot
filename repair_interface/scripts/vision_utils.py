@@ -26,7 +26,7 @@ def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
         try:
             transform = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time(0))
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rate.sleep()
+            #rate.sleep()
             continue
 
         return transform
@@ -149,8 +149,8 @@ def get_point_cloud_from_real_rs(debug=False):
         print("The demo requires Depth camera with Color sensor")
         exit(0)
 
-    config.enable_stream(rs.stream.depth, rs.format.z16, 30)
-    config.enable_stream(rs.stream.color, rs.format.bgr8, 30)
+    config.enable_stream(rs.stream.depth, rs.format.z16, 30) # 30
+    config.enable_stream(rs.stream.color, rs.format.bgr8, 30) # 30
 
     # Start streaming
     pipeline.start(config)
