@@ -62,13 +62,13 @@ class QbHand:
 
         self.rate = rospy.Rate(FREQ)
         # Simulation topic
-        # hand_topic = "/"+side+"_hand_v1s/synergy_command"
+        # hand_topic = "/"+side+"_hand_v1_wide/synergy_command"
 
         #rostopic pub /xbotcore/left_hand/command ec_msgs/HandCmd "{pos_ref: 0.0, pos_ref_2: 0.0, pos_ref_3: 0.0, vel_ref: 0.0, tor_ref: 0.0}"
         # 19000 close
 
         if(self.gazebo):
-            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1s/synergy_command", Float64, queue_size=3)
+            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_wide/synergy_command", Float64, queue_size=3)
 
         else:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
