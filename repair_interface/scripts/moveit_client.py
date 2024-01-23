@@ -44,6 +44,8 @@ class MoveitClient:
 
         self.state_pub = rospy.Publisher("/joint_states", JointStateMsg, queue_size=10)
 
+        self.nh.loginfo("Moveit client initialized")
+
     def init_moveit_client(self):
         self.robot = RobotCommander()
         # Initialize MoveGroupCommander for each arm
@@ -66,20 +68,24 @@ class MoveitClient:
 
         self.state_pub.publish(joint_state_msg)
 
-    def handle_move_arm_to_pose(self, req):
+    def handle_move_arm_to_pose(self, req: MoveArmToPoseRequest):
         # get arm name
         arm = req.arm
 
         arm_name = "arm_1" if arm == 0 else "arm_2"
 
         # get pose
-        pose = req.pose
+        pose = req.target_pose
 
         # send pose to arm
         res = self.send_pose_to_single_arm(pose, arm_name)
 
+        resp = MoveArmToPoseResponse()
+        resp.success = res
+        resp.current_pose = self.get_current_pose(arm_name)
+
         # return response
-        return MoveArmToPoseResponse(res)
+        return resp
 
     def send_pose_to_single_arm(self, pose, arm):
         """
@@ -91,7 +97,16 @@ class MoveitClient:
         move_group = self.move_group_arm_1 if arm == "arm_1" else self.move_group_arm_2
         move_group.set_pose_target(pose)
         # get plan
-        plan = move_group.plan()
+        _, plan, _, _ = move_group.plan()
+
+        len_points = len(plan.joint_trajectory.points)
+
+        # print points
+        self.nh.loginfo(f'points in plan: {len(plan.joint_trajectory.points)}')
+
+        if len_points == 0:
+            self.nh.logwarn("No plan found")
+            return False
 
         qs_sample = self.traj_utils.interpolate_joint_trajectory(plan, self.num_samples)
 
@@ -100,10 +115,13 @@ class MoveitClient:
             if self.use_xbot:
                 self.publish_to_xbot(plan.joint_trajectory.joint_names, qs_sample[i])
             if self.use_gazebo:
+                print(f"Publishing to gazebo: {arm}")
                 self.pubslish_to_gazebo(
                     arm, plan.joint_trajectory.joint_names, qs_sample[i]
                 )
-            rospy.sleep(0.1)
+            rospy.sleep(0.01)
+
+        return True
 
     def compute_plan_to_single_arm(self, pose, arm):
         """
@@ -181,7 +199,6 @@ class MoveitClient:
             self.arm_1_pub.publish(traj)
         else:
             self.arm_2_pub.publish(traj)
-        rospy.sleep(0.1)
 
 
 if __name__ == "__main__":
