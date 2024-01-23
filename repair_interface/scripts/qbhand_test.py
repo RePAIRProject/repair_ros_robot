@@ -24,6 +24,7 @@ class QbHand:
 
         self.init_ros()
         self.init_params()
+        rospy.sleep(0.5)
         
 
     def move_hand(self, aperture, secs=0.5):
@@ -45,7 +46,7 @@ class QbHand:
         self.move_hand(self.close_value)
 
 
-    def open_hand(self, secs=1):
+    def open_hand(self, secs=0.5):
         # open
         print("Opening qb Soft Hand..")
         self.move_hand(self.open_value)
