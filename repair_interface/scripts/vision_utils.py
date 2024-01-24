@@ -433,7 +433,8 @@ def prepare_scene(pcd, debug=False):
         # o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
 
     # == Transform back to camera frame
-    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    # tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    tf_world_to_camera = get_transform(parent_frame="world", child_frame="working_surface_link")
     tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
     rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
                                                                     tf_world_to_camera.transform.rotation.x,

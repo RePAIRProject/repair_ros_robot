@@ -19,7 +19,7 @@ scaling_factor=0.3
 # alignment 
 icp_voxel_size=0.001
 # paths and db models
-pc = 'andreap'
+pc = 'vislab'
 model_pts = 50000
 id_list = ['RPf_00123', 'RPf_00124', 'RPf_00125', 'RPf_00126']
 version = ''
@@ -45,7 +45,7 @@ scenes = ['/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 #, '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00400.ply', '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 
 # debug
-debug=False
+debug=True
 save_detections=False
 show_solution=True
 show_pairwise_solutions=False

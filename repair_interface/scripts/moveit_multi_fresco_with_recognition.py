@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
-
+# import pdb
 import sys
 import rospy
 import tf
@@ -262,7 +262,7 @@ if __name__ == '__main__':
         pcd = get_point_cloud_from_ros(debug)
 
     print('prepare scene')    
-    object_cloud, table = prepare_scene(pcd)
+    object_cloud, table = prepare_scene(pcd, debug=debug)
 
     print('recognition')
     recognized_objects = recognize_objects(object_cloud)
@@ -273,18 +273,23 @@ if __name__ == '__main__':
 
         print(obj_key)
         obj_bbox = recognized_objects[obj_key]['bbox']
+        obj_pcd = recognized_objects[obj_key]['pcd']
 
-        initial_pose = np.concatenate((obj_bbox.get_center(), hand_tf))
+        initial_pose = np.concatenate((obj_pcd.get_center(), hand_tf))
         initial_pose = get_pose_from_arr(initial_pose)
-
+        
+        # pdb.set_trace()
         ### Transform the pose from the camera frame to the base frame (world)
-        hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
+        # hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
+        hand_pose_world = transform_pose_vislab(initial_pose, "world", "world")
+        
         hand_pose_world_np = get_arr_from_pose(hand_pose_world)
         hand_pose_world_np[0] += 0.04
         hand_pose_world_np[1] += 0.03
         hand_pose_world_np[2] = 1.15 + 0.15
         hand_pose_world_np[3:] = hand_tf
         publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
+        o3d.visualization.draw_geometries([obj_pcd])
 
         hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
         T0 = pytr.transform_from_pq(hand_pose_world_np)
