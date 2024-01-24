@@ -267,34 +267,12 @@ if __name__ == '__main__':
     print('recognition')
     recognized_objects = recognize_objects(object_cloud)
 
-    # num_frescos, pcd, table_cloud, object_cloud = get_number_of_frescos(debug, use_pyrealsense)
-    # print (f'Number of frescos detected: {num_frescos}')
-    
-    # print ('Table Segmentation')
-    # table_cloud, object_cloud = segment_table(pcd)
-
-    # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-
-    # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
-
-    # if debug:
-    #     object_cloud.paint_uniform_color([0, 1, 0])
-    #     table_cloud.paint_uniform_color([1, 0, 0])
-    #     o3d.visualization.draw_geometries([table_cloud, object_cloud])
     print("moving fragments")
     fresco_release = 0
     for obj_key in recognized_objects.keys():
 
-    # fresco_release = 0
-    # number_of_fresco = len(recognized_objects)
-    # while number_of_fresco > 0:
         print(obj_key)
         obj_bbox = recognized_objects[obj_key]['bbox']
-        # table_cloud, object_cloud = segment_table(pcd)
-        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-        # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
-        #print ('Getting object with max number of points')
-        # object_cloud = get_max_cluster(object_cloud, debug)
 
         initial_pose = np.concatenate((obj_bbox.get_center(), hand_tf))
         initial_pose = get_pose_from_arr(initial_pose)
@@ -320,8 +298,8 @@ if __name__ == '__main__':
 
         ### 1. Go to position over the object
         moveit_test = MoveItTest()
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Going above the detected fragment! Planning trajectory..")
+        #moveit_test.go_to_pos(arm_target_pose)
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -335,8 +313,8 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Tilting hand! Planning trajectory..")
+        #moveit_test.go_to_pos(arm_target_pose)
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
         arm_target_pose_np[2] -= 0.168 
@@ -345,10 +323,11 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Go down to grasp! Planning trajectory..")
+        #moveit_test.go_to_pos(arm_target_pose)
 
         if hand:
+            print("Closing hand..")
             ### 4. close hand
             hand_api.close_hand()
             print('Closed!')
@@ -359,8 +338,8 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Lift it up! Planning trajectory..")
+        #moveit_test.go_to_pos(arm_target_pose)
 
         ### 5. Move side
         arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
@@ -368,19 +347,24 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Move it to the side! Planning trajectory..")
+        #moveit_test.go_to_pos(arm_target_pose)
 
         # 6. Go down
-        arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.257]
+        target_down_position = np.asarray([-0.110, -0.609, 1.257])
+        # we have an offset based on the grasped fragment
+        target_position_current_fragment = target_down_position + recognized_objects[obj_key]['sol_offset']
+        print(f"Fragment {obj_key} target position: {target_position_current_fragment}")
+        arm_target_pose_np[:3] = target_position_current_fragment
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Placing it down! Planning trajectory..")
+        #moveit_test.go_to_pos(arm_target_pose)
 
         if hand:
+            print("Opening..")
             ### 7. Open hand
             hand_api.open_hand()
             print('Opened!')
@@ -391,11 +375,10 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        print ("Go up again to start! Planning trajectory.. ")
+        #moveit_test.go_to_pos(arm_target_pose)
 
-        fresco_release += 1.
-        print(f'Moved {fresco_release} fragments! Up with the next')
+        print(f'Placed the fragments')
         # num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
         # print (f'Objects left: {num_frescos}')
 

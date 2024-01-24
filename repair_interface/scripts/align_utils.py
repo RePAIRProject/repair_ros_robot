@@ -242,13 +242,15 @@ def recognize_objects(objects):
             if debug and save_detections:
                 o3d.io.write_point_cloud(f'clustered/obj_{k}.ply', copy_clustered_obj)
             
-            source = clustered_obj
+            source = copy_clustered_obj
             target = rescaled_obj
             
             print("icp", source, target)
             icp_solution = align_with_icp(source, target, voxel_size=icp_voxel_size, fast=False)
             solution = icp_solution.transformation
             # print(icp_solution)
+            if debug and show_pairwise_solutions:
+                draw_registration_result(source, target, solution)
 
             bbox_dist = est_bbox_distance(source, target, solution)
             results[j,k] = bbox_dist
@@ -292,7 +294,7 @@ def recognize_objects(objects):
     colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (0, 127, 127)]
     texts = []
     bboxes = []
-    print(assignments_ids.shape[0])
+
     for j in range(assignments_ids.shape[0]):
         # pcd_text = text_3d(id_list[assignments_ids[j, 0]], clustered_objects[assignments_ids[j, 1]].get_min_bound(), font_size=10, color=colors[j])
         # texts.append(pcd_text)
@@ -300,15 +302,28 @@ def recognize_objects(objects):
         bbox = clustered_objects[assignments_ids[j, 1]].get_oriented_bounding_box()
         bbox.color = colors[j]
         bboxes.append(bbox)
-        solution_dict[id_list[assignments_ids[j, 0]]] = {'bbox': bbox, 'pcd': clustered_objects[assignments_ids[j, 1]]} #@'text':pcd_text, 
+        solution_dict[id_list[assignments_ids[j, 0]]] = {'bbox': bbox, 
+                                                         'pcd': clustered_objects[assignments_ids[j, 1]],
+                                                         # this is the offset where the piece will be placed!
+                                                         'sol_offset': np.asarray(offsets[assignments_ids[j, 0]])
+                                                         } #@'text':pcd_text, 
                                                                                                              
+
+    print("Solution")
+    print("-" * 70)
+    for solution_key in solution_dict.keys():
+        print(solution_key)
+        print(solution_dict[solution_key]['bbox'])
+        print(solution_dict[solution_key]['pcd'])
+        print(solution_dict[solution_key]['sol_offset'])
+        print("-" * 70)
 
     if show_solution:
         gdraw([objects]+bboxes) # texts
 
     if debug and show_pairwise_solutions:
         for j in range(assignments_ids.shape[0]):
-            draw_registration_result(rescaled_db_objs[assignments_ids[j, 0]], clustered_objects[assignments_ids[j, 1]], assig_tf[j], f"{names_list[j]}: registered")
+            draw_registration_result(rescaled_db_objs[assignments_ids[j, 0]], copy_clustered_obj[assignments_ids[j, 1]], assig_tf[j], f"{names_list[j]}: registered")
 
     print("done")
     print("#" * 70)
@@ -438,7 +453,7 @@ def execute_fast_global_registration(source_down, target_down, source_fpfh,
     return result
 
 def refine_registration(source, target, source_fpfh, target_fpfh, voxel_size, init_tf=np.eye(4)):
-    distance_threshold = voxel_size * 0.2
+    distance_threshold = voxel_size * 0.5
     # print(":: Point-to-plane ICP registration is applied on original point")
     # print("   clouds to refine the alignment. This time we use a strict")
     # print("   distance threshold %.3f." % distance_threshold)

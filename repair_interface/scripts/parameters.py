@@ -15,9 +15,9 @@ min_points_detection=1
 # filter points further away
 z_cut=0.3
 # scaling to compensate
-scaling_factor=1/3
+scaling_factor=0.3
 # alignment 
-icp_voxel_size=0.01
+icp_voxel_size=0.001
 # paths and db models
 pc = 'andreap'
 model_pts = 50000
@@ -52,3 +52,6 @@ show_pairwise_solutions=False
 
 # print stuff
 verbosity=1
+
+# solution
+offsets = [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0]]

@@ -279,7 +279,6 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
     else:
         pcd = get_point_cloud_from_ros(debug)
 
-
     # == Transform pointcloud to table frame
     tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
     tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
