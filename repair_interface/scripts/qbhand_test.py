@@ -4,7 +4,6 @@
 import rospy
 
 from std_msgs.msg import Float64
-from std_msgs.msg import Float32
 from ec_msgs.msg import HandCmd
 
 FREQ = 200
@@ -22,12 +21,13 @@ class QbHand:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
             self.close_value = 19000.0
+
         self.init_ros()
         self.init_params()
+        rospy.sleep(1.0)
         
-        rospy.sleep(1)
 
-    def move_hand(self, aperture, secs=1):
+    def move_hand(self, aperture, secs=1.0):
         # moving
         #print('Moving qb Soft Hand..')
         if self.gazebo:
@@ -39,14 +39,13 @@ class QbHand:
 
         print('wait to finish')
         rospy.sleep(secs)
-
+        
     def close_hand(self):
         # close
         print('Closing qb Soft Hand..')
         self.move_hand(self.close_value)
 
-
-    def open_hand(self, secs=1):
+    def open_hand(self, secs=0.5):
         # open
         print("Opening qb Soft Hand..")
         self.move_hand(self.open_value)
@@ -62,20 +61,20 @@ class QbHand:
 
         self.rate = rospy.Rate(FREQ)
         # Simulation topic
-        # hand_topic = "/"+side+"_hand_v1s/synergy_command"
+        # hand_topic = "/"+side+"_hand_v1_wide/synergy_command"
 
         #rostopic pub /xbotcore/left_hand/command ec_msgs/HandCmd "{pos_ref: 0.0, pos_ref_2: 0.0, pos_ref_3: 0.0, vel_ref: 0.0, tor_ref: 0.0}"
         # 19000 close
 
         if(self.gazebo):
-            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1s/synergy_command", Float64, queue_size=3)
+            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_2_research/synergy_command", Float64, queue_size=3)
 
         else:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
         
 if __name__ == "__main__":
-    gazebo = True
+    gazebo = False
     side = "right"
     hand_api = QbHand(side, gazebo)
 

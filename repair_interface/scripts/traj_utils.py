@@ -48,39 +48,34 @@ class TrajectoryUtils:
 
         Inputs:
             moveit_plan: the moveit plan to interpolate
-        
+
         Outputs:
             joint_trajectory: the interpolated joint trajectory
         """
-
         # get the joint names
         joint_names = moveit_plan.joint_trajectory.joint_names
-
         # get the joint positions
         moveit_points = moveit_plan.joint_trajectory.points
         joint_positions = np.array(
             [point.positions for point in moveit_points]
         )
-
         time_stamps = np.array(
             [point.time_from_start.to_sec() for point in moveit_points]
         )
-
         # Define your robot's dynamic parameters
-        joint_velocities = np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint velocities (replace with actual values)
-        joint_accelerations = np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint accelerations (replace with actual values)
+        joint_velocities = np.array(
+            [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint velocities (replace with actual values)
+        joint_accelerations = np.array(
+            [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint accelerations (replace with actual values)
 
         path = ta.SplineInterpolator(time_stamps, joint_positions)
         pc_vel = constraint.JointVelocityConstraint(joint_velocities)
         pc_acc = constraint.JointAccelerationConstraint(joint_accelerations)
-
         # Create a parametrization of the path
         instance = algo.TOPPRA([pc_vel, pc_acc], path, parametrizer="ParametrizeConstAccel")
         jnt_traj = instance.compute_trajectory()
-
-        # Sample the trajectory for joint positions 
+        # Sample the trajectory for joint positions
         t_sample = np.linspace(0, jnt_traj.duration, num_points)
-        
         # Evaluate the trajectory
         qs_sample = jnt_traj(t_sample)
 
@@ -90,11 +85,11 @@ class TrajectoryUtils:
         return qs_sample
 
     def compute_trajectory(
-        self,
-        current_pose: PoseStamped,
-        target_pose: PoseStamped,
-        lin_waypoints: np.ndarray = None,
-        rot_waypoints: np.ndarray = None,
+            self,
+            current_pose: PoseStamped,
+            target_pose: PoseStamped,
+            lin_waypoints: np.ndarray = None,
+            rot_waypoints: np.ndarray = None,
     ):
         """
         Computes a trajectory from the current pose to the given pose
@@ -104,7 +99,7 @@ class TrajectoryUtils:
             target_pose: the target pose
             lin_waypoints: linear waypoints as ndarray to add to the trajectory
             rot_waypoints: ndarray of rpy rotations to add to the trajectory
-        
+
         Outputs:
             lin_points: the linear points of the trajectory
             rot_quats: the rotational quaternions of the trajectory
