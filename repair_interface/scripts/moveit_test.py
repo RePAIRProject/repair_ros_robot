@@ -268,13 +268,24 @@ if __name__ == '__main__':
                                                                     tf_camera_to_world.transform.rotation.z]))
     
     pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
-    o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+    if debug:
+        o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
 
 
-    # == Remove points above a certain height
+    # == Remove points above & below a certain height
     points = np.asarray(pcd.points)
-    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
-    o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+    # pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+    # points = np.asarray(pcd.points)
+    
+    object_cloud = pcd.select_by_index(np.where((points[:, 2] < 0.08) & (points[:, 2] > 0.001))[0])
+    table_cloud = pcd.select_by_index( np.where(((points[:, 2] < 0.001) & (points[:, 2] > -0.05)))[0])
+    # pcd = pcd.select_by_index(np.where(points[:, 2] > -0.04)[0])
+    
+    if debug:
+        object_cloud.paint_uniform_color([1, 1, 0])
+        table_cloud.paint_uniform_color([0, 0, 1])
+        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        # o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
    
     # == Transform back to camera frame
     tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
@@ -283,19 +294,21 @@ if __name__ == '__main__':
                                                                     tf_world_to_camera.transform.rotation.x,
                                                                     tf_world_to_camera.transform.rotation.y,
                                                                     tf_world_to_camera.transform.rotation.z]))
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
+    # pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    object_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+    table_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
 
     print ('Table Segmentation')
-    table_cloud, object_cloud = segment_table(pcd)
+    # table_cloud, object_cloud = segment_table(pcd)
 
     voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-
     object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
 
     if debug:
         object_cloud.paint_uniform_color([0, 1, 0])
-        table_cloud.paint_uniform_color([1, 0, 0])
-        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        # table_cloud.paint_uniform_color([1, 0, 0])
+        # o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        o3d.visualization.draw_geometries([object_cloud])
 
     initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
     initial_pose = get_pose_from_arr(initial_pose)
@@ -319,13 +332,11 @@ if __name__ == '__main__':
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    #exit()
-
     ### 1. Go to position over the object
     moveit_test = MoveItTest()
     print ("Planning trajectory")
     moveit_test.go_to_pos(arm_target_pose)
-
+    
     ### 2. Tilt hand
     ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
     y_ang = 0.26

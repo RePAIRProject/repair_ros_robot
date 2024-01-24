@@ -112,7 +112,7 @@ def get_point_cloud_from_ros(debug=False):
     for p in pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True):
         if np.linalg.norm(p) > 0.65:
             pc.append([p[0], p[1], p[2]])
-
+    
     # Segmentation of Point Cloud
     xyz = np.asarray(pc)
     #idx = np.where(xyz[:, 2] < 0.8)     # Prune point cloud to 0.8 meters from camera in z direction
@@ -233,7 +233,7 @@ def transform_pose_vislab(input_pose, from_frame, to_frame):
     # rospy.sleep(1)
     try:
         # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
-        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(0.5))
+        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1.0))
         return output_pose_stamped.pose
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         raise
