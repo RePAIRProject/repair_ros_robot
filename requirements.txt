@@ -1,5 +1,5 @@
 numpy==1.21.4
-open3d==0.13.0
+open3d
 pytransform3d==3.4.0
 pyrealsense2==2.54.2.5684
 scipy==1.7.3

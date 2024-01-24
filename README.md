@@ -13,7 +13,12 @@ This repository contains the software to control the simulated and real RePAIR r
 - [roboticsgroup_upatras_gazebo_plugins](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins)
 - [gazebo2rviz](https://github.com/andreasBihlmaier/gazebo2rviz)
 - [pysdf](https://github.com/andreasBihlmaier/pysdf)
-- [realsense](https://github.com/issaiass/realsense2_description)
+- [realsense] (https://github.com/issaiass/realsense2_description)
+- moveit
+- install ddynamical reconfigure
+ ``` sudo apt-get install ros-noetic-ddynamic-reconfigure```
+- realsense2_camera is available as a debian package of ROS distribution. It can be installed by typing:
+```sudo apt-get install ros-$ROS_DISTRO-realsense2-camera```
 - [realsense_gazebo_plugin](https://github.com/issaiass/realsense_gazebo_plugin/tree/master)
 
 # 2) Installation
@@ -270,3 +275,4 @@ In the beginning two windows will pop up which you have to close by pressing the
 
 # 5) Relevant publications
 T.B.A.
+

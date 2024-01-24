@@ -14,7 +14,8 @@ from scipy.spatial.transform import Rotation as R
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PoseStamped, Pose
 import pyrealsense2 as rs
-import pdb 
+import matplotlib.pyplot as plt
+
 
 def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
     tfBuffer = tf2_ros.Buffer()
@@ -25,7 +26,7 @@ def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
         try:
             transform = tfBuffer.lookup_transform(parent_frame, child_frame, rospy.Time(0))
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            rate.sleep()
+            #rate.sleep()
             continue
 
         return transform
@@ -62,7 +63,7 @@ def publish_tf_np(pose, par_frame="world", child_frame="goal_frame"):
     static_transformStamped.transform.rotation.w = float(pose[6])
 
     broadcaster.sendTransform(static_transformStamped)
-    rospy.sleep(1)
+    # rospy.sleep(1)
 
     return True
 
@@ -112,7 +113,7 @@ def get_point_cloud_from_ros(debug=False):
     for p in pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True):
         if np.linalg.norm(p) > 0.65:
             pc.append([p[0], p[1], p[2]])
-
+    
     # Segmentation of Point Cloud
     xyz = np.asarray(pc)
     #idx = np.where(xyz[:, 2] < 0.8)     # Prune point cloud to 0.8 meters from camera in z direction
@@ -149,8 +150,8 @@ def get_point_cloud_from_real_rs(debug=False):
         print("The demo requires Depth camera with Color sensor")
         exit(0)
 
-    config.enable_stream(rs.stream.depth, rs.format.z16, 30)
-    config.enable_stream(rs.stream.color, rs.format.bgr8, 30)
+    config.enable_stream(rs.stream.depth, rs.format.z16, 30) # 30
+    config.enable_stream(rs.stream.color, rs.format.bgr8, 30) # 30
 
     # Start streaming
     pipeline.start(config)
@@ -230,10 +231,10 @@ def transform_pose_vislab(input_pose, from_frame, to_frame):
     pose_stamped.pose = input_pose
     pose_stamped.header.frame_id = from_frame
     # pose_stamped.header.stamp = rospy.Time.now()
-    rospy.sleep(1)
+    # rospy.sleep(1)
     try:
         # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
-        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1))
+        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1.0))
         return output_pose_stamped.pose
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         raise
@@ -242,3 +243,161 @@ def get_pose_from_transform(T):
     quat = pyrot.quaternion_xyzw_from_wxyz(pyrot.quaternion_from_matrix(T[:3, :3]))
     pos = T[:3, 3]
     return np.concatenate((pos, quat))
+
+def get_max_cluster(pcd, debug=False):
+    labels = np.array(pcd.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
+
+    max_label = labels.max()
+    colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+    colors[labels < 0] = 0
+
+    pcd.colors = o3d.utility.Vector3dVector(colors[:, :3])
+
+    if debug:
+        o3d.visualization.draw_geometries([pcd])
+
+    # get total amount of points for each cluster label
+    u, indices = np.unique(labels, return_inverse=True)
+    # get the label id with the highest points
+    x = u[np.argmax(np.bincount(indices))]
+    #
+    cluster_points = np.asarray(pcd.points)[labels == x]
+
+    clustered_cloud = o3d.geometry.PointCloud()
+    clustered_cloud.points = o3d.utility.Vector3dVector(cluster_points)
+
+    if debug:
+        o3d.visualization.draw_geometries([clustered_cloud])
+
+    return clustered_cloud
+
+def get_number_of_frescos(debug=False, use_pyrealsense=False):
+
+    print('Starting Point Cloud Processing')
+    if use_pyrealsense:
+        pcd = get_point_cloud_from_real_rs(debug)
+    else:
+        pcd = get_point_cloud_from_ros(debug)
+
+
+    # == Transform pointcloud to table frame
+    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
+    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
+                                                                    tf_camera_to_world.transform.rotation.x,
+                                                                    tf_camera_to_world.transform.rotation.y,
+                                                                    tf_camera_to_world.transform.rotation.z]))
+    
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+
+    # == Remove points above a certain height
+    points = np.asarray(pcd.points)
+    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+    o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+
+    # == Transform back to camera frame
+    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+                                                                    tf_world_to_camera.transform.rotation.x,
+                                                                    tf_world_to_camera.transform.rotation.y,
+                                                                    tf_world_to_camera.transform.rotation.z]))
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
+
+    #rospy.init_node('listener', anonymous=True)
+    print ('Detecting Number of Frescos')
+
+    table_cloud, object_cloud = segment_table(pcd)
+
+    voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+
+    object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+
+    labels = np.array(object_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
+
+    labels_size = np.size(np.asarray(labels))
+    if labels_size == 0:
+        n_objects = 0
+    else:
+        max_label = labels.max()
+        #print(f"point cloud has {max_label + 1} clusters")
+        colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+        colors = np.zeros((labels.shape[0], 3))
+        colors[:, 0] = 1.
+        colors[labels < 0] = 0
+
+        n_objects = 0
+        for label in np.unique(labels):
+            idxs = (labels == label)
+            if labels[idxs].shape[0] > 200:
+                colors[idxs, 0] = 0
+                colors[idxs, 1] = 1.
+                n_objects += 1
+   
+    return n_objects, pcd, table_cloud, object_cloud
+
+def check_frescos_left(debug, use_pyrealsense):
+
+    if use_pyrealsense:
+        pcd = get_point_cloud_from_real_rs(debug)
+    else:
+        pcd = get_point_cloud_from_ros(debug)
+
+
+    # == Transform pointcloud to table frame
+    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
+    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
+                                                                    tf_camera_to_world.transform.rotation.x,
+                                                                    tf_camera_to_world.transform.rotation.y,
+                                                                    tf_camera_to_world.transform.rotation.z]))
+    
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    # == Remove points above a certain height
+    points = np.asarray(pcd.points)
+    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+
+    # == Transform back to camera frame
+    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+                                                                    tf_world_to_camera.transform.rotation.x,
+                                                                    tf_world_to_camera.transform.rotation.y,
+                                                                    tf_world_to_camera.transform.rotation.z]))
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
+
+    table_cloud, object_cloud = segment_table(pcd)
+
+    voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+
+    object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+
+    labels = np.array(object_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
+
+    labels_size = np.size(np.asarray(labels))
+    if labels_size == 0:
+        n_objects = 0
+    else:
+        max_label = labels.max()
+        #print(f"point cloud has {max_label + 1} clusters")
+        colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+        colors = np.zeros((labels.shape[0], 3))
+        colors[:, 0] = 1.
+        colors[labels < 0] = 0
+
+        n_objects = 0
+        for label in np.unique(labels):
+            idxs = (labels == label)
+            if labels[idxs].shape[0] > 200:
+                colors[idxs, 0] = 0
+                colors[idxs, 1] = 1.
+                n_objects += 1
+
+        if debug:
+            object_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
+            table_cloud.paint_uniform_color([1., 0., 0.])
+
+            o3d.visualization.draw_geometries([object_cloud, table_cloud])
+    
+    return n_objects, object_cloud, table_cloud

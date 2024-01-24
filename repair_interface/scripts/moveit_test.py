@@ -27,7 +27,6 @@ from vision_utils import segment_table, transform_pose_vislab, get_pose_from_tra
 
 from qbhand_test import QbHand
 
-import pdb 
 
 class ARM_ENUM(Enum):
     ARM_1 = 0
@@ -47,6 +46,9 @@ class MoveItTest:
         self.listener = tf.TransformListener()
         self.wait_for_transform = 5
         self.transform_tries = 5
+        self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
+        print("set moveit publisher")
+        # self.move_arm_to_pose_topic = "/move_arm_to_pose_srv" # for c++ client
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
@@ -90,24 +92,31 @@ class MoveItTest:
 
     def move_to_pose(self, arm: ARM_ENUM, 
                         pose: PoseStamped):
-       
-        # wait for service
+
         rospy.loginfo("Waiting for move arm to pose service")
-        rospy.wait_for_service('/move_arm_to_pose_srv')
+        rospy.wait_for_service(self.move_arm_to_pose_topic)
         rospy.loginfo("Service found")
+        # wait for service
+        #rospy.loginfo("Waiting for move arm to pose service")
+        #rospy.wait_for_service('/move_arm_to_pose_srv')
+        #rospy.loginfo("Service found")
 
         # create service proxy
-        move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
+        move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
+        #move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
 
         # create request
+        print("create request")
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = arm.value
         move_arm_to_pose_req.target_pose = pose
 
         # call service
+        print("call service")
         move_arm_to_pose_resp = move_arm_to_pose_srv(move_arm_to_pose_req)
 
         # check response
+        print("check response")
         if move_arm_to_pose_resp.success:
             rospy.loginfo("Successfully moved arm to pose")
         else:
@@ -211,13 +220,11 @@ if __name__ == '__main__':
     side = str(rospy.get_param("/"+node_name+"/side"))
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
-    print()
-    print("Parameters")
-    print("side =", side)
-    print("gazebo =", gazebo)
-    print()
-
-    #pdb.set_trace()
+    # print()
+    # print("Parameters")
+    # print("side =", side)
+    # print("gazebo =", gazebo)
+    # print()
 
     # Create QbHand object for controlling the hand
     print('Connecting to qb Soft Hand')
@@ -230,53 +237,90 @@ if __name__ == '__main__':
         print("Error:Side value has to be left or right")
         raise ValueError
     
-    hand_api = QbHand(side, gazebo)
-    print('Connected!')
+    hand = True
+    if hand:
+      # Create QbHand object for controlling the hand
+      print('Connecting to qb Soft Hand')
+      hand_api = QbHand(side, gazebo)
+      print('Connected!')
 
-    # open hand
-    hand_api.open_hand()
-    print('Opened!')
+      # open hand
+      hand_api.open_hand()
+      print('Opened!')
 
     tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
-
-
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
-                                                      tf_hand.transform.translation.y,
-                                                      tf_hand.transform.translation.z,
-                                                      tf_hand.transform.rotation.w,
-                                                      tf_hand.transform.rotation.x,
-                                                      tf_hand.transform.rotation.y,
-                                                      tf_hand.transform.rotation.z
-                                                     ])
-
-    
+                                                 tf_hand.transform.translation.y,
+                                                 tf_hand.transform.translation.z,
+                                                 tf_hand.transform.rotation.w,
+                                                 tf_hand.transform.rotation.x,
+                                                 tf_hand.transform.rotation.y,
+                                                 tf_hand.transform.rotation.z
+                                                 ])
 
     # get hand orientation
     hand_tf = get_hand_tf()
 
-    debug = True
-
     print('Starting Point Cloud Processing')
     use_pyrealsense = False
-    pdb.set_trace()
     if use_pyrealsense:
         pcd = get_point_cloud_from_real_rs(debug)
     else:
         pcd = get_point_cloud_from_ros(debug)
 
+
+    # == Transform pointcloud to table frame
+    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
+    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
+                                                                    tf_camera_to_world.transform.rotation.x,
+                                                                    tf_camera_to_world.transform.rotation.y,
+                                                                    tf_camera_to_world.transform.rotation.z]))
+
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    if debug:
+        o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+
+
+    # == Remove points above & below a certain height
+    points = np.asarray(pcd.points)
+    # pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+    # points = np.asarray(pcd.points)
+    
+    object_cloud = pcd.select_by_index(np.where((points[:, 2] < 0.08) & (points[:, 2] > 0.001))[0])
+    table_cloud = pcd.select_by_index( np.where(((points[:, 2] < 0.001) & (points[:, 2] > -0.05)))[0])
+    # pcd = pcd.select_by_index(np.where(points[:, 2] > -0.04)[0])
+    
+    if debug:
+        object_cloud.paint_uniform_color([1, 1, 0])
+        table_cloud.paint_uniform_color([0, 0, 1])
+        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        # o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+   
+    # == Transform back to camera frame
+    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+                                                                    tf_world_to_camera.transform.rotation.x,
+                                                                    tf_world_to_camera.transform.rotation.y,
+                                                                    tf_world_to_camera.transform.rotation.z]))
+    # pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    object_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+    table_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+
     print ('Table Segmentation')
-    table_cloud, object_cloud = segment_table(pcd)
+    # table_cloud, object_cloud = segment_table(pcd)
 
     voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-
     object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
-    object_cloud.paint_uniform_color([0, 1, 0])
-    table_cloud.paint_uniform_color([1, 0, 0])
 
     if debug:
-        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        object_cloud.paint_uniform_color([0, 1, 0])
+        # table_cloud.paint_uniform_color([1, 0, 0])
+        # o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        o3d.visualization.draw_geometries([object_cloud])
 
     initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
     initial_pose = get_pose_from_arr(initial_pose)
@@ -300,13 +344,11 @@ if __name__ == '__main__':
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    #exit()
-
     ### 1. Go to position over the object
     moveit_test = MoveItTest()
     print ("Planning trajectory")
     moveit_test.go_to_pos(arm_target_pose)
-
+    
     ### 2. Tilt hand
     ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
     y_ang = 0.26
@@ -323,7 +365,7 @@ if __name__ == '__main__':
     moveit_test.go_to_pos(arm_target_pose)
 
     ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-    arm_target_pose_np[2] -= 0.168 
+    arm_target_pose_np[2] -= 0.175
     arm_target_pose_np[3:] = q_new
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
@@ -332,10 +374,10 @@ if __name__ == '__main__':
     print ("Planning trajectory")
     moveit_test.go_to_pos(arm_target_pose)
 
-    ### 4. close hand
-    time.sleep(0.5)
-    hand_api.close_hand()
-    print('Closed!')
+    if hand:
+        ### 4. close hand
+        hand_api.close_hand()
+        print('Closed!')
 
     ### 5. Lift up
     arm_target_pose_np[2] += 0.173
@@ -347,7 +389,7 @@ if __name__ == '__main__':
     moveit_test.go_to_pos(arm_target_pose)
 
     ### 5. Move side
-    arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
+    arm_target_pose_np[:3] = [-0.087, -0.610, 1.57]
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -364,9 +406,10 @@ if __name__ == '__main__':
     print ("Planning trajectory")
     moveit_test.go_to_pos(arm_target_pose)
 
-    ### 7. Open hand
-    hand_api.open_hand()
-    print('Opened!')
+    if hand:
+        ### 7. Open hand
+        hand_api.open_hand()
+        print('Opened!')
 
     ### 8. Go up
     arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
