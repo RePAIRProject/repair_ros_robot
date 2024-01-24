@@ -233,7 +233,7 @@ def transform_pose_vislab(input_pose, from_frame, to_frame):
     # rospy.sleep(1)
     try:
         # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
-        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(0.5))
+        output_pose_stamped = tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(1.0))
         return output_pose_stamped.pose
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         raise
@@ -315,20 +315,24 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
 
     labels = np.array(object_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
 
-    max_label = labels.max()
-    #print(f"point cloud has {max_label + 1} clusters")
-    colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
-    colors = np.zeros((labels.shape[0], 3))
-    colors[:, 0] = 1.
-    colors[labels < 0] = 0
+    labels_size = np.size(np.asarray(labels))
+    if labels_size == 0:
+        n_objects = 0
+    else:
+        max_label = labels.max()
+        #print(f"point cloud has {max_label + 1} clusters")
+        colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+        colors = np.zeros((labels.shape[0], 3))
+        colors[:, 0] = 1.
+        colors[labels < 0] = 0
 
-    n_objects = 0
-    for label in np.unique(labels):
-        idxs = (labels == label)
-        if labels[idxs].shape[0] > 200:
-            colors[idxs, 0] = 0
-            colors[idxs, 1] = 1.
-            n_objects += 1
+        n_objects = 0
+        for label in np.unique(labels):
+            idxs = (labels == label)
+            if labels[idxs].shape[0] > 200:
+                colors[idxs, 0] = 0
+                colors[idxs, 1] = 1.
+                n_objects += 1
    
     return n_objects, pcd, table_cloud, object_cloud
 
@@ -370,25 +374,29 @@ def check_frescos_left(debug, use_pyrealsense):
 
     labels = np.array(object_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
 
-    max_label = labels.max()
-    #print(f"point cloud has {max_label + 1} clusters")
-    colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
-    colors = np.zeros((labels.shape[0], 3))
-    colors[:, 0] = 1.
-    colors[labels < 0] = 0
+    labels_size = np.size(np.asarray(labels))
+    if labels_size == 0:
+        n_objects = 0
+    else:
+        max_label = labels.max()
+        #print(f"point cloud has {max_label + 1} clusters")
+        colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
+        colors = np.zeros((labels.shape[0], 3))
+        colors[:, 0] = 1.
+        colors[labels < 0] = 0
 
-    n_objects = 0
-    for label in np.unique(labels):
-        idxs = (labels == label)
-        if labels[idxs].shape[0] > 200:
-            colors[idxs, 0] = 0
-            colors[idxs, 1] = 1.
-            n_objects += 1
+        n_objects = 0
+        for label in np.unique(labels):
+            idxs = (labels == label)
+            if labels[idxs].shape[0] > 200:
+                colors[idxs, 0] = 0
+                colors[idxs, 1] = 1.
+                n_objects += 1
 
-    if debug:
-        object_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
-        table_cloud.paint_uniform_color([1., 0., 0.])
+        if debug:
+            object_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
+            table_cloud.paint_uniform_color([1., 0., 0.])
 
-        o3d.visualization.draw_geometries([object_cloud, table_cloud])
+            o3d.visualization.draw_geometries([object_cloud, table_cloud])
     
-    return n_objects
+    return n_objects, object_cloud, table_cloud
