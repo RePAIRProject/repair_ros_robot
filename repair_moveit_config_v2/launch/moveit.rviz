@@ -1219,6 +1219,8 @@ Visualization Manager:
       Enabled: true
       Filter (blacklist): ""
       Filter (whitelist): ""
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
@@ -1276,8 +1278,12 @@ Visualization Manager:
           Value: false
         camera_right_ir_optical_frame:
           Value: false
+        frag1__fragment_base_link:
+          Value: true
+        frag2__fragment_base_link:
+          Value: true
         frag3__fragment_base_link:
-          Value: false
+          Value: true
         gazebo_world:
           Value: false
         ground_plane__link:
@@ -1505,6 +1511,10 @@ Visualization Manager:
           arm_grasp_pose:
             {}
           gazebo_world:
+            frag1__fragment_base_link:
+              {}
+            frag2__fragment_base_link:
+              {}
             frag3__fragment_base_link:
               {}
             ground_plane__link:
@@ -1779,7 +1789,7 @@ Visualization Manager:
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1016
+  Height: 752
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -1791,6 +1801,6 @@ Window Geometry:
   QMainWindow State: 000000ff00000000fd0000000100000000000002690000039efc0200000007fb000000100044006900730070006c006100790073010000003d000001b8000000c900fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a400fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000001fb000001e00000017d00ffffff000004c90000039e00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 1848
-  X: 72
-  Y: 27
+  Width: 1386
+  X: 454
+  Y: 91

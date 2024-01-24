@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-    <!-- launch gazebo flag -->
-    <arg name="launch_gazebo" default="false" />
-
     <!-- Run the main MoveIt executable with trajectory execution -->
     <include file="$(find repair_moveit_config_v2)/launch/move_group.launch">
         <arg name="allow_trajectory_execution" value="true" />
@@ -17,16 +14,13 @@
     <!-- Start the controllers and robot state publisher-->
     <include file="$(find repair_gazebo)/launch/control_utils.launch"/>
 
-    <!-- Start the simulated robot in an empty Gazebo world -->
-    <group if="$(arg launch_gazebo)">
-        <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
-    </group>
+    <!-- Start the simulated robot with three fresco -->
+    <include file="$(find repair_gazebo)/launch/repair_3_frescos.launch"/>
 
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
     </include>
-
     <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
 
     <!-- launch the repair_interface node -->

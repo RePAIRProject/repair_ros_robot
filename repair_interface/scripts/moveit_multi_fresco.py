@@ -22,8 +22,9 @@ from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 from vision_utils import get_transform, get_hand_tf, publish_tf_np
 from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
-from vision_utils import get_arr_from_pose, get_point_cloud_from_ros, get_point_cloud_from_real_rs
-from vision_utils import segment_table, transform_pose_vislab, get_pose_from_transform
+from vision_utils import get_arr_from_pose
+from vision_utils import transform_pose_vislab, get_pose_from_transform
+from vision_utils import segment_table, get_number_of_frescos, get_max_cluster, check_frescos_left
 
 from qbhand_test import QbHand
 
@@ -44,11 +45,8 @@ class HAND_STATE_ENUM(Enum):
 class MoveItTest:
     def __init__(self):
         self.listener = tf.TransformListener()
-        self.wait_for_transform = 5
-        self.transform_tries = 5
-        self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
-        print("set moveit publisher")
-        # self.move_arm_to_pose_topic = "/move_arm_to_pose_srv" # for c++ client
+        self.wait_for_transform = 1
+        self.transform_tries = 1
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
@@ -92,31 +90,24 @@ class MoveItTest:
 
     def move_to_pose(self, arm: ARM_ENUM, 
                         pose: PoseStamped):
-
-        rospy.loginfo("Waiting for move arm to pose service")
-        rospy.wait_for_service(self.move_arm_to_pose_topic)
-        rospy.loginfo("Service found")
+       
         # wait for service
         #rospy.loginfo("Waiting for move arm to pose service")
         #rospy.wait_for_service('/move_arm_to_pose_srv')
         #rospy.loginfo("Service found")
 
         # create service proxy
-        move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
-        #move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
+        move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
 
         # create request
-        print("create request")
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = arm.value
         move_arm_to_pose_req.target_pose = pose
 
         # call service
-        print("call service")
         move_arm_to_pose_resp = move_arm_to_pose_srv(move_arm_to_pose_req)
 
         # check response
-        print("check response")
         if move_arm_to_pose_resp.success:
             rospy.loginfo("Successfully moved arm to pose")
         else:
@@ -210,22 +201,18 @@ class MoveItTest:
         except tf.Exception as error:
             rospy.logwarn("Exception occurred: {0}".format(error))
             return None
-
+        
 
 if __name__ == '__main__':
     node_name = "moveit_test"
     rospy.init_node(node_name)
 
-    # Get and print parameters
-    side = "right" # str(rospy.get_param("/"+node_name+"/side"))
-    gazebo = False #bool(rospy.get_param("/"+node_name+"/gazebo"))
-
     debug = True
-    # print()
-    # print("Parameters")
-    # print("side =", side)
-    # print("gazebo =", gazebo)
-    # print()
+    use_pyrealsense = False
+
+    # Get and print parameters
+    side = str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
     if side == "right":
         arm_no = 2
@@ -246,10 +233,8 @@ if __name__ == '__main__':
       hand_api.open_hand()
       print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
-
-
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
                                                  tf_hand.transform.translation.y,
@@ -263,147 +248,129 @@ if __name__ == '__main__':
     # get hand orientation
     hand_tf = get_hand_tf()
 
-    print('Starting Point Cloud Processing')
-    use_pyrealsense = False
-    if use_pyrealsense:
-        pcd = get_point_cloud_from_real_rs(debug)
-    else:
-        pcd = get_point_cloud_from_ros(debug)
+    num_frescos, pcd, table_cloud, object_cloud = get_number_of_frescos(debug, use_pyrealsense)
+    print (f'Number of frescos detected: {num_frescos}')
+    
+    # print ('Table Segmentation')
+    # table_cloud, object_cloud = segment_table(pcd)
 
+    # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
 
-    # == Transform pointcloud to table frame
-    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
-    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
-                                                                    tf_camera_to_world.transform.rotation.x,
-                                                                    tf_camera_to_world.transform.rotation.y,
-                                                                    tf_camera_to_world.transform.rotation.z]))
+    # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
 
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
-    o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+    # if debug:
+    #     object_cloud.paint_uniform_color([0, 1, 0])
+    #     table_cloud.paint_uniform_color([1, 0, 0])
+    #     o3d.visualization.draw_geometries([table_cloud, object_cloud])
 
+    fresco_release = 0
+    while num_frescos > 0:
 
-    # == Remove points above 8cm height
-    points = np.asarray(pcd.points)
-    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
-    o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+        # table_cloud, object_cloud = segment_table(pcd)
+        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+        # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+        print ('Getting object with max number of points')
+        object_cloud = get_max_cluster(object_cloud, debug)
 
-    # == Transform back to camera frame
-    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
-    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
-                                                                    tf_world_to_camera.transform.rotation.x,
-                                                                    tf_world_to_camera.transform.rotation.y,
-                                                                    tf_world_to_camera.transform.rotation.z]))
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+        initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
+        initial_pose = get_pose_from_arr(initial_pose)
 
-    print ('Table Segmentation')
-    table_cloud, object_cloud = segment_table(pcd)
+        ### Transform the pose from the camera frame to the base frame (world)
+        hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
+        hand_pose_world_np = get_arr_from_pose(hand_pose_world)
+        hand_pose_world_np[0] += 0.04
+        hand_pose_world_np[1] += 0.03
+        hand_pose_world_np[2] = 1.15 + 0.15
+        hand_pose_world_np[3:] = hand_tf
+        publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
 
-    voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+        hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
+        T0 = pytr.transform_from_pq(hand_pose_world_np)
+        T1 = pytr.concat(hand_arm_transform, T0)
 
-    object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+        arm_target_pose_np = get_pose_from_transform(T1)
 
-    if debug:
-        object_cloud.paint_uniform_color([0, 1, 0])
-        table_cloud.paint_uniform_color([1, 0, 0])
-        o3d.visualization.draw_geometries([table_cloud, object_cloud])
-    initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
-    initial_pose = get_pose_from_arr(initial_pose)
+        # arm_target_pose_np = get_arr_from_pose(arm_target_pose)
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    ### Transform the pose from the camera frame to the base frame (world)
-    hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
-    hand_pose_world_np = get_arr_from_pose(hand_pose_world)
-    hand_pose_world_np[0] += 0.04
-    hand_pose_world_np[1] += 0.03
-    hand_pose_world_np[2] = 1.15 + 0.15
-    hand_pose_world_np[3:] = hand_tf
-    publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
+        ### 1. Go to position over the object
+        moveit_test = MoveItTest()
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
-    T0 = pytr.transform_from_pq(hand_pose_world_np)
-    T1 = pytr.concat(hand_arm_transform, T0)
+        ### 2. Tilt hand
+        ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
+        y_ang = 0.26
+        q_rot = quaternion_from_euler(0, y_ang, 0)
 
-    arm_target_pose_np = get_pose_from_transform(T1)
+        q_orig = arm_target_pose_np[3:]
+        q_new = quaternion_multiply(q_rot, q_orig)
 
-    # arm_target_pose_np = get_arr_from_pose(arm_target_pose)
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        arm_target_pose_np[3:] = q_new
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    #exit()
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    ### 1. Go to position over the object
-    moveit_test = MoveItTest()
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+        ### 3. Go down to grasp (return to parallel, go down, then rotate again)
+        arm_target_pose_np[2] -= 0.168 
+        arm_target_pose_np[3:] = q_new
 
-    ### 2. Tilt hand
-    ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
-    y_ang = 0.26
-    q_rot = quaternion_from_euler(0, y_ang, 0)
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    q_orig = arm_target_pose_np[3:]
-    q_new = quaternion_multiply(q_rot, q_orig)
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    arm_target_pose_np[3:] = q_new
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        if hand:
+            ### 4. close hand
+            hand_api.close_hand()
+            print('Closed!')
 
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+        ### 5. Lift up
+        arm_target_pose_np[2] += 0.173
 
-    ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-    arm_target_pose_np[2] -= 0.168
-    arm_target_pose_np[3:] = q_new
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+        ### 5. Move side
+        arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
 
-    if hand:
-        ### 4. close hand
-        hand_api.close_hand()
-        print('Closed!')
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    ### 5. Lift up
-    arm_target_pose_np[2] += 0.173
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # 6. Go down
+        arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.257]
 
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    ### 5. Move side
-    arm_target_pose_np[:3] = [-0.087, -0.610, 1.57]
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        if hand:
+            ### 7. Open hand
+            hand_api.open_hand()
+            print('Opened!')
 
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+        ### 8. Go up
+        arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
 
-    # 6. Go down
-    arm_target_pose_np[:3] = [-0.110, -0.609, 1.257]
+        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        print ("Planning trajectory")
+        moveit_test.go_to_pos(arm_target_pose)
 
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+        fresco_release += 1.
+        num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
+        print (f'Objects left: {num_frescos}')
 
-    if hand:
-        ### 7. Open hand
-        hand_api.open_hand()
-        print('Opened!')
-
-    ### 8. Go up
-    arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
-
-    publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-    arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
-
-    print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
