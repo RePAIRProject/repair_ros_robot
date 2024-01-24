@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/devel/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/prova_repair_update/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/opt/openrobots/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/src/repair_ros_robot/realsense-ros/realsense2_camera/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/src/repair_ros_robot/realsense_gazebo_plugin/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/src/repair_ros_robot/repair_interface/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/src/repair_ros_robot/repair_moveit_xbot/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/src/repair_ros_robot/roboticsgroup_upatras_gazebo_plugins/include/**",
+        "/home/caesar753rtk/Documenti/centro_piaggio/202401_repair_old/src/repair_ros_robot/SoftHand-Plugin/softhand_plugin/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
