@@ -45,7 +45,7 @@ scenes = ['/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 #, '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00400.ply', '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 
 # debug
-debug=True
+debug=False
 save_detections=False
 show_solution=True
 show_pairwise_solutions=False

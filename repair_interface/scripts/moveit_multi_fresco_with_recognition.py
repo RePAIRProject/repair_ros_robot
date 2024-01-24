@@ -289,7 +289,6 @@ if __name__ == '__main__':
         hand_pose_world_np[2] = 1.15 + 0.15
         hand_pose_world_np[3:] = hand_tf
         publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
-        o3d.visualization.draw_geometries([obj_pcd])
 
         hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
         T0 = pytr.transform_from_pq(hand_pose_world_np)
@@ -304,7 +303,7 @@ if __name__ == '__main__':
         ### 1. Go to position over the object
         moveit_test = MoveItTest()
         print ("Going above the detected fragment! Planning trajectory..")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -319,7 +318,7 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Tilting hand! Planning trajectory..")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
         arm_target_pose_np[2] -= 0.168 
@@ -329,7 +328,7 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Go down to grasp! Planning trajectory..")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         if hand:
             print("Closing hand..")
@@ -344,7 +343,7 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Lift it up! Planning trajectory..")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         ### 5. Move side
         arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
@@ -353,7 +352,7 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Move it to the side! Planning trajectory..")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         # 6. Go down
         target_down_position = np.asarray([-0.110, -0.609, 1.257])
@@ -366,7 +365,7 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Placing it down! Planning trajectory..")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         if hand:
             print("Opening..")
@@ -381,7 +380,7 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Go up again to start! Planning trajectory.. ")
-        #moveit_test.go_to_pos(arm_target_pose)
+        moveit_test.go_to_pos(arm_target_pose)
 
         print(f'Placed the fragments')
         # num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
