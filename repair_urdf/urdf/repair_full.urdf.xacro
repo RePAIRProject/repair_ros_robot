@@ -53,8 +53,8 @@
     <xacro:softhands 
         version="v1_2_research" 
         position="0 0 0" 
-        orientation="${PI/2}" 
-        fixed_hands="false">
+        orientation="${PI}" 
+        fixed_hands="true">
     </xacro:softhands>
 
 
