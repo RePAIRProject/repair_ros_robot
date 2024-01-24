@@ -234,7 +234,7 @@ if __name__ == '__main__':
     pose.pose.orientation.w = tf_hand.transform.rotation.w
 
     target_pose = pose
-    target_pose.pose.position.z += 0.3
+    target_pose.pose.position.z += -0.3
 
     moveit_test = MoveItTest()
     moveit_test.go_to_pos(target_pose)

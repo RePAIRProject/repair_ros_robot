@@ -217,8 +217,8 @@ if __name__ == '__main__':
     rospy.init_node(node_name)
 
     # Get and print parameters
-    side = str(rospy.get_param("/"+node_name+"/side"))
-    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+    side = "right" # str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = False #bool(rospy.get_param("/"+node_name+"/gazebo"))
 
     debug = True
     # print()
@@ -247,7 +247,7 @@ if __name__ == '__main__':
       print('Opened!')
 
     tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
-    # print (tf)
+    print(tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
                                                  tf_hand.transform.translation.y,
@@ -351,7 +351,7 @@ if __name__ == '__main__':
     moveit_test.go_to_pos(arm_target_pose)
 
     ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-    arm_target_pose_np[2] -= 0.175
+    arm_target_pose_np[2] -= 0.168
     arm_target_pose_np[3:] = q_new
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')

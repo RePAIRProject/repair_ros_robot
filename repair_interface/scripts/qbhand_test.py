@@ -27,7 +27,7 @@ class QbHand:
         rospy.sleep(0.5)
         
 
-    def move_hand(self, aperture, secs=0.5):
+    def move_hand(self, aperture, secs=1.0):
         # moving
         #print('Moving qb Soft Hand..')
         if self.gazebo:
