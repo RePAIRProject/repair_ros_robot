@@ -266,9 +266,9 @@ if __name__ == '__main__':
     fresco_release = 0
     while num_frescos > 0:
 
-        table_cloud, object_cloud = segment_table(pcd)
-        voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-        object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+        # table_cloud, object_cloud = segment_table(pcd)
+        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+        # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
         print ('Getting object with max number of points')
         object_cloud = get_max_cluster(object_cloud, debug)
 
@@ -371,6 +371,6 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         fresco_release += 1.
-        num_frescos = check_frescos_left(True, False)
+        num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
         print (f'Objects left: {num_frescos}')
 
