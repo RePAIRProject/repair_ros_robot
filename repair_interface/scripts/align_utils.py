@@ -272,8 +272,8 @@ def recognize_objects(objects):
         min_pos = np.unravel_index(argmin_idx, (len(db_pcds), len(clustered_objects)))
         assignments[id_list[min_pos[0]]] = clustered_objects[min_pos[1]]
         # remove possible clones
-        dist_matrix[min_pos[0], :] = np.max(dist_matrix)
-        dist_matrix[:, min_pos[1]] = np.max(dist_matrix)
+        dist_matrix[min_pos[0], :] = np.max(dist_matrix) + 1
+        dist_matrix[:, min_pos[1]] = np.max(dist_matrix) + 1
         print(f"min_pos: {min_pos} // assigned {id_list[min_pos[0]]} to the detected and clustered object number {min_pos[1]}")
         #gdraw([rescaled_db_objs[min_pos[0]], clustered_objects[min_pos[1]]])
         assignments_ids[len(assignments.keys())-1, 0] = min_pos[0]

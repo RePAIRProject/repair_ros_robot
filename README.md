@@ -263,6 +263,22 @@ roslaunch repair_interface moveit_test.launch side:=right gazebo:=false
 
 In the beginning two windows will pop up which you have to close by pressing the ```q``` button.
 
+#### Int Week 2 partial update
+First terminal
+```bash
+roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true
+```
+
+Second terminal
+```bash
+rosrun repair_interface moveit_client.py _use_gazebo:=true
+```
+
+Recognition
+```bash
+rosrun repair_interface moveit_multi_fresco_with_recognition.py _side:=left _gazebo:=true
+```
+
 ### Information about used topics
 - To inspect all the topics exposed by xbot2 run ``` rostopic list ```:
 - Send commands to the joints (SoftHand excluded) using ```/xbotcore/command``` topic

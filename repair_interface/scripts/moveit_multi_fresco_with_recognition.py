@@ -402,3 +402,4 @@ if __name__ == '__main__':
         # num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
         # print (f'Objects left: {num_frescos}')
 
+    print("Finished")
