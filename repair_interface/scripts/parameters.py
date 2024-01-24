@@ -11,11 +11,13 @@ num_points=1000
 voxel_size=0.001
 nb_points=40
 nb_radius=0.03
-min_points_detection=2000
+min_points_detection=1
 # filter points further away
 z_cut=0.3
 # scaling to compensate
-scaling_factor=1
+scaling_factor=1/3
+# alignment 
+icp_voxel_size=0.01
 # paths and db models
 pc = 'andreap'
 model_pts = 50000

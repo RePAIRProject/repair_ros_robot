@@ -401,3 +401,46 @@ def check_frescos_left(debug, use_pyrealsense):
             o3d.visualization.draw_geometries([object_cloud, table_cloud])
     
     return n_objects, object_cloud, table_cloud
+
+def prepare_scene(pcd, debug=False):
+    """
+    It takes the point cloud, clean by removing outliers,
+    then segment the table, and returns the table and 
+    a cleaned version of the objects on the table
+    """
+    # == Transform pointcloud to table frame
+    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
+    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
+                                                                    tf_camera_to_world.transform.rotation.x,
+                                                                    tf_camera_to_world.transform.rotation.y,
+                                                                    tf_camera_to_world.transform.rotation.z]))
+
+    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+
+    # == Remove points above & below a certain height
+    points = np.asarray(pcd.points)
+    # pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+    # points = np.asarray(pcd.points)
+    
+    object_cloud = pcd.select_by_index(np.where((points[:, 2] < 0.08) & (points[:, 2] > 0.001))[0])
+    table_cloud = pcd.select_by_index( np.where(((points[:, 2] < 0.001) & (points[:, 2] > -0.05)))[0])
+    # pcd = pcd.select_by_index(np.where(points[:, 2] > -0.04)[0])
+   
+    if debug:
+        object_cloud.paint_uniform_color([1, 1, 0])
+        table_cloud.paint_uniform_color([0, 0, 1])
+        o3d.visualization.draw_geometries([table_cloud, object_cloud])
+        # o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+
+    # == Transform back to camera frame
+    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+                                                                    tf_world_to_camera.transform.rotation.x,
+                                                                    tf_world_to_camera.transform.rotation.y,                                              tf_world_to_camera.transform.rotation.z]))
+    # pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    object_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+    table_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+    
+    return object_cloud, table_cloud

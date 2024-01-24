@@ -22,10 +22,11 @@ from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 from vision_utils import get_transform, get_hand_tf, publish_tf_np
 from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
-from vision_utils import get_arr_from_pose
+from vision_utils import get_arr_from_pose, get_point_cloud_from_ros, get_point_cloud_from_real_rs
 from vision_utils import transform_pose_vislab, get_pose_from_transform
 from vision_utils import segment_table, get_number_of_frescos, get_max_cluster, check_frescos_left
-
+from vision_utils import prepare_scene
+from align_utils import recognize_objects
 from qbhand_test import QbHand
 
 
@@ -48,7 +49,6 @@ class MoveItTest:
         self.wait_for_transform = 1
         self.transform_tries = 1
         self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
-
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
@@ -103,7 +103,7 @@ class MoveItTest:
 
         # create service proxy
         move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
-        # move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
+        #move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
 
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
@@ -210,7 +210,8 @@ class MoveItTest:
         
 
 if __name__ == '__main__':
-    node_name = "moveit_test"
+
+    node_name = "recognize_it_test"
     rospy.init_node(node_name)
 
     debug = True
@@ -254,8 +255,20 @@ if __name__ == '__main__':
     # get hand orientation
     hand_tf = get_hand_tf()
 
-    num_frescos, pcd, table_cloud, object_cloud = get_number_of_frescos(debug, use_pyrealsense)
-    print (f'Number of frescos detected: {num_frescos}')
+    print('Starting Point Cloud Processing')
+    if use_pyrealsense:
+        pcd = get_point_cloud_from_real_rs(debug)
+    else:
+        pcd = get_point_cloud_from_ros(debug)
+
+    print('prepare scene')    
+    object_cloud, table = prepare_scene(pcd)
+
+    print('recognition')
+    recognized_objects = recognize_objects(object_cloud)
+
+    # num_frescos, pcd, table_cloud, object_cloud = get_number_of_frescos(debug, use_pyrealsense)
+    # print (f'Number of frescos detected: {num_frescos}')
     
     # print ('Table Segmentation')
     # table_cloud, object_cloud = segment_table(pcd)
@@ -268,17 +281,22 @@ if __name__ == '__main__':
     #     object_cloud.paint_uniform_color([0, 1, 0])
     #     table_cloud.paint_uniform_color([1, 0, 0])
     #     o3d.visualization.draw_geometries([table_cloud, object_cloud])
-
+    print("moving fragments")
     fresco_release = 0
-    while num_frescos > 0:
+    for obj_key in recognized_objects.keys():
 
+    # fresco_release = 0
+    # number_of_fresco = len(recognized_objects)
+    # while number_of_fresco > 0:
+        print(obj_key)
+        obj_bbox = recognized_objects[obj_key]['bbox']
         # table_cloud, object_cloud = segment_table(pcd)
         # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
         # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
-        print ('Getting object with max number of points')
-        object_cloud = get_max_cluster(object_cloud, debug)
+        #print ('Getting object with max number of points')
+        # object_cloud = get_max_cluster(object_cloud, debug)
 
-        initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
+        initial_pose = np.concatenate((obj_bbox.get_center(), hand_tf))
         initial_pose = get_pose_from_arr(initial_pose)
 
         ### Transform the pose from the camera frame to the base frame (world)
@@ -377,6 +395,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         fresco_release += 1.
-        num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
-        print (f'Objects left: {num_frescos}')
+        print(f'Moved {fresco_release} fragments! Up with the next')
+        # num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
+        # print (f'Objects left: {num_frescos}')
 
