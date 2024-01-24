@@ -17,7 +17,7 @@ z_cut=0.3
 # scaling to compensate
 scaling_factor=1
 # paths and db models
-pc = 'laptop'
+pc = 'andreap'
 model_pts = 50000
 id_list = ['RPf_00123', 'RPf_00124', 'RPf_00125', 'RPf_00126']
 version = ''
@@ -32,9 +32,12 @@ elif pc == 'home':
 elif pc == 'laptop':
     scenes_folder = '/home/palma/repair/int_week_2/RoboticScenes/pcds'
     db_folder = '/home/palma/repair/int_week_2/dataset'
+elif pc == 'andreap':
+    import os 
+    db_folder = os.path.expanduser('~/.gazebo/fragments_db')
 else:
-    scenes_folder = ''
-    db_folder = ''
+    import os 
+    db_folder = os.path.expanduser('~/.gazebo/fragments_db')
 # scenes ()
 scenes = ['/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 #, '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00400.ply', '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']

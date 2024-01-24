@@ -1,23 +1,7 @@
 import open3d as o3d
 import numpy as np
 import matplotlib.pyplot as plt
-import vedo as vd
 import os, random, pdb
-
-def transform_mesh(m):
-    cm = m.centerOfMass()
-    m.shift(-cm)
-    elli = vd.pcaEllipsoid(m, pvalue=0.5)
-
-    ax1 = vd.versor(elli.axis1)
-    ax2 = vd.versor(elli.axis2)
-    ax3 = vd.versor(elli.axis3)
-
-    # the transposed matrix is already the inverse
-    T = np.array([ax1, ax2, ax3])
-
-    return m.applyTransform(T, reset=True)  # <-- I had to enable reset
-
 
 def get_R_x(n):
     R_x = np.zeros((3, 3))

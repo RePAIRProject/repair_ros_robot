@@ -94,46 +94,46 @@ def est_bbox_distance(source, target, transformation):
     extent_weight = 1
     return center_dist * center_weight + extent_dist * extent_weight
 
-def text_3d(text, pos, direction=None, degree=0.0, font_size=16, color=(255, 0, 0)):
-    """
-    Generate a 3D text point cloud used for visualization.
-    :param text: content of the text
-    :param pos: 3D xyz position of the text upper left corner
-    :param direction: 3D normalized direction of where the text faces
-    :param degree: in plane rotation of text
-    :param font: Name of the font - change it according to your system
-    :param font_size: size of the font
-    :return: o3d.geoemtry.PointCloud object
-    """
-    if direction is None:
-        direction = (0., 0., 1.)
+# def text_3d(text, pos, direction=None, degree=0.0, font_size=16, color=(255, 0, 0)):
+#     """
+#     Generate a 3D text point cloud used for visualization.
+#     :param text: content of the text
+#     :param pos: 3D xyz position of the text upper left corner
+#     :param direction: 3D normalized direction of where the text faces
+#     :param degree: in plane rotation of text
+#     :param font: Name of the font - change it according to your system
+#     :param font_size: size of the font
+#     :return: o3d.geoemtry.PointCloud object
+#     """
+#     if direction is None:
+#         direction = (0., 0., 1.)
 
-    font_path = '/home/palma/.local/share/fonts/MesloLGS NF Regular.ttf'
-    from PIL import Image, ImageFont, ImageDraw
-    from pyquaternion import Quaternion
+#     font_path = '/home/palma/.local/share/fonts/MesloLGS NF Regular.ttf'
+#     from PIL import Image, ImageFont, ImageDraw
+#     from pyquaternion import Quaternion
 
-    font_obj = ImageFont.truetype(font_path, font_size)
-    font_dim = font_obj.getsize(text)
+#     font_obj = ImageFont.truetype(font_path, font_size)
+#     font_dim = font_obj.getsize(text)
 
-    img = Image.new('RGB', font_dim, color=color)
-    draw = ImageDraw.Draw(img)
-    draw.text((0, 0), text, font=font_obj, fill=(0, 0, 0))
-    img = np.asarray(img)
-    img_mask = img[:, :, 0] < 128
-    indices = np.indices([*img.shape[0:2], 1])[:, img_mask, 0].reshape(3, -1).T
+#     img = Image.new('RGB', font_dim, color=color)
+#     draw = ImageDraw.Draw(img)
+#     draw.text((0, 0), text, font=font_obj, fill=(0, 0, 0))
+#     img = np.asarray(img)
+#     img_mask = img[:, :, 0] < 128
+#     indices = np.indices([*img.shape[0:2], 1])[:, img_mask, 0].reshape(3, -1).T
 
-    pcd = o3d.geometry.PointCloud()
-    pcd.colors = o3d.utility.Vector3dVector(img[img_mask, :].astype(float) / 255.0)
-    pcd.points = o3d.utility.Vector3dVector(indices / 100.0)
+#     pcd = o3d.geometry.PointCloud()
+#     pcd.colors = o3d.utility.Vector3dVector(img[img_mask, :].astype(float) / 255.0)
+#     pcd.points = o3d.utility.Vector3dVector(indices / 100.0)
 
-    raxis = np.cross([0.0, 0.0, 1.0], direction)
-    if np.linalg.norm(raxis) < 1e-6:
-        raxis = (0.0, 0.0, 1.0)
-    trans = (Quaternion(axis=raxis, radians=np.arccos(direction[2])) *
-             Quaternion(axis=direction, degrees=degree)).transformation_matrix
-    trans[0:3, 3] = np.asarray(pos)
-    pcd.transform(trans)
-    return pcd
+#     raxis = np.cross([0.0, 0.0, 1.0], direction)
+#     if np.linalg.norm(raxis) < 1e-6:
+#         raxis = (0.0, 0.0, 1.0)
+#     trans = (Quaternion(axis=raxis, radians=np.arccos(direction[2])) *
+#              Quaternion(axis=direction, degrees=degree)).transformation_matrix
+#     trans[0:3, 3] = np.asarray(pos)
+#     pcd.transform(trans)
+#     return pcd
 
 def recognize_objects(scene_pcd):
 
@@ -141,8 +141,8 @@ def recognize_objects(scene_pcd):
     print("loading database fragments")
     db_pcds = load_from_db(folder=db_folder, names_list=names_list)
        
-    print("working on", scene_path)
-    scene_pcd = o3d.io.read_point_cloud(scene_path)
+    # print("working on", scene_path)
+    # scene_pcd = o3d.io.read_point_cloud(scene_path)
 
     if debug:
         gdraw([scene_pcd])
@@ -155,6 +155,7 @@ def recognize_objects(scene_pcd):
     table, objects = extract_fragments_from_scene(scene_pcd, distance_threshold=distance_threshold, ransac_n=ransac_n, num_iterations=num_iterations)
 
     print("filtering")
+    scene_pcd.estimate_normals()
     voxel_pc = objects.voxel_down_sample(voxel_size=voxel_size)
     objects, ind = voxel_pc.remove_radius_outlier(nb_points=nb_points, radius=nb_radius)
     #objects.paint_uniform_color([0, 1, 0])
@@ -165,6 +166,7 @@ def recognize_objects(scene_pcd):
     bbox = table.get_oriented_bounding_box()
     bbox_s = bbox.scale(0.8, bbox.center)
     plane_cloud = table.crop(bbox_s)
+    plane_cloud.estimate_normals()
     plane_cloud.orient_normals_to_align_with_direction(np.array([bbox.center[0], bbox.center[1], 0]))
     plane_normal_vector = np.mean(np.asarray(plane_cloud.normals), axis=0)
 
@@ -290,14 +292,16 @@ def recognize_objects(scene_pcd):
     colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (0, 127, 127)]
     texts = []
     bboxes = []
+    print(assignments_ids.shape[0])
     for j in range(assignments_ids.shape[0]):
-        pcd_text = text_3d(id_list[assignments_ids[j, 0]], clustered_objects[assignments_ids[j, 1]].get_min_bound(), font_size=10, color=colors[j])
-        texts.append(pcd_text)
+        # pcd_text = text_3d(id_list[assignments_ids[j, 0]], clustered_objects[assignments_ids[j, 1]].get_min_bound(), font_size=10, color=colors[j])
+        # texts.append(pcd_text)
     
         bbox = clustered_objects[assignments_ids[j, 1]].get_oriented_bounding_box()
         bbox.color = colors[j]
         bboxes.append(bbox)
-        solution_dict[id_list[assignments_ids[j, 0]]] = {'bbox': bbox, 'text':pcd_text, 'pcd': clustered_objects[assignments_ids[j, 1]]}
+        solution_dict[id_list[assignments_ids[j, 0]]] = {'bbox': bbox, 'pcd': clustered_objects[assignments_ids[j, 1]]} #@'text':pcd_text, 
+                                                                                                             
 
     if show_solution:
         gdraw([scene_pcd]+texts+bboxes)
