@@ -266,9 +266,9 @@ if __name__ == '__main__':
     fresco_release = 0
     while num_frescos > 0:
 
-        table_cloud, object_cloud = segment_table(pcd)
-        voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-        object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
+        # table_cloud, object_cloud = segment_table(pcd)
+        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+        # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
         print ('Getting object with max number of points')
         object_cloud = get_max_cluster(object_cloud, debug)
 
@@ -294,83 +294,84 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        ### 1. Go to position over the object
-        moveit_test = MoveItTest()
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # ### 1. Go to position over the object
+        # moveit_test = MoveItTest()
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
 
-        ### 2. Tilt hand
-        ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
-        y_ang = 0.26
-        q_rot = quaternion_from_euler(0, y_ang, 0)
+        # ### 2. Tilt hand
+        # ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
+        # y_ang = 0.26
+        # q_rot = quaternion_from_euler(0, y_ang, 0)
 
-        q_orig = arm_target_pose_np[3:]
-        q_new = quaternion_multiply(q_rot, q_orig)
+        # q_orig = arm_target_pose_np[3:]
+        # q_new = quaternion_multiply(q_rot, q_orig)
 
-        arm_target_pose_np[3:] = q_new
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # arm_target_pose_np[3:] = q_new
+        # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
 
-        ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-        arm_target_pose_np[2] -= 0.168 
-        arm_target_pose_np[3:] = q_new
+        # ### 3. Go down to grasp (return to parallel, go down, then rotate again)
+        # arm_target_pose_np[2] -= 0.168 
+        # arm_target_pose_np[3:] = q_new
 
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
 
-        if hand:
-            ### 4. close hand
-            hand_api.close_hand()
-            print('Closed!')
+        # if hand:
+        #     ### 4. close hand
+        #     hand_api.close_hand()
+        #     print('Closed!')
 
-        ### 5. Lift up
-        arm_target_pose_np[2] += 0.173
+        # ### 5. Lift up
+        # arm_target_pose_np[2] += 0.173
 
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
 
-        ### 5. Move side
-        arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
+        # ### 5. Move side
+        # arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
 
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
 
-        # 6. Go down
-        arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.257]
+        # # 6. Go down
+        # arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.257]
 
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
 
-        if hand:
-            ### 7. Open hand
-            hand_api.open_hand()
-            print('Opened!')
+        # if hand:
+        #     ### 7. Open hand
+        #     hand_api.open_hand()
+        #     print('Opened!')
 
-        ### 8. Go up
-        arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
+        # ### 8. Go up
+        # arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
 
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+        # publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        # arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # print ("Planning trajectory")
+        # moveit_test.go_to_pos(arm_target_pose)
+        input()
 
         fresco_release += 1.
-        num_frescos = check_frescos_left(True, False)
+        num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
         print (f'Objects left: {num_frescos}')
 
