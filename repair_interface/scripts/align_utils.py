@@ -222,7 +222,7 @@ def recognize_objects(objects):
     if debug is True:
         print('showing all together')  
         gdraw(rescaled_db_objs+clustered_objects, window_name='all together') 
-        pdb.set_trace()
+        # pdb.set_trace()
 
     print("#" * 70)
     print("Now using alignment to recognize the fragments.. (this will take some time!)")
