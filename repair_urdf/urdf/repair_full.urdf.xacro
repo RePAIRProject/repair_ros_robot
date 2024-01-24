@@ -51,7 +51,7 @@
     
     <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand)-->
     <xacro:softhands 
-        version="v1_wide" 
+        version="v1_2_research" 
         position="0 0 0" 
         orientation="${PI/2}" 
         fixed_hands="false">

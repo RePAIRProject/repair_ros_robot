@@ -68,7 +68,7 @@ class QbHand:
         # 19000 close
 
         if(self.gazebo):
-            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_wide/synergy_command", Float64, queue_size=3)
+            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_2_research/synergy_command", Float64, queue_size=3)
 
         else:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
