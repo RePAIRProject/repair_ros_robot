@@ -24,6 +24,9 @@
     <xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
 
     <xacro:include filename="$(find repair_urdf)/urdf/repair_hand_transmission.xacro" />
+
+    <!-- property for enabling meshes for collision -->
+    <xacro:property name="useCollisionMesh" value="true" />
     
     <link name="world"/>
 
@@ -39,12 +42,12 @@
             rpy="${Torso_roll} ${Torso_pitch} ${Torso_yaw}" />
     </xacro:repair_torso>
 
-    <xacro:repair_arm id="2"  rot="1"  parent="torso_1">
+    <xacro:repair_arm id="2"  rot="1"  parent="torso_1" useCollisionMesh="${useCollisionMesh}">
       <origin xyz="${Shoulder_1_Ox} ${Shoulder_1_Oy} ${Shoulder_1_Oz}"
               rpy="${Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
     </xacro:repair_arm>
 
-    <xacro:repair_arm id="1"  rot="-1"  parent="torso_1">
+    <xacro:repair_arm id="1"  rot="-1"  parent="torso_1" useCollisionMesh="${useCollisionMesh}">
         <origin xyz="${Shoulder_1_Ox} ${-Shoulder_1_Oy} ${Shoulder_1_Oz}"
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
       </xacro:repair_arm>

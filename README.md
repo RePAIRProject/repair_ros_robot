@@ -198,6 +198,21 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 	roslaunch repair_moveit_xbot bringup_moveit.launch
 	```
 
+### Moveit configuration
+
+- To increase/reduce the number of points for a trajectory, update the following parameter for `arm_1` and `arm_2` in [repair_moveit_config_v2/config/ompl_planning.yaml](repair_moveit_config_v2/config/ompl_planning.yaml)
+  
+	```yaml
+	longest_valid_segment_fraction: 0.00005
+	```
+- To increase/decrease the velocity of arm joints, update the following parameter in [repair_moveit_config_v2/config/joint_limits.yaml](repair_moveit_config_v2/config/joint_limits.yaml)
+	
+	```yaml
+	default_velocity_scaling_factor: 0.1
+	default_acceleration_scaling_factor: 0.1
+	```
+- Alternatively, velocity and acceleration scaling factors can be updated in the Rviz Motion Planning plugin before planning a path.
+
 ### Run the pick and place demo
 The goal of the demo is to pick and place a fresco fragment. There are 2 versions of the demo. The manual demo is moving to fixed poses while the moveit demo is using a perception pipeline to determine a grasp pose. Both demos can be run in Gazebo or with the real robot. For this purpose the ```gazebo``` argument has to be set accordingly. The ```side``` argument defines whether the left or the right hand is used to grasp the fragment.
 
