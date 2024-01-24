@@ -243,7 +243,7 @@ def get_pose_from_transform(T):
     pos = T[:3, 3]
     return np.concatenate((pos, quat))
 
-def get_max_cluster(pcd, debug=False):
+def get_max_cluster(pcd, debug=True):
     labels = np.array(pcd.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
 
     max_label = labels.max()
@@ -288,12 +288,12 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
                                                                     tf_camera_to_world.transform.rotation.z]))
     
     pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
-    o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+    #o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
 
     # == Remove points above a certain height
     points = np.asarray(pcd.points)
     pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
-    o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+    #o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
 
     # == Transform back to camera frame
     tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")

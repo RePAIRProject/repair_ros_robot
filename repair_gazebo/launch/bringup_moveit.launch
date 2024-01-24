@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <!-- launch gazebo flag -->
-    <arg name="launch_gazebo" default="false" />
+    <arg name="launch_gazebo" default="true" />
 
     <!-- Run the main MoveIt executable with trajectory execution -->
     <include file="$(find repair_moveit_config_v2)/launch/move_group.launch">
@@ -29,6 +29,6 @@
 
     <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
 
-    <!-- launch the repair_interface node
-    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />-->
+    <!-- launch the repair_interface node -->
+    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
 </launch>
