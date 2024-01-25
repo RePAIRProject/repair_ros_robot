@@ -47,7 +47,8 @@ class MoveItTest:
         self.listener = tf.TransformListener()
         self.wait_for_transform = 1
         self.transform_tries = 1
-        self.move_arm_to_pose_topic = "/move_arm_to_pose_py"
+        self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
+
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
@@ -92,6 +93,9 @@ class MoveItTest:
     def move_to_pose(self, arm: ARM_ENUM, 
                         pose: PoseStamped):
        
+        rospy.loginfo("Waiting for move arm to pose service")
+        rospy.wait_for_service(self.move_arm_to_pose_topic)
+        rospy.loginfo("Service found")
         # wait for service
         rospy.loginfo("Waiting for move arm to pose service")
         rospy.wait_for_service(self.move_arm_to_pose_topic)
@@ -99,6 +103,8 @@ class MoveItTest:
 
         # create service proxy
         move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
+
+        # move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
 
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
@@ -342,7 +348,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         ### 5. Move side
-        arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, -0.610, 1.5]
+        arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, -0.60, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -351,7 +357,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         # 6. Go down
-        arm_target_pose_np[:3] = [-0.130 + 0.15* fresco_release, -0.609, 1.20]
+        arm_target_pose_np[:3] = [-0.130, -0.70 + 0.13* fresco_release, 1.17]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -365,7 +371,7 @@ if __name__ == '__main__':
             print('Opened!')
 
         ### 8. Go up
-        arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
+        arm_target_pose_np[:3] = [-0.100, -0.609, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)

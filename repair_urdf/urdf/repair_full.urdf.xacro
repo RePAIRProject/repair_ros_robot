@@ -15,6 +15,7 @@
     <xacro:include filename="$(find repair_urdf)/urdf/limits.urdf.xacro" />
     
     <xacro:include filename="$(find repair_urdf)/urdf/_d435.urdf.xacro"/>
+    <xacro:include filename="$(find repair_urdf)/urdf/_l515.urdf.xacro"/>
     
     <!-- Only when working with Gazebo Xbot Control -->
     <!-- DO NOT USE WITH ROS_CONTROL AND MOVEIT -->
@@ -30,9 +31,14 @@
     <xacro:repair_cage parent="world">
     </xacro:repair_cage>
 
-    <xacro:sensor_d435 parent='torso_1'>
+    <!-- <xacro:sensor_d435 parent='torso_1'>
         <origin xyz="0.0857 0.0000476009 -0.273184" rpy="0.0009783 1.1836725 0" />
-    </xacro:sensor_d435>
+    </xacro:sensor_d435> -->
+
+    <xacro:sensor_l515 parent='torso_1' use_nominal_extrinsics='true'>
+        <!-- <origin xyz="0.0857 0.0000476009 -0.273184" rpy="0.0009783 1.1836725 0" /> --> 
+        <origin xyz="0.0857 0.0000476009 -0.273184" rpy="0.0009783 1.1836725 0" />
+    </xacro:sensor_l515>
 
     <xacro:repair_torso parent="sliding_guide_link">
     <origin xyz="${Torso_Ox} ${Torso_Oy} ${Torso_Oz}"

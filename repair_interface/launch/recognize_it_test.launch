@@ -1,0 +1,8 @@
+<launch>
+    <arg name="side" default="right"/>
+    <arg name="gazebo" default="true"/>
+    <node name="recognize_it_test" pkg="repair_interface" type="recognize_each_fragment_icp.py" output="screen">
+    <param name="side" value="right" />
+    <param name="gazebo" value="false" />
+    </node>
+</launch>

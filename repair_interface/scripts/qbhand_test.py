@@ -75,14 +75,14 @@ class QbHand:
         
 if __name__ == "__main__":
     gazebo = False
-    side = "left"
+    side = "right"
     hand_api = QbHand(side, gazebo)
 
     if hand_api.gazebo:
         value = 0.5
     else:
         value = 19000.0/2
-    hand_api.move_hand(value)
-    #hand_api.close_hand()
+    #hand_api.move_hand(value)
+    hand_api.close_hand()
     hand_api.open_hand()
     print('Finish!')
