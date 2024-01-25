@@ -20,7 +20,7 @@ class QbHand:
         else:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
-            self.close_value = 19000.0
+            self.close_value =19000.0
 
         self.init_ros()
         self.init_params()
@@ -75,7 +75,7 @@ class QbHand:
         
 if __name__ == "__main__":
     gazebo = False
-    side = "right"
+    side = "left"
     hand_api = QbHand(side, gazebo)
 
     if hand_api.gazebo:
@@ -83,6 +83,6 @@ if __name__ == "__main__":
     else:
         value = 19000.0/2
     hand_api.move_hand(value)
-    hand_api.close_hand()
+    #hand_api.close_hand()
     hand_api.open_hand()
     print('Finish!')

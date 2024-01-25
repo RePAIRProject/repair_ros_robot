@@ -234,7 +234,7 @@ if __name__ == '__main__':
       hand_api.open_hand()
       print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
@@ -317,6 +317,8 @@ if __name__ == '__main__':
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
         arm_target_pose_np[2] -= 0.170
+        arm_target_pose_np[0] += 0.02
+        #arm_target_pose_np[1] += 0.02
         arm_target_pose_np[3:] = q_new
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
@@ -340,7 +342,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         ### 5. Move side
-        arm_target_pose_np[:3] = [-0.087 + 0.1* fresco_release, -0.610, 1.47]
+        arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, -0.610, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -349,7 +351,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         # 6. Go down
-        arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.20]
+        arm_target_pose_np[:3] = [-0.130 + 0.15* fresco_release, -0.609, 1.20]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
