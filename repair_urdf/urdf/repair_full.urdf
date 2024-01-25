@@ -375,7 +375,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0149 -0.0175 0"/>
       <geometry>
         <!-- <box size="${d435_cam_width} ${d435_cam_height} ${d435_cam_depth}"/> -->
-        <mesh filename="/home/grosato/REPAIR/repair_robot_ws/src/repair_ros_robot/repair_urdf/meshes/d435.dae"/>
+        <mesh filename="/home/embedded/forest_ws/ros_src/repair_ros_robot/repair_urdf/meshes/d435.dae"/>
         <!--<mesh filename="package://realsense2_description/meshes/d435/d435.dae" />-->
       </geometry>
       <material name="camera_aluminum"/>
@@ -1271,7 +1271,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <joint name="left_hand_v1_2_research_iso_joint" type="fixed">
     <parent link="arm_1_7"/>
     <child link="left_hand_v1_2_research_iso_link"/>
-    <origin rpy="0 0 1.570796326795" xyz="0 -0. 0.00"/>
+    <origin rpy="0 0 0" xyz="0 0 0.00"/>
   </joint>
   <link name="left_hand_v1_2_research_iso_link">
     <inertial>
@@ -1299,7 +1299,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </gazebo>
   <!-- Fake joint and link for grasping -->
   <joint name="left_hand_v1_2_research_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.03 0.06 0.10"/>
+    <origin rpy="0 0 1.57" xyz="0.06 0.03 0.16"/>
     <parent link="left_hand_v1_2_research_iso_link"/>
     <child link="left_hand_v1_2_research_grasp_link"/>
   </joint>
@@ -1334,7 +1334,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <selfCollide>0</selfCollide>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="left_hand_v1_2_research_thumb_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_thumb_knuckle_joint" type="fixed">
     <origin rpy="-1.57 3.14 0.0" xyz="-0.044 -0.0465 0.002"/>
     <parent link="left_hand_v1_2_research_palm_link"/>
     <child link="left_hand_v1_2_research_thumb_knuckle_link"/>
@@ -1375,7 +1375,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_thumb_proximal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_thumb_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="-2 0.0 0.0" xyz="0.0255 0.0038 -0.00012"/>
     <parent link="left_hand_v1_2_research_thumb_knuckle_link"/>
@@ -1392,7 +1392,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_thumb_proximal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_thumb_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_thumb_proximal_virtual_link"/>
@@ -1439,7 +1439,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_thumb_distal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_thumb_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_thumb_proximal_link"/>
@@ -1456,7 +1456,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_thumb_distal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_thumb_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_thumb_distal_virtual_link"/>
@@ -1503,7 +1503,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="left_hand_v1_2_research_index_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_knuckle_joint" type="fixed">
     <origin rpy="0 3.14 -1.57" xyz="-0.02 -0.007 -0.014"/>
     <parent link="left_hand_v1_2_research_palm_link"/>
     <child link="left_hand_v1_2_research_index_knuckle_link"/>
@@ -1544,7 +1544,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_index_proximal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_index_knuckle_link"/>
@@ -1561,7 +1561,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_index_proximal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_index_proximal_virtual_link"/>
@@ -1608,7 +1608,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_index_middle_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="left_hand_v1_2_research_index_proximal_link"/>
@@ -1625,7 +1625,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_index_middle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="left_hand_v1_2_research_index_middle_virtual_link"/>
@@ -1672,7 +1672,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_index_distal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_index_middle_link"/>
@@ -1689,7 +1689,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_index_distal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_index_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_index_distal_virtual_link"/>
@@ -1736,7 +1736,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="left_hand_v1_2_research_middle_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_knuckle_joint" type="fixed">
     <origin rpy="0 3.14 -1.57" xyz="0 0 -0.014"/>
     <parent link="left_hand_v1_2_research_palm_link"/>
     <child link="left_hand_v1_2_research_middle_knuckle_link"/>
@@ -1777,7 +1777,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_middle_proximal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_middle_knuckle_link"/>
@@ -1794,7 +1794,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_middle_proximal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_middle_proximal_virtual_link"/>
@@ -1841,7 +1841,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_middle_middle_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="left_hand_v1_2_research_middle_proximal_link"/>
@@ -1858,7 +1858,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_middle_middle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="left_hand_v1_2_research_middle_middle_virtual_link"/>
@@ -1905,7 +1905,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_middle_distal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_middle_middle_link"/>
@@ -1922,7 +1922,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_middle_distal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_middle_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_middle_distal_virtual_link"/>
@@ -1969,7 +1969,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="left_hand_v1_2_research_ring_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_knuckle_joint" type="fixed">
     <origin rpy="0 3.14 -1.57" xyz="0.02 -0.007 -0.014"/>
     <parent link="left_hand_v1_2_research_palm_link"/>
     <child link="left_hand_v1_2_research_ring_knuckle_link"/>
@@ -2010,7 +2010,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_ring_proximal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_ring_knuckle_link"/>
@@ -2027,7 +2027,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_ring_proximal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_ring_proximal_virtual_link"/>
@@ -2074,7 +2074,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_ring_middle_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="left_hand_v1_2_research_ring_proximal_link"/>
@@ -2091,7 +2091,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_ring_middle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="left_hand_v1_2_research_ring_middle_virtual_link"/>
@@ -2138,7 +2138,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_ring_distal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_ring_middle_link"/>
@@ -2155,7 +2155,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_ring_distal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_ring_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_ring_distal_virtual_link"/>
@@ -2202,7 +2202,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="left_hand_v1_2_research_little_knuckle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_knuckle_joint" type="fixed">
     <origin rpy="0 3.14 -1.57" xyz="0.04 -0.012 -0.014"/>
     <parent link="left_hand_v1_2_research_palm_link"/>
     <child link="left_hand_v1_2_research_little_knuckle_link"/>
@@ -2243,7 +2243,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_little_proximal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_little_knuckle_link"/>
@@ -2260,7 +2260,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_little_proximal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_little_proximal_virtual_link"/>
@@ -2307,7 +2307,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_little_middle_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="left_hand_v1_2_research_little_proximal_link"/>
@@ -2324,7 +2324,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_little_middle_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="left_hand_v1_2_research_little_middle_virtual_link"/>
@@ -2371,7 +2371,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="left_hand_v1_2_research_little_distal_virtual_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="left_hand_v1_2_research_little_middle_link"/>
@@ -2388,7 +2388,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="left_hand_v1_2_research_little_distal_joint" type="revolute">
+  <joint name="left_hand_v1_2_research_little_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="left_hand_v1_2_research_little_distal_virtual_link"/>
@@ -2495,7 +2495,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <joint name="right_hand_v1_2_research_iso_joint" type="fixed">
     <parent link="arm_2_7"/>
     <child link="right_hand_v1_2_research_iso_link"/>
-    <origin rpy="0 0 1.570796326795" xyz="0 0.0 0.00"/>
+    <origin rpy="0 0 3.14" xyz="0 0.0 0.00"/>
   </joint>
   <link name="right_hand_v1_2_research_iso_link">
     <inertial>
@@ -2523,7 +2523,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </gazebo>
   <!-- Fake joint and link for grasping -->
   <joint name="right_hand_v1_2_research_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.03 0.06 0.10"/>
+    <origin rpy="0 0 1.57" xyz="-0.06 0.03 0.16"/>
     <parent link="right_hand_v1_2_research_iso_link"/>
     <child link="right_hand_v1_2_research_grasp_link"/>
   </joint>
@@ -2558,7 +2558,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <selfCollide>0</selfCollide>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="right_hand_v1_2_research_thumb_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_thumb_knuckle_joint" type="fixed">
     <origin rpy="-1.57 3.14 0.0" xyz="-0.044 -0.0465 -0.002"/>
     <parent link="right_hand_v1_2_research_palm_link"/>
     <child link="right_hand_v1_2_research_thumb_knuckle_link"/>
@@ -2599,7 +2599,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_thumb_proximal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_thumb_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="-1.1415 0.0 0.0" xyz="0.0255 -0.0038 -0.00012"/>
     <parent link="right_hand_v1_2_research_thumb_knuckle_link"/>
@@ -2616,7 +2616,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_thumb_proximal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_thumb_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_thumb_proximal_virtual_link"/>
@@ -2663,7 +2663,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_thumb_distal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_thumb_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_thumb_proximal_link"/>
@@ -2680,7 +2680,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_thumb_distal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_thumb_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_thumb_distal_virtual_link"/>
@@ -2727,7 +2727,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="right_hand_v1_2_research_index_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_knuckle_joint" type="fixed">
     <origin rpy="0 0 1.57" xyz="-0.02 -0.007 0.014"/>
     <parent link="right_hand_v1_2_research_palm_link"/>
     <child link="right_hand_v1_2_research_index_knuckle_link"/>
@@ -2768,7 +2768,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_index_proximal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_index_knuckle_link"/>
@@ -2785,7 +2785,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_index_proximal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_index_proximal_virtual_link"/>
@@ -2832,7 +2832,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_index_middle_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="right_hand_v1_2_research_index_proximal_link"/>
@@ -2849,7 +2849,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_index_middle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="right_hand_v1_2_research_index_middle_virtual_link"/>
@@ -2896,7 +2896,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_index_distal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_index_middle_link"/>
@@ -2913,7 +2913,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_index_distal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_index_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_index_distal_virtual_link"/>
@@ -2960,7 +2960,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="right_hand_v1_2_research_middle_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_knuckle_joint" type="fixed">
     <origin rpy="0 0 1.57" xyz="0 0 0.014"/>
     <parent link="right_hand_v1_2_research_palm_link"/>
     <child link="right_hand_v1_2_research_middle_knuckle_link"/>
@@ -3001,7 +3001,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_middle_proximal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_middle_knuckle_link"/>
@@ -3018,7 +3018,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_middle_proximal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_middle_proximal_virtual_link"/>
@@ -3065,7 +3065,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_middle_middle_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="right_hand_v1_2_research_middle_proximal_link"/>
@@ -3082,7 +3082,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_middle_middle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="right_hand_v1_2_research_middle_middle_virtual_link"/>
@@ -3129,7 +3129,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_middle_distal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_middle_middle_link"/>
@@ -3146,7 +3146,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_middle_distal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_middle_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_middle_distal_virtual_link"/>
@@ -3193,7 +3193,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="right_hand_v1_2_research_ring_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_knuckle_joint" type="fixed">
     <origin rpy="0 0 1.57" xyz="0.02 -0.007 0.014"/>
     <parent link="right_hand_v1_2_research_palm_link"/>
     <child link="right_hand_v1_2_research_ring_knuckle_link"/>
@@ -3234,7 +3234,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_ring_proximal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_ring_knuckle_link"/>
@@ -3251,7 +3251,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_ring_proximal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_ring_proximal_virtual_link"/>
@@ -3298,7 +3298,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_ring_middle_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="right_hand_v1_2_research_ring_proximal_link"/>
@@ -3315,7 +3315,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_ring_middle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="right_hand_v1_2_research_ring_middle_virtual_link"/>
@@ -3362,7 +3362,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_ring_distal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_ring_middle_link"/>
@@ -3379,7 +3379,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_ring_distal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_ring_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_ring_distal_virtual_link"/>
@@ -3426,7 +3426,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Proximal JOINT -->
-  <joint name="right_hand_v1_2_research_little_knuckle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_knuckle_joint" type="fixed">
     <origin rpy="0 0 1.57" xyz="0.04 -0.012 0.014"/>
     <parent link="right_hand_v1_2_research_palm_link"/>
     <child link="right_hand_v1_2_research_little_knuckle_link"/>
@@ -3467,7 +3467,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_little_proximal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_proximal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_little_knuckle_link"/>
@@ -3484,7 +3484,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_little_proximal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_proximal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_little_proximal_virtual_link"/>
@@ -3531,7 +3531,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_little_middle_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_middle_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
     <parent link="right_hand_v1_2_research_little_proximal_link"/>
@@ -3548,7 +3548,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_little_middle_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_middle_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.017 0 0"/>
     <parent link="right_hand_v1_2_research_little_middle_virtual_link"/>
@@ -3595,7 +3595,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <springReference>0</springReference>
   </gazebo>
   <!-- Inner VIRTUAL JOINT -->
-  <joint name="right_hand_v1_2_research_little_distal_virtual_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_distal_virtual_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.009 0 0"/>
     <parent link="right_hand_v1_2_research_little_middle_link"/>
@@ -3612,7 +3612,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
   </link>
   <!-- Outer JOINT -->
-  <joint name="right_hand_v1_2_research_little_distal_joint" type="revolute">
+  <joint name="right_hand_v1_2_research_little_distal_joint" type="fixed">
     <axis xyz="0 0 -1"/>
     <origin rpy="0 0 0" xyz="0.013 0 0"/>
     <parent link="right_hand_v1_2_research_little_distal_virtual_link"/>
@@ -3666,4 +3666,3 @@ results of the optimization), otherwise we go with the old ones (generated for a
 
     <xacro:repair_hand_transmission id="right" /> -->
 </robot>
-
