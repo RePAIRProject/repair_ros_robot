@@ -52,6 +52,13 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <!-- 1.8854765e+00 -->
   <!-- 2.4405495 -->
   <!-- Origin -->
+  <material name="aluminum">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+  <material name="plastic">
+    <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+  <!-- this specific plug does not apply to L515 -->
   <!-- Only when working with Gazebo Xbot Control -->
   <!-- DO NOT USE WITH ROS_CONTROL AND MOVEIT -->
   <!-- <xacro:include filename="$(find repair_urdf)/urdf/gazebo/xbot.gazebo.xacro" /> -->
@@ -355,9 +362,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
     </inertial>
   </link>
-  <material name="camera_aluminum">
-    <color rgba="0.5 0.5 0.5 1"/>
-  </material>
+  <!-- <xacro:sensor_d435 parent='torso_1'>
+        <origin xyz="0.0857 0.0000476009 -0.273184" rpy="0.0009783 1.1836725 0" />
+    </xacro:sensor_d435> -->
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="camera_joint" type="fixed">
     <origin rpy="0.0009783 1.1836725 0" xyz="0.0857 0.0000476009 -0.273184"/>
@@ -366,33 +373,43 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </joint>
   <link name="camera_bottom_screw_frame"/>
   <joint name="camera_link_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0.0175 0.0125"/>
+    <origin rpy="0 0 0" xyz="0.007500000000000001 0.0 0.021150000000000002"/>
     <parent link="camera_bottom_screw_frame"/>
     <child link="camera_link"/>
   </joint>
   <link name="camera_link">
     <visual>
-      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0149 -0.0175 0"/>
+      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0045 0 0.009000000000000001"/>
       <geometry>
-        <!-- <box size="${d435_cam_width} ${d435_cam_height} ${d435_cam_depth}"/> -->
-        <mesh filename="/home/grosato/REPAIR/repair_robot_ws/src/repair_ros_robot/repair_urdf/meshes/d435.dae"/>
-        <!--<mesh filename="package://realsense2_description/meshes/d435/d435.dae" />-->
+        <mesh filename="package://realsense_description_l515/meshes/l515.dae"/>
       </geometry>
-      <material name="camera_aluminum"/>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 -0.0175 0"/>
+      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="-0.0085 0 0.009000000000000001"/>
       <geometry>
-        <box size="0.02505 0.09 0.025"/>
+        <cylinder length="0.026" radius="0.0305"/>
       </geometry>
     </collision>
     <inertial>
       <!-- The following are not reliable values, and should not be used for modeling -->
-      <mass value="0.564"/>
+      <!-- calculated assuming full cylinder as described here: https://en.wikipedia.org/wiki/List_of_moments_of_inertia -->
+      <mass value="0.095"/>
       <origin xyz="0 0 0"/>
-      <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0" izz="0.003879257"/>
+      <inertia ixx="0.000044" ixy="0.0" ixz="0.0" iyy="0.000027" iyz="0.0" izz="0.000027"/>
     </inertial>
   </link>
+  <joint name="camera_lower_mount_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.013999999999999999 0 0.01015"/>
+    <parent link="camera_bottom_screw_frame"/>
+    <child link="camera_lower_mount"/>
+  </joint>
+  <link name="camera_lower_mount"/>
+  <joint name="camera_upper_mount_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.013999999999999999 0 0.05015"/>
+    <parent link="camera_bottom_screw_frame"/>
+    <child link="camera_upper_mount"/>
+  </joint>
+  <link name="camera_upper_mount"/>
   <!-- camera depth joints and links -->
   <joint name="camera_depth_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -407,35 +424,22 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </joint>
   <link name="camera_depth_optical_frame"/>
   <!-- camera left IR joints and links -->
-  <joint name="camera_left_ir_joint" type="fixed">
+  <joint name="camera_infra_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0.0 0"/>
-    <parent link="camera_depth_frame"/>
-    <child link="camera_left_ir_frame"/>
+    <parent link="camera_link"/>
+    <child link="camera_infra_frame"/>
   </joint>
-  <link name="camera_left_ir_frame"/>
-  <joint name="camera_left_ir_optical_joint" type="fixed">
+  <link name="camera_infra_frame"/>
+  <joint name="camera_infra_optical_joint" type="fixed">
     <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
-    <parent link="camera_left_ir_frame"/>
-    <child link="camera_left_ir_optical_frame"/>
+    <parent link="camera_infra_frame"/>
+    <child link="camera_infra_optical_frame"/>
   </joint>
-  <link name="camera_left_ir_optical_frame"/>
-  <!-- camera right IR joints and links -->
-  <joint name="camera_right_ir_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 -0.05 0"/>
-    <parent link="camera_depth_frame"/>
-    <child link="camera_right_ir_frame"/>
-  </joint>
-  <link name="camera_right_ir_frame"/>
-  <joint name="camera_right_ir_optical_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
-    <parent link="camera_right_ir_frame"/>
-    <child link="camera_right_ir_optical_frame"/>
-  </joint>
-  <link name="camera_right_ir_optical_frame"/>
+  <link name="camera_infra_optical_frame"/>
   <!-- camera color joints and links -->
   <joint name="camera_color_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0.015 0"/>
-    <parent link="camera_depth_frame"/>
+    <origin rpy="0 0 0" xyz="0 0 0.024"/>
+    <parent link="camera_link"/>
     <child link="camera_color_frame"/>
   </joint>
   <link name="camera_color_frame"/>
@@ -445,6 +449,31 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <child link="camera_color_optical_frame"/>
   </joint>
   <link name="camera_color_optical_frame"/>
+  <!-- camera IMU joints and links -->
+  <link name="camera_gyro_frame"/>
+  <link name="camera_gyro_optical_frame"/>
+  <link name="camera_accel_frame"/>
+  <link name="camera_accel_optical_frame"/>
+  <joint name="camera_gyro_joint" type="fixed">
+    <origin rpy="-0.006161012 0.020193459 0.016301375" xyz="-0.00410137791186571 -0.0129784867167473 0.00256138201802969"/>
+    <parent link="camera_color_frame"/>
+    <child link="camera_gyro_frame"/>
+  </joint>
+  <joint name="camera_gyro_optical_joint" type="fixed">
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+    <parent link="camera_gyro_frame"/>
+    <child link="camera_gyro_optical_frame"/>
+  </joint>
+  <joint name="camera_accel_joint" type="fixed">
+    <origin rpy="-0.006161012 0.020193459 0.016301375" xyz="-0.00410137791186571 -0.0129784867167473 0.00256138201802969"/>
+    <parent link="camera_color_frame"/>
+    <child link="camera_accel_frame"/>
+  </joint>
+  <joint name="camera_accel_optical_joint" type="fixed">
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+    <parent link="camera_accel_frame"/>
+    <child link="camera_accel_optical_frame"/>
+  </joint>
   <gazebo reference="camera_link">
     <self_collide>0</self_collide>
     <enable_wind>0</enable_wind>
@@ -461,10 +490,10 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <min_depth>0</min_depth>-->
     <sensor name="cameracolor" type="camera">
       <camera name="camera">
-        <horizontal_fov>1.2112585008840648</horizontal_fov>
+        <horizontal_fov>1.2393583018411736</horizontal_fov>
         <image>
-          <width>640</width>
-          <height>480</height>
+          <width>1920</width>
+          <height>1080</height>
           <format>RGB_INT8</format>
         </image>
         <clip>
@@ -481,34 +510,12 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <update_rate>30</update_rate>
       <visualize>1</visualize>
     </sensor>
-    <sensor name="cameraired1" type="camera">
+    <sensor name="cameraired" type="camera">
       <camera name="camera">
-        <horizontal_fov>1.4870205226991688</horizontal_fov>
+        <horizontal_fov>1.2217304763960306</horizontal_fov>
         <image>
-          <width>1280</width>
-          <height>720</height>
-          <format>L_INT8</format>
-        </image>
-        <clip>
-          <near>0.1</near>
-          <far>100</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.05</stddev>
-        </noise>
-      </camera>
-      <always_on>1</always_on>
-      <update_rate>90</update_rate>
-      <visualize>0</visualize>
-    </sensor>
-    <sensor name="cameraired2" type="camera">
-      <camera name="camera">
-        <horizontal_fov>1.4870205226991688</horizontal_fov>
-        <image>
-          <width>1280</width>
-          <height>720</height>
+          <width>1024</width>
+          <height>768</height>
           <format>L_INT8</format>
         </image>
         <clip>
@@ -527,10 +534,10 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </sensor>
     <sensor name="cameradepth" type="depth">
       <camera name="camera">
-        <horizontal_fov>1.4870205226991688</horizontal_fov>
+        <horizontal_fov>1.2217304763960306</horizontal_fov>
         <image>
-          <width>1280</width>
-          <height>720</height>
+          <width>1024</width>
+          <height>768</height>
         </image>
         <clip>
           <near>0.1</near>
@@ -548,29 +555,26 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </sensor>
   </gazebo>
   <gazebo>
-    <plugin filename="librealsense_gazebo_plugin.so" name="camera">
+    <plugin filename="librealsense_gazebo_plugin_l515.so" name="camera">
       <prefix>camera</prefix>
       <depthUpdateRate>30.0</depthUpdateRate>
       <colorUpdateRate>30.0</colorUpdateRate>
       <infraredUpdateRate>30.0</infraredUpdateRate>
-      <depthTopicName>depth/image_raw</depthTopicName>
-      <depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
-      <colorTopicName>color/image_raw</colorTopicName>
-      <colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
-      <infrared1TopicName>infra1/image_raw</infrared1TopicName>
-      <infrared1CameraInfoTopicName>infra1/camera_info</infrared1CameraInfoTopicName>
-      <infrared2TopicName>infra2/image_raw</infrared2TopicName>
-      <infrared2CameraInfoTopicName>infra2/camera_info</infrared2CameraInfoTopicName>
+      <depthTopicName>/camera/depth/image_rect_raw</depthTopicName>
+      <depthCameraInfoTopicName>/camera/depth/camera_info</depthCameraInfoTopicName>
+      <colorTopicName>/camera/color/image_raw</colorTopicName>
+      <colorCameraInfoTopicName>/camera/color/camera_info</colorCameraInfoTopicName>
+      <infraredTopicName>/camera/infra/image_raw</infraredTopicName>
+      <infraredCameraInfoTopicName>/camera/infra/camera_info</infraredCameraInfoTopicName>
       <colorOpticalframeName>camera_color_optical_frame</colorOpticalframeName>
       <depthOpticalframeName>camera_depth_optical_frame</depthOpticalframeName>
-      <infrared1OpticalframeName>camera_left_ir_optical_frame</infrared1OpticalframeName>
-      <infrared2OpticalframeName>camera_right_ir_optical_frame</infrared2OpticalframeName>
+      <infraredOpticalframeName>camera_infra_optical_frame</infraredOpticalframeName>
       <rangeMinDepth>0.2</rangeMinDepth>
-      <rangeMaxDepth>1.0</rangeMaxDepth>
+      <rangeMaxDepth>10.0</rangeMaxDepth>
       <pointCloud>True</pointCloud>
-      <pointCloudTopicName>depth/color/points</pointCloudTopicName>
+      <pointCloudTopicName>/camera/depth/color/points</pointCloudTopicName>
       <pointCloudCutoff>0.25</pointCloudCutoff>
-      <pointCloudCutoffMax>1.0</pointCloudCutoffMax>
+      <pointCloudCutoffMax>9.0</pointCloudCutoffMax>
     </plugin>
   </gazebo>
   <!-- <link name="dummy_prismatic_link"/> -->
@@ -1272,9 +1276,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <!-- World to palm base -->
   <joint name="left_hand_v1_wide_palm_central_joint" type="fixed">
     <parent link="arm_1_7"/>
-    <child link="left_hand_v1_wide_palm_central_link"/>
-    <origin rpy="0 0 1.570796326795" xyz="0 0 0.0"/>
-    <dynamics damping="3e-2" friction="0.0"/>
+    <child link="left_hand_v1_2_research_iso_link"/>
+    <origin rpy="0 0 3.14159265359" xyz="0 -0. 0.00"/>
   </joint>
   <link name="left_hand_v1_wide_palm_central_link">
     <visual>
@@ -1297,10 +1300,10 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <!-- Fake joint and link for grasping -->
-  <joint name="left_hand_v1_wide_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.03 -0.06 0.10"/>
-    <parent link="left_hand_v1_wide_palm_central_link"/>
-    <child link="left_hand_v1_wide_grasp_link"/>
+  <joint name="left_hand_v1_2_research_grasp_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="0.03 0.06 0.10"/>
+    <parent link="left_hand_v1_2_research_iso_link"/>
+    <child link="left_hand_v1_2_research_grasp_link"/>
   </joint>
   <link name="left_hand_v1_wide_grasp_link"/>
   <!-- palm base to Thumb -->
@@ -2534,7 +2537,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <joint name="right_hand_v1_2_research_iso_joint" type="fixed">
     <parent link="arm_2_7"/>
     <child link="right_hand_v1_2_research_iso_link"/>
-    <origin rpy="0 0 3.14" xyz="0 0.0 0.00"/>
+    <origin rpy="0 0 3.14159265359" xyz="0 0.0 0.00"/>
   </joint>
   <link name="right_hand_v1_2_research_iso_link">
     <inertial>

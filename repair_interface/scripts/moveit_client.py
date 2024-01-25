@@ -22,6 +22,7 @@ class MoveitClient:
         self.traj_utils = TrajectoryUtils()
 
         self.num_samples = 500
+        print("using interpolation of", self.num_samples)
 
         self.use_xbot = use_xbot
         self.use_gazebo = use_gazebo

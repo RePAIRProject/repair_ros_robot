@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <!-- launch gazebo flag -->
+    <arg name="launch_gazebo" default="true" />
 
     <arg name="sh_version" default="v1_2_research"  doc="The version of the hand [ v1_2_research , v1_wide, mixed_hands]"/>
     <param name="sh_version" value="$(arg sh_version)" />
