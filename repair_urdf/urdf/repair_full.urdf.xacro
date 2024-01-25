@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair_full">
     
+    <xacro:arg name="sh_version" default="mixed_hands"/>
     <xacro:include filename="$(find softhands_description)/urdf/softhands.xacro" />
 
     <xacro:include filename="$(find repair_urdf)/urdf/conversions.urdf.xacro" />
@@ -49,9 +50,9 @@
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
       </xacro:repair_arm>
     
-    <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand)-->
-    <xacro:softhands 
-        version="v1_2_research" 
+    <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand) and mixed-->
+    <xacro:softhands
+        version="$(arg sh_version)" 
         position="0 0 0" 
         orientation="${PI/2}" 
         fixed_hands="false">

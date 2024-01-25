@@ -21,6 +21,7 @@
 
   <arg name="capabilities" default=""/>
   <arg name="disable_capabilities" default=""/>
+  <arg name="sh_version" default="v1_2_research" />
   <!-- load these non-default MoveGroup capabilities (space seperated) -->
   <!--
   <arg name="capabilities" value="
@@ -41,6 +42,7 @@
   <!-- load URDF, SRDF and joint_limits configuration -->
   <include file="$(dirname)/planning_context.launch">
     <arg name="load_robot_description" value="$(arg load_robot_description)" />
+    <arg name="sh_version" value="$(arg sh_version)" />
   </include>
 
   <!-- Planning Pipelines -->

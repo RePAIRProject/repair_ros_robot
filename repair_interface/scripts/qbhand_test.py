@@ -54,6 +54,7 @@ class QbHand:
         pass
 
     def init_ros(self):
+        sh_version = str(rospy.get_param("/sh_version"))
         try:
             rospy.init_node("Qb_hand_"+self.side, anonymous=True)
         except rospy.exceptions.ROSException as e:
@@ -67,7 +68,7 @@ class QbHand:
         # 19000 close
 
         if(self.gazebo):
-            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_2_research/synergy_command", Float64, queue_size=3)
+            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_"+sh_version+"/synergy_command", Float64, queue_size=3)
 
         else:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"

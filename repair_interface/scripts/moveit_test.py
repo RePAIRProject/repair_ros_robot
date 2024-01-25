@@ -217,8 +217,9 @@ if __name__ == '__main__':
     rospy.init_node(node_name)
 
     # Get and print parameters
-    side = "right" # str(rospy.get_param("/"+node_name+"/side"))
-    gazebo = False #bool(rospy.get_param("/"+node_name+"/gazebo"))
+    sh_version = str(rospy.get_param("/sh_version"))
+    side = str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
     debug = True
     # print()
@@ -246,10 +247,8 @@ if __name__ == '__main__':
       hand_api.open_hand()
       print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
-
-
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
                                                  tf_hand.transform.translation.y,

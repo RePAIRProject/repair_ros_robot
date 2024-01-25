@@ -2,7 +2,7 @@
 
   <param name="use_sim_time" type="bool" value="true"/>
   <arg name="gazebo" default="true"/>
-  
+  <arg name="sh_version" default="v1_2_research" />
   <!-- Args -->
   <arg name="paused" default="true"/>
   <arg name="use_sim_time" default="true"/>
@@ -28,7 +28,7 @@
 
   <!-- Load the right URDF into the ROS Parameter Server, depending on the chosen model type -->
   <param name="robot_description_gz"
-         command="$(find xacro)/xacro $(find repair_urdf)/urdf/repair_full.urdf.xacro"/>
+         command="$(find xacro)/xacro $(find repair_urdf)/urdf/repair_full.urdf.xacro sh_version:='$(arg sh_version)'"/>
 
   <!-- spawn the second fragment -->
   <arg name="fragment_model" default="$(find repair_urdf)/sdf/frag3/model.sdf"/>
