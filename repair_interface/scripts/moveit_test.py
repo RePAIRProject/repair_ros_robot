@@ -266,6 +266,7 @@ if __name__ == '__main__':
 
     print('Starting Point Cloud Processing')
     use_pyrealsense = False
+    debug = True
     if use_pyrealsense:
         pcd = get_point_cloud_from_real_rs(debug)
     else:

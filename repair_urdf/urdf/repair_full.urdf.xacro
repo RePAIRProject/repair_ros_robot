@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair_full">
     
-    <xacro:arg name="sh_version" default="mixed_hands"/>
+    <xacro:arg name="sh_version" default="v1_2_research"/>
+    <xacro:arg name="fixed_hands" default="true"/>
+
     <xacro:include filename="$(find softhands_description)/urdf/softhands.xacro" />
 
     <xacro:include filename="$(find repair_urdf)/urdf/conversions.urdf.xacro" />
@@ -61,7 +63,7 @@
         version="$(arg sh_version)" 
         position="0 0 0" 
         orientation="${PI}" 
-        fixed_hands="true">
+        fixed_hands="$(arg fixed_hands)">
     </xacro:softhands>
 
 
