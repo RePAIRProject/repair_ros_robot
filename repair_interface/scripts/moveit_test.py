@@ -245,11 +245,20 @@ if __name__ == '__main__':
       hand_api = QbHand(side, gazebo)
       print('Connected!')
 
+      #close hand
+      hand_api.close_hand()
+      print('Closed!')
       # open hand
       hand_api.open_hand()
       print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    if sh_version == "mixed_hands":
+        if side == "right":
+            tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+        elif side == "left":
+            tf_hand = get_transform(parent_frame=side+"_hand_v1_wide_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    else:
+        tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
