@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
-# import pdb
+import pdb
 import sys
 import rospy
 import tf
@@ -285,23 +285,14 @@ if __name__ == '__main__':
     print("moving fragments")
     fresco_release = 0
     for obj_key in recognized_objects.keys():
-
-        print(obj_key)
         obj_bbox = recognized_objects[obj_key]['bbox']
         obj_pcd = recognized_objects[obj_key]['pcd']
-        # table_cloud, object_cloud = segment_table(pcd)
-        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
-        # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
-        #print ('Getting object with max number of points')
-        # object_cloud = get_max_cluster(object_cloud, debug)
 
         initial_pose = np.concatenate((obj_pcd.get_center(), hand_tf))
         initial_pose = get_pose_from_arr(initial_pose)
         
-        # pdb.set_trace()
         ### Transform the pose from the camera frame to the base frame (world)
-        # hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
-        hand_pose_world = transform_pose_vislab(initial_pose, "world", "world")
+        hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
         
         hand_pose_world_np = get_arr_from_pose(hand_pose_world)
         hand_pose_world_np[0] += 0.04
@@ -325,7 +316,6 @@ if __name__ == '__main__':
         moveit_test = MoveItTest()
         print ("Planning trajectory")
         moveit_test.go_to_pos(arm_target_pose)
-
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
         y_ang = 0.26

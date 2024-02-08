@@ -168,7 +168,8 @@ def recognize_objects(objects):
     #pdb.set_trace()
     colored_scene, labels, noisy_clustered_objects = cluster_objects(objects)
     print(f'got {len(noisy_clustered_objects)} objects!')
-    
+    ref_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1)
+    # gdraw(noisy_clustered_objects) # +[ref_frame])
     # remove noisy/outliers from the clustered objects 
     # and get the scene center location
     avg_points = 0
@@ -235,6 +236,7 @@ def recognize_objects(objects):
 
             print(f"{names_list[j]} against clustered object {k}: processing..", end='\r')
             copy_clustered_obj = deepcopy(clustered_obj)
+            matching_copy_clustered_objects.append(copy_clustered_obj)
 
             copy_clustered_obj.translate(-copy_clustered_obj.get_center())
             rescaled_obj.translate(-rescaled_obj.get_center())
@@ -242,7 +244,7 @@ def recognize_objects(objects):
             if debug and save_detections:
                 o3d.io.write_point_cloud(f'clustered/obj_{k}.ply', copy_clustered_obj)
             
-            source = clustered_obj
+            source = copy_clustered_obj
             target = rescaled_obj
             
             print("icp", source, target)
@@ -304,7 +306,7 @@ def recognize_objects(objects):
                                                                                                              
 
     if show_solution:
-        gdraw([objects]+bboxes) # texts
+        gdraw([objects]+bboxes) #+[ref_frame]) # texts
 
     if debug and show_pairwise_solutions:
         for j in range(assignments_ids.shape[0]):
