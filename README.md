@@ -276,8 +276,13 @@ rosrun repair_interface moveit_client.py _use_gazebo:=true
 
 Recognition
 ```bash
-rosrun repair_interface moveit_multi_fresco_with_recognition.py _side:=left _gazebo:=true
+rosrun repair_interface moveit_multi_fresco_with_recognition.py _side:=right _gazebo:=true
 ```
+
+To run recognition, a few files need to be added (ask Luca Palmieri for the files):
+- RPf_00123 to RPf_001266 should be added to ```repair_ros_robot/repair_urdf/sdf```
+- RPf_00123 to RPf_001266 should also be added to  ```/home/.gazebo/models```
+- The fragment database directory ```fragments_db``` should be added to ```/home/.gazebo```
 
 ### Information about used topics
 - To inspect all the topics exposed by xbot2 run ``` rostopic list ```:
