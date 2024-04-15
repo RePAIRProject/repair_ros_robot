@@ -53,8 +53,8 @@ class MotionPlanner:
 
         self.num_joints = 8
 
-        self.right_arm_grasp_link = "right_hand_v1_2_research_grasp_link"
         self.left_arm_grasp_link = "left_hand_v1_2_research_grasp_link"
+        self.right_arm_grasp_link = "right_hand_v1_2_research_grasp_link"
 
         # ik solver
         self.left_arm_ik_solver = kdl.ChainIkSolverPos_LMA(self.left_arm_chain)
@@ -74,16 +74,6 @@ class MotionPlanner:
             MoveArmToPose,
             self.handle_move_arm_to_pose,
         )
-
-        # right_arm_test_pose = PoseStamped()
-        # right_arm_test_pose.header.frame_id = "world"
-        # right_arm_test_pose.pose.position.x = 0.082386
-        # right_arm_test_pose.pose.position.y = 0.60549
-        # right_arm_test_pose.pose.position.z = 1.2192
-        # right_arm_test_pose.pose.orientation.x = 0.0093883
-        # right_arm_test_pose.pose.orientation.y = 0.89364
-        # right_arm_test_pose.pose.orientation.z = 0.44672
-        # right_arm_test_pose.pose.orientation.w = -0.041969
 
         self.right_arm_joints = [
             "j_torso_1",
@@ -109,26 +99,36 @@ class MotionPlanner:
 
     def handle_move_arm_to_pose(self, req: MoveArmToPoseRequest):
         arm = req.arm
+        rospy.loginfo(f"Received move arm {arm+1} to pose request")
         pose = req.target_pose
+
+        response = MoveArmToPoseResponse()
 
         # plan
         succ, plan = self.plan(pose, arm)
 
         if not succ:
-            return MoveArmToPoseResponse(False)
+            response.success = False
+            return response
 
         # execute
-        self.execute(plan, arm)
+        res = self.execute(plan, arm)
 
-        return MoveArmToPoseResponse(True)
+        if not res:
+            response.success = False
+            return response
+        
+        response.success = True
+
+        return response
 
     def get_current_pose(self, arm: ARM_ENUM) -> PoseStamped:
 
         pose = PoseStamped()
 
-        if arm == ARM_ENUM.ARM_1:
+        if arm == ARM_ENUM.ARM_1.value:
             link = self.left_arm_grasp_link
-        elif arm == ARM_ENUM.ARM_2:
+        elif arm == ARM_ENUM.ARM_2.value:
             link = self.right_arm_grasp_link
         else:
             raise ValueError("Invalid arm")
@@ -145,7 +145,7 @@ class MotionPlanner:
 
         # get joint state
         joint_state = rospy.wait_for_message(
-            "joint_states",
+            "/joint_states",
             JointState,
             timeout=1.0,
         )
@@ -153,9 +153,9 @@ class MotionPlanner:
         if joint_state is None:
             raise RuntimeError("Failed to get joint state")
 
-        if arm == ARM_ENUM.ARM_1:
+        if arm == ARM_ENUM.ARM_1.value:
             joints = self.left_arm_joints
-        elif arm == ARM_ENUM.ARM_2:
+        elif arm == ARM_ENUM.ARM_2.value:
             joints = self.right_arm_joints
         else:
             raise ValueError("Invalid arm")
@@ -168,9 +168,9 @@ class MotionPlanner:
         return self.compute_ik(pose, arm, q_init)[0]
 
     def compute_ik(self, pose, arm, q_init=None):
-        if arm == ARM_ENUM.ARM_1:
+        if arm == ARM_ENUM.ARM_1.value:
             ik_solver = self.left_arm_ik_solver
-        elif arm == ARM_ENUM.ARM_2:
+        elif arm == ARM_ENUM.ARM_2.value:
             ik_solver = self.right_arm_ik_solver
         else:
             raise ValueError("Invalid arm")
@@ -195,24 +195,23 @@ class MotionPlanner:
 
         if not reachable:
             rospy.logerr("Pose not reachable")
-            return False, None
+            # return False, None
 
         pose_in_world = self.get_current_pose(arm)
 
         # compute trajectory
-        lin_points, rot_quats = self.traj_utils.compute_trajectory(
-            pose_in_world,
-            pose,
-        )
+        lin_points, rot_quats = self.traj_utils.compute_trajectory(pose_in_world, pose)
+
+        # self.traj_utils.publish_pose_array(lin_points, rot_quats)
 
         return True, [lin_points, rot_quats]
 
     def execute(self, plan, arm: ARM_ENUM):
         pub_rate = rospy.Rate(100)
 
-        if arm == ARM_ENUM.ARM_1:
+        if arm == ARM_ENUM.ARM_1.value:
             dawn_ik_goal_pub = self.dawn_ik_arm_1_goal_pub
-        elif arm == ARM_ENUM.ARM_2:
+        elif arm == ARM_ENUM.ARM_2.value:
             dawn_ik_goal_pub = self.dawn_ik_arm_2_goal_pub
 
         for position, quat in zip(plan[0], plan[1]):
@@ -232,6 +231,15 @@ class MotionPlanner:
             dawn_ik_goal_pub.publish(dawn_ik_goal)
 
             pub_rate.sleep()
+
+        rospy.sleep(2)
+        # send idle goal
+        dawn_ik_goal = IKGoal()
+        dawn_ik_goal.mode = IKGoal.MODE_0
+        dawn_ik_goal_pub.publish(dawn_ik_goal)
+        rospy.loginfo("Finished executing plan")
+
+        return True
 
 
 if __name__ == "__main__":

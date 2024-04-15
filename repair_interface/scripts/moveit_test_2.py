@@ -215,7 +215,7 @@ if __name__ == '__main__':
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo", True))
 
     # get right_hand_v1s_grasp_link pose
-    tf_hand = get_transform(child_frame=side+"_hand_v1s_grasp_link", parent_frame="world")
+    tf_hand = get_transform(child_frame=side+"_hand_v1_2_research_grasp_link", parent_frame="world")
 
     # create a pose
     pose = PoseStamped()
