@@ -4,7 +4,10 @@
     A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
 -->
 <robot  xmlns:xacro="http://ros.org/wiki/xacro" name="repair_full">
-    <xacro:property name="sh_version" default="v1_2_research"/>
+  
+  <!-- QUIRINO: replaced default with arg value for xacro:if-->
+  <xacro:property name="sh_version" value="$(arg sh_version)"/>
+
     <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
     <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
     <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
@@ -6527,4 +6530,5 @@
         <disable_collisions link1="vbar2_link" link2="vbar4_link" reason="Never"/>
         <disable_collisions link1="vbar3_link" link2="vbar4_link" reason="Never"/>
     </xacro:if>
+
 </robot>

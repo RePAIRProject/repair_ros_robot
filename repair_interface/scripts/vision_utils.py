@@ -313,7 +313,7 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
 
     object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
 
-    labels = np.array(object_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
+    labels = np.array(object_cloud.cluster_dbscan(eps=0.02, min_points=10, print_progress=True))
 
     labels_size = np.size(np.asarray(labels))
     if labels_size == 0:
