@@ -33,12 +33,17 @@
 
         </pid>
 
-        <ignore_joints>
-            <xacro:ignore_softhand_jnts side="right" type="v1s"/>
-            <xacro:ignore_softhand_jnts side="left" type="v1s"/>
+         <ignore_joints>
+            <xacro:ignore_softhand_jnts side="right" type="v1_2_research"/>
+            <xacro:ignore_softhand_jnts side="left" type="v1_2_research"/>
+
+            <xacro:ignore_softhand_jnts side="right" type="v1_wide"/>
+            <xacro:ignore_softhand_jnts side="left" type="v1_wide"/>
         </ignore_joints>
 
     </plugin>
+
+    
 </gazebo>
 
 </robot>

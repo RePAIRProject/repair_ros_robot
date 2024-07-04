@@ -1,6 +1,6 @@
 <launch>
     <arg name="side" default="right"/>
-    <arg name="gazebo" default="false"/>
+    <arg name="gazebo" default="true"/>
     <node name="moveit_test" pkg="repair_interface" type="moveit_test.py" output="screen">
     <param name="side" value="$(arg side)" />
     <param name="gazebo" value="$(arg gazebo)" />

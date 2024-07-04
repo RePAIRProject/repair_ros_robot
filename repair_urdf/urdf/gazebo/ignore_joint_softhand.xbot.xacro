@@ -10,29 +10,51 @@
 
     <xacro:macro name="ignore_softhand_jnts" params="side type" >
         
-        <joint name="${side}_hand_${type}_thumb_knuckle_joint"/>
-        <joint name="${side}_hand_${type}_thumb_proximal_joint"/>
-        <joint name="${side}_hand_${type}_thumb_distal_joint"/>
+        <!--QUIRINO/GIANNIROS: modified joints that XBot ignores-->
+        <!-- V1_wide -->
+        <joint name="${side}hand${type}_palm_central_little_joint"/>
+        <joint name="${side}hand${type}_palm_central_thumb_joint"/>
+        <joint name="${side}hand${type}_palm_central_thumb_virtual_joint"/>
+        <joint name="${side}hand${type}_palm_central_little_virtual_joint"/>
 
-        <joint name="${side}_hand_${type}_index_distal_joint"/>
-        <joint name="${side}_hand_${type}_index_proximal_joint"/>
-        <joint name="${side}_hand_${type}_index_middle_joint"/>
-        <joint name="${side}_hand_${type}_index_distal_joint"/>
+        <!-- V1_2_research -->
+        <joint name="${side}hand${type}_thumb_knuckle_joint"/>
+        <joint name="${side}hand${type}_thumb_proximal_joint"/>
+        <joint name="${side}hand${type}_thumb_proximal_virtual_joint"/>
+        <joint name="${side}hand${type}_thumb_distal_joint"/>
+        <joint name="${side}hand${type}_thumb_distal_virtual_joint"/>
 
-        <joint name="${side}_hand_${type}_middle_distal_joint"/>
-        <joint name="${side}_hand_${type}_middle_proximal_joint"/>
-        <joint name="${side}_hand_${type}_middle_middle_joint"/>
-        <joint name="${side}_hand_${type}_middle_distal_joint"/>
+        <joint name="${side}hand${type}_index_knuckle_joint"/>
+        <joint name="${side}hand${type}_index_proximal_joint"/>
+        <joint name="${side}hand${type}_index_middle_joint"/>
+        <joint name="${side}hand${type}_index_distal_joint"/>        
+        <joint name="${side}hand${type}_index_proximal_virtual_joint"/>
+        <joint name="${side}hand${type}_index_middle_virtual_joint"/>
+        <joint name="${side}hand${type}_index_distal_virtual_joint"/>
 
-        <joint name="${side}_hand_${type}_ring_distal_joint"/>
-        <joint name="${side}_hand_${type}_ring_proximal_joint"/>
-        <joint name="${side}_hand_${type}_ring_middle_joint"/>
-        <joint name="${side}_hand_${type}_ring_distal_joint"/>
+        <joint name="${side}hand${type}_middle_knuckle_joint"/>
+        <joint name="${side}hand${type}_middle_proximal_joint"/>
+        <joint name="${side}hand${type}_middle_middle_joint"/>
+        <joint name="${side}hand${type}_middle_distal_joint"/>
+        <joint name="${side}hand${type}_middle_proximal_virtual_joint"/>
+        <joint name="${side}hand${type}_middle_middle_virtual_joint"/>
+        <joint name="${side}hand${type}_middle_distal_virtual_joint"/>
 
-        <joint name="${side}_hand_${type}_little_distal_joint"/>
-        <joint name="${side}_hand_${type}_little_proximal_joint"/>
-        <joint name="${side}_hand_${type}_little_middle_joint"/>
-        <joint name="${side}_hand_${type}_little_distal_joint"/>
+        <joint name="${side}hand${type}_ring_knuckle_joint"/>
+        <joint name="${side}hand${type}_ring_proximal_joint"/>
+        <joint name="${side}hand${type}_ring_middle_joint"/>
+        <joint name="${side}hand${type}_ring_distal_joint"/>
+        <joint name="${side}hand${type}_ring_proximal_virtual_joint"/>
+        <joint name="${side}hand${type}_ring_middle_virtual_joint"/>
+        <joint name="${side}hand${type}_ring_distal_virtual_joint"/>
+
+        <joint name="${side}hand${type}_little_knuckle_joint"/>
+        <joint name="${side}hand${type}_little_proximal_joint"/>
+        <joint name="${side}hand${type}_little_middle_joint"/>
+        <joint name="${side}hand${type}_little_distal_joint"/>
+        <joint name="${side}hand${type}_little_proximal_virtual_joint"/>
+        <joint name="${side}hand${type}_little_middle_virtual_joint"/>
+        <joint name="${side}hand${type}_little_distal_virtual_joint"/>
 
     </xacro:macro>  
 

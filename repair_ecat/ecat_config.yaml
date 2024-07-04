@@ -151,4 +151,7 @@ CentAcESC_301:
   pos_offset: 0
   max_current_A: 7
   ram_cmd: [38]
-
+  
+CentAcESC_41:
+  sign: -1
+  pos_offset: 0
