@@ -20,7 +20,7 @@ class QbHand:
         else:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
-            self.close_value = 19000.0
+            self.close_value =19000.0
 
         self.init_ros()
         self.init_params()
@@ -54,6 +54,8 @@ class QbHand:
         pass
 
     def init_ros(self):
+        sh_version = str(rospy.get_param("/sh_version"))
+        print(sh_version)
         try:
             rospy.init_node("Qb_hand_"+self.side, anonymous=True)
         except rospy.exceptions.ROSException as e:
@@ -67,8 +69,14 @@ class QbHand:
         # 19000 close
 
         if(self.gazebo):
-            self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_2_research/synergy_command", Float64, queue_size=3)
-
+            #QUIRINO: fixed hand open/closure for mixed_hands
+            if sh_version == "mixed_hands":
+                if self.side == "right":
+                    self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_2_research/synergy_command", Float64, queue_size=3)
+                elif self.side == "left":
+                        self.GripperPub = rospy.Publisher("/"+self.side+"_hand_v1_wide/synergy_command", Float64, queue_size=3)
+            else:
+                self.GripperPub = rospy.Publisher("/"+self.side+"_hand_"+sh_version+"/synergy_command", Float64, queue_size=3)
         else:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
@@ -82,7 +90,7 @@ if __name__ == "__main__":
         value = 0.5
     else:
         value = 19000.0/2
-    hand_api.move_hand(value)
+    #hand_api.move_hand(value)
     hand_api.close_hand()
     hand_api.open_hand()
     print('Finish!')

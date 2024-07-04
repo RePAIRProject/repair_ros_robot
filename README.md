@@ -41,6 +41,55 @@ This repository contains the software to control the simulated and real RePAIR r
 
 	catkin build
 	```
+	
+	<summary>Troubleshooting
+	<details>
+	If you get errors during build similar to (where package name is some name):
+
+	```bash
+	CMake Error at /opt/ros/noetic/share/catkin/cmake/catkinConfig.cmake:83 (find_package):
+	Could not find a package configuration file provided by
+	"package_name" with any of the following names:
+
+		package_nameConfig.cmake
+		package_name-config.cmake
+
+	Add the installation prefix of "package_name" to CMAKE_PREFIX_PATH
+	or set "package_name" to a directory containing one of the
+	above files.  If "package_name" provides a separate development
+	package or SDK, be sure it has been installed.
+	```
+
+	Check the list below:
+	<h3>Failure for realsense2 (missing "ddynamic_reconfigure")</h3>
+	
+	From [this issue](https://github.com/IntelRealSense/realsense-ros/issues/812) it looks like it should be installed by running:
+	```bash
+	sudo apt-get install ros-noetic-ddynamic-reconfigure 
+	```
+
+	<h3>Failure for repair_moveit_xbot (missing "moveit_ros_planning")</h3>
+	
+	Install moveit by
+	```
+	sudo apt-get install ros-noetic-moveit
+	```
+	<h3>Failure for repair_moveit_xbot (missing "rviz_visual_tools")</h3>
+	
+	Install it by
+	```
+	sudo apt-get install ros-noetic-rviz-visual-tools
+	```
+	<h3>Failure for repair_moveit_xbot (missing "moveit_visual_tools")</h3>
+	
+	Install it by
+	```
+	sudo apt-get install ros-noetic-moveit-visual-tools 
+	```
+	</details>
+	</summary>
+	
+
 	- After successful build, source the workspace in all the terminals
 	```
 	cd ~/repair_robot_ws
@@ -108,10 +157,18 @@ roslaunch repair_gazebo repair_gazebo.launch
 
 ### Motion planning and execution with Moveit and ros_control in Gazebo
 ```bash
-roslaunch repair_gazebo bringup_moveit.launch
+roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
 ```
 
-- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
+- `launch_gazebo:=true/false` (default `false`): if `true` launches Gazebo for simulation, if `false` (default) real robot
+- `sh_version:=v1_2_research/v1_wide/mixed_hands` (default `v1_2_research`): to use standard (small) hand/wide hand/standard hand on right and wide hand on left
+- `fixed_hands:=true/false` (default `true`): `true` is needed for planning with real robot, but you cannot plan in simulation, set it to `false` to plan in Gazebo
+
+  
+#### Errors and warnings
+- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint```
+- You can ignore the warning messages about unknown links in URDF (e.g. `[ WARN] [1706696422.918657977, 1.124000000]: Link 'right_hand_v1_2_research_thumb_proximal_link' is not known to URDF. Cannot disable/enable collisons.`), they doesn't affect the run of the simulation, you won't only be able to see the hand opening/closing in Rviz
+
 
 ## XBot2
 XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
@@ -228,6 +285,22 @@ roslaunch repair_interface moveit_test.launch side:=right gazebo:=false
 ```
 
 In the beginning two windows will pop up which you have to close by pressing the ```q``` button.
+
+#### Int Week 2 partial update
+First terminal
+```bash
+roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
+```
+
+Second terminal
+```bash
+rosrun repair_interface moveit_client.py _use_gazebo:=true
+```
+
+Recognition
+```bash
+rosrun repair_interface moveit_multi_fresco_with_recognition.py _side:=right _gazebo:=true
+```
 
 ### Information about used topics
 - To inspect all the topics exposed by xbot2 run ``` rostopic list ```:

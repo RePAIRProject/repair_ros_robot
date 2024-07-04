@@ -2,6 +2,10 @@
 <launch>
     <!-- launch gazebo flag -->
     <arg name="launch_gazebo" default="true" />
+    <arg name="sh_version" default="v1_2_research"  doc="The version of the hand [ v1_2_research , v1_wide, mixed_hands]"/>
+    <param name="sh_version" value="$(arg sh_version)" />
+    <arg name="fixed_hands" default="true" doc="If use real robot fixed_hands:=true (default), if gazebo fixed_hands:=false"/>
+    <param name="fixed_hands" value="$(arg fixed_hands)" />
 
     <!-- Run the main MoveIt executable with trajectory execution -->
     <include file="$(find repair_moveit_config_v2)/launch/move_group.launch">
@@ -12,16 +16,17 @@
         <arg name="debug" value="false" />
         <arg name="pipeline" value="ompl" />
         <arg name="load_robot_description" value="true" />
+        <arg name="sh_version" value="$(arg sh_version)" />
     </include>
 
     <!-- Start the controllers and robot state publisher-->
     <include file="$(find repair_gazebo)/launch/control_utils.launch"/>
 
     <!-- Start the simulated robot in an empty Gazebo world -->
-    <group if="$(arg launch_gazebo)">
-        <include file="$(find repair_gazebo)/launch/repair_gazebo.launch"/>
-    </group>
-
+    <include file="$(find repair_gazebo)/launch/repair_gazebo.launch">
+        <arg name="sh_version" value="$(arg sh_version)" />
+        <arg name="fixed_hands" value="$(arg fixed_hands)" />
+    </include>
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
