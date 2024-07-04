@@ -15,13 +15,13 @@ min_points_detection=1
 # filter points further away
 z_cut=0.3
 # scaling to compensate
-scaling_factor=1/3
+scaling_factor=0.3
 # alignment 
-icp_voxel_size=0.01
+icp_voxel_size=0.001
 # paths and db models
 pc = 'vislab'
 model_pts = 50000
-id_list = ['RPf_00123', 'RPf_00124', 'RPf_00125', 'RPf_00126']
+id_list = ['RPf_00125', 'RPf_00126', 'RPf_00124'] #, 'RPf_00123']
 version = ''
 algorithm = 'icp'
 names_list = [f"{id_p}_{model_pts}.ply" for id_p in id_list]
@@ -45,10 +45,13 @@ scenes = ['/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 #, '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00400.ply', '/home/palma/repair/int_week_2/aligned/monday/pcl_frame_00010.ply']
 
 # debug
-debug=True
+debug=False
 save_detections=False
 show_solution=True
 show_pairwise_solutions=False
 
 # print stuff
 verbosity=1
+
+# solution
+offsets = [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, 1, 0]]

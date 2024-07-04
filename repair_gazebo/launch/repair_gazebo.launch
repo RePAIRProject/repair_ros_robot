@@ -2,7 +2,9 @@
 
   <param name="use_sim_time" type="bool" value="true"/>
   <arg name="gazebo" default="true"/>
-  
+  <arg name="sh_version" default="v1_2_research" />
+  <arg name="fixed_hands" default="true" />
+
   <!-- Args -->
   <arg name="paused" default="true"/>
   <arg name="use_sim_time" default="true"/>
@@ -28,7 +30,7 @@
 
   <!-- Load the right URDF into the ROS Parameter Server, depending on the chosen model type -->
   <param name="robot_description_gz"
-         command="$(find xacro)/xacro $(find repair_urdf)/urdf/repair_full.urdf.xacro"/>
+         command="$(find xacro)/xacro $(find repair_urdf)/urdf/repair_full.urdf.xacro sh_version:='$(arg sh_version)' fixed_hands:='$(arg fixed_hands)'"/>
 
   <!-- spawn the first fragment    
   <arg name="fragment2_model" default="$(find repair_urdf)/sdf/frag2/model.sdf"/>
@@ -46,7 +48,7 @@
 
   <arg name="RPf_00124_model" default="$(find repair_urdf)/sdf/RPf_00124/model.sdf"/>
   <node name="RPf_00124_description" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(arg RPf_00124_model) -sdf -model RPf_00124 -x 0.3 -y -0.4 -z 1.15" />
+  args="-file $(arg RPf_00124_model) -sdf -model RPf_00124 -x 0.2 -y 0 -z 1.5" />
 
   <arg name="RPf_00125_model" default="$(find repair_urdf)/sdf/RPf_00125/model.sdf"/>
   <node name="RPf_00125_description" pkg="gazebo_ros" type="spawn_model" 

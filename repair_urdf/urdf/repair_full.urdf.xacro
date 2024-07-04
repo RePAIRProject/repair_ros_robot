@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="repair_full">
     
+    <xacro:arg name="sh_version" default="v1_2_research"/>
+    <xacro:arg name="fixed_hands" default="true"/>
+
     <xacro:include filename="$(find softhands_description)/urdf/softhands.xacro" />
 
     <xacro:include filename="$(find repair_urdf)/urdf/conversions.urdf.xacro" />
@@ -25,6 +28,9 @@
     <xacro:include filename="$(find repair_urdf)/urdf/common.gazebo.xacro" />
 
     <xacro:include filename="$(find repair_urdf)/urdf/repair_hand_transmission.xacro" />
+
+    <!-- property for enabling meshes for collision -->
+    <xacro:property name="useCollisionMesh" value="true" />
     
     <link name="world"/>
 
@@ -37,7 +43,7 @@
 
     <xacro:sensor_l515 parent='torso_1' use_nominal_extrinsics='true'>
         <!-- <origin xyz="0.0857 0.0000476009 -0.273184" rpy="0.0009783 1.1836725 0" /> --> 
-        <origin xyz="0.0857 0.0000476009 -0.268184" rpy="0.0009783 1.1836725 0" />
+        <origin xyz="0.0857 0.0000476009 -0.273184" rpy="0.0009783 1.1836725 0" />
     </xacro:sensor_l515>
 
     <xacro:repair_torso parent="sliding_guide_link">
@@ -45,42 +51,32 @@
             rpy="${Torso_roll} ${Torso_pitch} ${Torso_yaw}" />
     </xacro:repair_torso>
 
-    <xacro:repair_arm id="2"  rot="1"  parent="torso_1">
+    <xacro:repair_arm id="2"  rot="1"  parent="torso_1" useCollisionMesh="${useCollisionMesh}">
       <origin xyz="${Shoulder_1_Ox} ${Shoulder_1_Oy} ${Shoulder_1_Oz}"
               rpy="${Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
     </xacro:repair_arm>
 
-    <xacro:repair_arm id="1"  rot="-1"  parent="torso_1">
+    <xacro:repair_arm id="1"  rot="-1"  parent="torso_1" useCollisionMesh="${useCollisionMesh}">
         <origin xyz="${Shoulder_1_Ox} ${-Shoulder_1_Oy} ${Shoulder_1_Oz}"
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
       </xacro:repair_arm>
     
-    <xacro:softhands type="left"
-        version="v1.0_simple" 
-        parent="arm_1_7" 
+    <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand) and mixed-->
+    <xacro:softhands
+        version="$(arg sh_version)" 
         position="0 0 0" 
-        orientation="0 0.0 ${PI/2}" 
-        translation="0"
-        operation_mode="0" 
-        fixed_hands="false">
+        orientation="${PI}" 
+        fixed_hands="$(arg fixed_hands)">
     </xacro:softhands>
 
-    <xacro:softhands type="right" 
-        version="v1.0_simple" 
-        parent="arm_2_7" 
-        position="0 0 0"  
-        orientation="0 0 ${-PI/2}" 
-        translation="0"
-        operation_mode="0" 
-        fixed_hands="false">
-    </xacro:softhands>
 
-    <!-- <gazebo reference="table_top_link">
-        <selfCollide> 1 </selfCollide>
-    </gazebo> -->
 
-    <xacro:repair_hand_transmission id="left" />
+    <gazebo reference="table_top_link">
+        <selfCollide>0</selfCollide>
+    </gazebo>
 
-    <xacro:repair_hand_transmission id="right" />
+    <!-- <xacro:repair_hand_transmission id="left" />
+
+    <xacro:repair_hand_transmission id="right" /> -->
 
 </robot>

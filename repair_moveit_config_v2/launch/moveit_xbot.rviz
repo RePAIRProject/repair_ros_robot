@@ -1,9 +1,10 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 138
+    Help Height: 70
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /MotionPlanning1
         - /TF1/Tree1
         - /PointCloud21
       Splitter Ratio: 0.7998605370521545
@@ -489,11 +490,11 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-        Loop Animation: true
+        Loop Animation: false
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
         Show Robot Collision: false
-        Show Robot Visual: true
+        Show Robot Visual: false
         Show Trail: false
         State Display Time: 0.05 s
         Trail Step Size: 1
@@ -1198,6 +1199,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        right_hand_v1s_grasp_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         right_hand_v1s_index_distal_link:
           Alpha: 1
           Show Axes: false

@@ -17,8 +17,8 @@
         <arg name="load_robot_description" value="true" />
     </include>
   
-    <!-- Given the published joint states, publish tf for the robot links -->
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+    <!-- Given the published joint states, publish tf for the robot links
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />-->
 
     <!-- Start moveit_rviz with the motion planning plugin -->
     <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">

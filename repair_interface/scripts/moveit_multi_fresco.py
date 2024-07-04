@@ -34,12 +34,12 @@ if __name__ == '__main__':
     node_name = "moveit_test"
     rospy.init_node(node_name)
 
-    debug = True
+    debug = False
     use_pyrealsense = False
 
     # Get and print parameters
-    side = str(rospy.get_param("/"+node_name+"/side"))
-    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+    side = "right" #str(rospy.get_param("/"+node_name+"/side"))
+    gazebo = False #bool(rospy.get_param("/"+node_name+"/gazebo"))
 
     if side == "right":
         arm_no = 2
@@ -60,7 +60,7 @@ if __name__ == '__main__':
       hand_api.open_hand()
       print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
@@ -97,7 +97,7 @@ if __name__ == '__main__':
         # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
         # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
         print ('Getting object with max number of points')
-        object_cloud = get_max_cluster(object_cloud, debug)
+        object_cloud = get_max_cluster(object_cloud, True)
 
         initial_pose = np.concatenate((object_cloud.get_center(), hand_tf))
         initial_pose = get_pose_from_arr(initial_pose)
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
-        y_ang = 0.26
+        y_ang = 0.20
         q_rot = quaternion_from_euler(0, y_ang, 0)
 
         q_orig = arm_target_pose_np[3:]
@@ -142,7 +142,9 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-        arm_target_pose_np[2] -= 0.168 
+        arm_target_pose_np[2] -= 0.170
+        arm_target_pose_np[0] += 0.02
+        #arm_target_pose_np[1] += 0.02
         arm_target_pose_np[3:] = q_new
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
@@ -166,7 +168,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         ### 5. Move side
-        arm_target_pose_np[:3] = [-0.087, -0.610, 1.47]
+        arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, -0.60, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -175,7 +177,7 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         # 6. Go down
-        arm_target_pose_np[:3] = [-0.110 + 0.1* fresco_release, -0.609, 1.257]
+        arm_target_pose_np[:3] = [-0.130, -0.70 + 0.13* fresco_release, 1.17]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -189,7 +191,7 @@ if __name__ == '__main__':
             print('Opened!')
 
         ### 8. Go up
-        arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
+        arm_target_pose_np[:3] = [-0.100, -0.609, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -198,6 +200,6 @@ if __name__ == '__main__':
         moveit_test.go_to_pos(arm_target_pose)
 
         fresco_release += 1.
-        num_frescos, object_cloud, table_cloud = check_frescos_left(True, False)
+        num_frescos, object_cloud, table_cloud = check_frescos_left(debug, False)
         print (f'Objects left: {num_frescos}')
 

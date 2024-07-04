@@ -7,7 +7,7 @@ import toppra.constraint as constraint
 import toppra.algorithm as algo
 from scipy.spatial.transform import Rotation, Slerp
 from moveit_msgs.msg import RobotTrajectory
-
+ta.setup_logging("INFO")
 
 class TrajectoryUtils:
     def __init__(self):
@@ -17,9 +17,9 @@ class TrajectoryUtils:
         rospy.sleep(1)
 
         # interpolation params
-        self.num_points = 100
+        self.num_points = 500
 
-    def publish_pose_array(self, lin_points, rotations, frame_id="map"):
+    def publish_pose_array(self, lin_points, rotations, frame_id="world"):
         # create a pose array
         pose_array = PoseArray()
         pose_array.header.frame_id = frame_id
@@ -52,44 +52,82 @@ class TrajectoryUtils:
         Outputs:
             joint_trajectory: the interpolated joint trajectory
         """
-        print("test_11")
         # get the joint names
         joint_names = moveit_plan.joint_trajectory.joint_names
-        print("test_12")
         # get the joint positions
         moveit_points = moveit_plan.joint_trajectory.points
         joint_positions = np.array(
             [point.positions for point in moveit_points]
         )
-        print("test_13")
         time_stamps = np.array(
             [point.time_from_start.to_sec() for point in moveit_points]
         )
-        print("test_14")
         # Define your robot's dynamic parameters
         joint_velocities = np.array(
             [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint velocities (replace with actual values)
         joint_accelerations = np.array(
             [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint accelerations (replace with actual values)
 
-        path = ta.SplineInterpolator(time_stamps, joint_positions)
-        pc_vel = constraint.JointVelocityConstraint(joint_velocities)
-        pc_acc = constraint.JointAccelerationConstraint(joint_accelerations)
-        print("test_15")
-        # Create a parametrization of the path
-        instance = algo.TOPPRA([pc_vel, pc_acc], path, parametrizer="ParametrizeConstAccel")
-        jnt_traj = instance.compute_trajectory()
-        print("test_16")
-        # Sample the trajectory for joint positions
-        t_sample = np.linspace(0, jnt_traj.duration, num_points)
-        print("test_17")
-        # Evaluate the trajectory
-        qs_sample = jnt_traj(t_sample)
+        # path = ta.SplineInterpolator(time_stamps, joint_positions)
+        # pc_vel = constraint.JointVelocityConstraint(joint_velocities)
+        # pc_acc = constraint.JointAccelerationConstraint(joint_accelerations)
+        # # Create a parametrization of the path
+        # instance = algo.TOPPRA([pc_vel, pc_acc], path, parametrizer="ParametrizeConstAccel")
+        # jnt_traj = instance.compute_trajectory()
+        # # Sample the trajectory for joint positions
+        # t_sample = np.linspace(0, jnt_traj.duration, num_points)
+        # # Evaluate the trajectory
+        # qs_sample = jnt_traj(t_sample)
 
-        print(joint_names)
-        print(qs_sample.shape)
+        ss_waypoints = np.linspace(0, 1, len(joint_positions))
+        path = ta.SplineInterpolator(ss_waypoints, joint_positions)
+
+        t_sample = np.linspace(0, path.duration, num_points)
+        qs_sample = path(t_sample)
 
         return qs_sample
+
+    # def interpolate_joint_trajectory(self, moveit_plan: RobotTrajectory, num_points=100):
+    #     """
+    #     Interpolates a joint trajectory
+    #
+    #     Inputs:
+    #         moveit_plan: the moveit plan to interpolate
+    #
+    #     Outputs:
+    #         joint_trajectory: the interpolated joint trajectory
+    #     """
+    #     # get the joint names
+    #     joint_names = moveit_plan.joint_trajectory.joint_names
+    #     # get the joint positions
+    #     moveit_points = moveit_plan.joint_trajectory.points
+    #     joint_positions = np.array(
+    #         [point.positions for point in moveit_points]
+    #     )
+    #     time_stamps = np.array(
+    #         [point.time_from_start.to_sec() for point in moveit_points]
+    #     )
+    #     # Define your robot's dynamic parameters
+    #     joint_velocities = np.array(
+    #         [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint velocities (replace with actual values)
+    #     joint_accelerations = np.array(
+    #         [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])  # Joint accelerations (replace with actual values)
+    #
+    #     path = ta.SplineInterpolator(time_stamps, joint_positions)
+    #     pc_vel = constraint.JointVelocityConstraint(joint_velocities)
+    #     pc_acc = constraint.JointAccelerationConstraint(joint_accelerations)
+    #     # Create a parametrization of the path
+    #     instance = algo.TOPPRA([pc_vel, pc_acc], path)
+    #     jnt_traj = instance.compute_trajectory()
+    #     # Sample the trajectory for joint positions
+    #     t_sample = np.linspace(0, jnt_traj.duration, num_points)
+    #     # Evaluate the trajectory
+    #     qs_sample = jnt_traj(t_sample)
+    #
+    #     print(joint_names)
+    #     print(qs_sample.shape)
+    #
+    #     return qs_sample
 
     def compute_trajectory(
             self,

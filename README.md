@@ -157,10 +157,18 @@ roslaunch repair_gazebo repair_gazebo.launch
 
 ### Motion planning and execution with Moveit and ros_control in Gazebo
 ```bash
-roslaunch repair_gazebo bringup_moveit.launch
+roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
 ```
 
-- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
+- `launch_gazebo:=true/false` (default `false`): if `true` launches Gazebo for simulation, if `false` (default) real robot
+- `sh_version:=v1_2_research/v1_wide/mixed_hands` (default `v1_2_research`): to use standard (small) hand/wide hand/standard hand on right and wide hand on left
+- `fixed_hands:=true/false` (default `true`): `true` is needed for planning with real robot, but you cannot plan in simulation, set it to `false` to plan in Gazebo
+
+  
+#### Errors and warnings
+- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint```
+- You can ignore the warning messages about unknown links in URDF (e.g. `[ WARN] [1706696422.918657977, 1.124000000]: Link 'right_hand_v1_2_research_thumb_proximal_link' is not known to URDF. Cannot disable/enable collisons.`), they doesn't affect the run of the simulation, you won't only be able to see the hand opening/closing in Rviz
+
 
 ## XBot2
 XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
@@ -247,6 +255,21 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 	roslaunch repair_moveit_xbot bringup_moveit.launch
 	```
 
+### Moveit configuration
+
+- To increase/reduce the number of points for a trajectory, update the following parameter for `arm_1` and `arm_2` in [repair_moveit_config_v2/config/ompl_planning.yaml](repair_moveit_config_v2/config/ompl_planning.yaml)
+  
+	```yaml
+	longest_valid_segment_fraction: 0.00005
+	```
+- To increase/decrease the velocity of arm joints, update the following parameter in [repair_moveit_config_v2/config/joint_limits.yaml](repair_moveit_config_v2/config/joint_limits.yaml)
+	
+	```yaml
+	default_velocity_scaling_factor: 0.1
+	default_acceleration_scaling_factor: 0.1
+	```
+- Alternatively, velocity and acceleration scaling factors can be updated in the Rviz Motion Planning plugin before planning a path.
+
 ### Run the pick and place demo
 The goal of the demo is to pick and place a fresco fragment. There are 2 versions of the demo. The manual demo is moving to fixed poses while the moveit demo is using a perception pipeline to determine a grasp pose. Both demos can be run in Gazebo or with the real robot. For this purpose the ```gazebo``` argument has to be set accordingly. The ```side``` argument defines whether the left or the right hand is used to grasp the fragment.
 
@@ -266,7 +289,7 @@ In the beginning two windows will pop up which you have to close by pressing the
 #### Int Week 2 partial update
 First terminal
 ```bash
-roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true
+roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
 ```
 
 Second terminal

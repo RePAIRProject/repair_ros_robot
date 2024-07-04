@@ -1,6 +1,7 @@
 [submodule "SoftHand-Plugin"]
 	path = SoftHand-Plugin
-	url = https://github.com/vamsikalagaturu/SoftHand-Plugin.git
+	url = https://github.com/NMMI/SoftHand-Plugin.git
+	branch = repair
 [submodule "gazebo2rviz"]
 	path = gazebo2rviz
 	url = https://github.com/andreasBihlmaier/gazebo2rviz.git

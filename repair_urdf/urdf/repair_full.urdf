@@ -367,7 +367,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </xacro:sensor_d435> -->
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="camera_joint" type="fixed">
-    <origin rpy="0.0009783 1.1836725 0" xyz="0.0857 0.0000476009 -0.268184"/>
+    <origin rpy="0.0009783 1.1836725 0" xyz="0.0857 0.0000476009 -0.273184"/>
     <parent link="torso_1"/>
     <child link="camera_bottom_screw_frame"/>
   </joint>
@@ -1188,1580 +1188,2522 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  
-
-    # Softhand VERSION 1.0
-    
-  
-
-    # Softhand VERSION 1.0 SIMPLIFIED (less joints)
-    
-  
-		# Softhand Base
-		
-  <joint name="left_hand_base_joint" type="fixed">
-    <origin rpy="0 0.0 1.570796326795" xyz="0 0 0"/>
+  <material name="qbhand/optional">
+    <color rgba="0.0 0.5 0.8 1.0"/>
+  </material>
+  <material name="qbhand/base">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <material name="qbhand/palm">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <material name="qbhand/knuckle">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <material name="qbhand/proximal">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <material name="qbhand/middle">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <material name="qbhand/distal">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <material name="qbhand/default">
+    <color rgba="0.35 0.35 0.35 1.0"/>
+  </material>
+  <!-- If you are using only the hand -->
+  <!-- <link name="world"/> -->
+  <!-- IF VERSION == 1_wide -->
+  <!-- IF VERSION == 1_wide -->
+  <gazebo>
+    <plugin filename="libsofthand_mimic_plugin.so" name="synergy_plugin">
+      <namespace>left_hand_v1_wide</namespace>
+      <operation_mode>0</operation_mode>
+      <spring_k>5</spring_k>
+      <wide>True</wide>
+      <r_finger>0.0033</r_finger>
+      <R_pulley>0.0053</R_pulley>
+      <n_param>0.058</n_param>
+      <synS_thumb_j1>3</synS_thumb_j1>
+      <synS_thumb_j2>1.2</synS_thumb_j2>
+      <synS_thumb_j3>1.2</synS_thumb_j3>
+      <k_thumb_j1>0.8</k_thumb_j1>
+      <k_thumb_j2>0.8</k_thumb_j2>
+      <k_thumb_j3>0.8</k_thumb_j3>
+      <synS_index_j1>-0.3</synS_index_j1>
+      <synS_index_j2>1.57</synS_index_j2>
+      <synS_index_j3>1.25</synS_index_j3>
+      <synS_index_j4>0.8</synS_index_j4>
+      <k_index_j1>0.15</k_index_j1>
+      <k_index_j2>0.5</k_index_j2>
+      <k_index_j3>0.5</k_index_j3>
+      <k_index_j4>0.5</k_index_j4>
+      <synS_middle_j1>0</synS_middle_j1>
+      <synS_middle_j2>1.57</synS_middle_j2>
+      <synS_middle_j3>1.25</synS_middle_j3>
+      <synS_middle_j4>1.25</synS_middle_j4>
+      <k_middle_j1>0.15</k_middle_j1>
+      <k_middle_j2>0.5</k_middle_j2>
+      <k_middle_j3>0.5</k_middle_j3>
+      <k_middle_j4>0.5</k_middle_j4>
+      <synS_ring_j1>0</synS_ring_j1>
+      <synS_ring_j2>1.57</synS_ring_j2>
+      <synS_ring_j3>1.0</synS_ring_j3>
+      <synS_ring_j4>1.0</synS_ring_j4>
+      <k_ring_j1>0.15</k_ring_j1>
+      <k_ring_j2>0.5</k_ring_j2>
+      <k_ring_j3>0.5</k_ring_j3>
+      <k_ring_j4>0.5</k_ring_j4>
+      <synS_little_j1>0.1</synS_little_j1>
+      <synS_little_j2>1.57</synS_little_j2>
+      <synS_little_j3>1.25</synS_little_j3>
+      <synS_little_j4>1.0</synS_little_j4>
+      <k_little_j1>0.15</k_little_j1>
+      <k_little_j2>0.5</k_little_j2>
+      <k_little_j3>0.5</k_little_j3>
+      <k_little_j4>0.5</k_little_j4>
+      <!-- Palm thumb -->
+      <synS_palm_j1>1.57</synS_palm_j1>
+      <k_palm_j1>0.5</k_palm_j1>
+      <k_palm_j1_mimic>0.5</k_palm_j1_mimic>
+      <!-- Palm little -->
+      <synS_palm_j2>1.57</synS_palm_j2>
+      <k_palm_j2>0.5</k_palm_j2>
+      <k_palm_j2_mimic>0.5</k_palm_j2_mimic>
+    </plugin>
+  </gazebo>
+  <!-- World to palm base -->
+  <joint name="left_hand_v1_wide_palm_central_joint" type="fixed">
     <parent link="arm_1_7"/>
-    <child link="left_hand_v1s_palm_base"/>
+    <child link="left_hand_v1_2_research_iso_link"/>
+    <origin rpy="0 0 3.14159265359" xyz="0 -0. 0.00"/>
   </joint>
-  <link name="left_hand_v1s_palm_base"/>
-  
-		# RIGHT HAND
-		
-  
-		# LEFT HAND
-		
-  
-			# Palm
-			
-  <joint name="left_hand_v1s_palm_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.002 0.00695 0.0535"/>
-    <parent link="left_hand_v1s_palm_base"/>
-    <child link="left_hand_v1s_palm_link"/>
-  </joint>
-  <link name="left_hand_v1s_palm_link">
+  <link name="left_hand_v1_wide_palm_central_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_central.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
     <inertial>
-      <origin xyz="-0.004568758 -0.006808116 0.027653328"/>
-      <mass value="2.28"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.18654307333333334"/>
+      <origin rpy="0 0 0" xyz="-7.3637766e-03 -0.015857667  6.7065321e-02"/>
+      <inertia ixx="8.2936450e-04" ixy="1.9292962e-06" ixz="1.6410516e-05" iyy="8.0447768e-04" iyz="0.00013735281" izz="3.0664811e-04"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/left/palm_left_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/left/palm_left_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_central_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
-    </collision>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.002 0.00695 -0.0535"/>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/left/softhand_base_left_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.002 0.00695 -0.0535"/>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/softhand_base_right_m.stl"/>
-      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  
-			# Thumb finger
-			
-  <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_thumb_knuckle_joint" type="continuous">
-    <origin rpy="0.0 -0.38397275793662144 -1.5707963267948966" xyz="0.005669722 -0.029616 0.055314"/>
-    <parent link="left_hand_v1s_palm_link"/>
-    <child link="left_hand_v1s_thumb_knuckle_link"/>
+  <!-- Fake joint and link for grasping -->
+  <joint name="left_hand_v1_2_research_grasp_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="0.03 0.06 0.10"/>
+    <parent link="left_hand_v1_2_research_iso_link"/>
+    <child link="left_hand_v1_2_research_grasp_link"/>
+  </joint>
+  <link name="left_hand_v1_wide_grasp_link"/>
+  <!-- palm base to Thumb -->
+  <joint name="left_hand_v1_wide_palm_central_thumb_joint" type="fixed">
     <axis xyz="0 0 1"/>
-    <dynamics damping="0.08" friction="0.0"/>
+    <limit effort="30" lower="0" upper="0.17" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+    <origin rpy="0.3490656 0.0 0.0" xyz=" -0.0000000021 -32.5059e-3 39.6398e-3"/>
+    <parent link="left_hand_v1_wide_palm_central_link"/>
+    <child link="left_hand_v1_wide_palm_central_thumb_link"/>
   </joint>
-  <link name="left_hand_v1s_thumb_knuckle_link">
+  <link name="left_hand_v1_wide_palm_central_thumb_link">
     <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.18654307333333334"/>
+      <inertia ixx="8.2936450e-04" ixy="1.9292962e-06" ixz="1.6410516e-05" iyy="8.0447768e-04" iyz="0.00013735281" izz="3.0664811e-04"/>
     </inertial>
+  </link>
+  <!-- palm base to Litte virtual -->
+  <joint name="left_hand_v1_wide_palm_central_little_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+    <limit effort="100" lower="0.0" upper="0.17" velocity="0.00"/>
+    <origin rpy="3.1415927 -0.1745327 1.5707963" xyz=" -0.0000000091 10.6603e-3 66.1817e-3"/>
+    <parent link="left_hand_v1_wide_palm_central_link"/>
+    <child link="left_hand_v1_wide_palm_central_little_link"/>
+  </joint>
+  <link name="left_hand_v1_wide_palm_central_little_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.18654307333333334"/>
+      <inertia ixx="8.2936450e-04" ixy="1.9292962e-06" ixz="1.6410516e-05" iyy="8.0447768e-04" iyz="0.00013735281" izz="3.0664811e-04"/>
+    </inertial>
+  </link>
+  <gazebo reference="left_hand_v1_wide_palm_central_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_palm_central_thumb_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_palm_central_little_link">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <joint name="left_hand_v1_wide_palm_central_thumb_virtual_joint" type="fixed">
+    <parent link="left_hand_v1_wide_palm_central_thumb_link"/>
+    <child link="left_hand_v1_wide_palm_thumb_link"/>
+    <origin rpy="0 0 0 " xyz="-0.0000454746e-3 -12e-3 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.17" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_palm_thumb_link">
+    <material name="grey"/>
     <visual>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/left/thumb_knuckle_left_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_thumb.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
+    <inertial>
+      <mass value="0.092767"/>
+      <origin rpy="0 0 0" xyz=" 7.0704771e-3  -1.3888149e-2 1.1337304e-3"/>
+      <inertia ixx="5.2239281e-5" ixy="2.7341002e-6" ixz="4.6570694e-6" iyy="5.2239286e-5" iyz="-6.0525011e-6" izz="2.7144565e-5"/>
+    </inertial>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/left/thumb_knuckle_left_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_thumb_collision.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_thumb_proximal_joint" type="continuous">
-    <origin rpy="-0.426627741408745 0 0.0" xyz="0.033500000 0.0033 0.0"/>
-    <parent link="left_hand_v1s_thumb_knuckle_link"/>
-    <child link="left_hand_v1s_thumb_proximal_link"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
+  <!-- Palm thumb to thumb support -->
+  <joint name="left_hand_v1_wide_palm_thumb_support_joint" type="fixed">
+    <parent link="left_hand_v1_wide_palm_thumb_link"/>
+    <child link="left_hand_v1_wide_palm_thumb_support_link"/>
+    <origin rpy="1.5707963 -0.5235992 1.5707963" xyz="5.0e-3 -24.2343e-3 9.13010e-3"/>
   </joint>
-  <link name="left_hand_v1s_thumb_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
+  <link name="left_hand_v1_wide_palm_thumb_support_link">
+    <material name="grey"/>
     <visual>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/thumb_support.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_thumb_distal_joint" type="continuous">
-    <origin rpy="0 0 0" xyz="0.020 0 0.0"/>
-    <parent link="left_hand_v1s_thumb_proximal_link"/>
-    <child link="left_hand_v1s_thumb_distal_link"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_thumb_distal_link">
     <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <origin rpy="0 0 0" xyz="1.1097412e-02 -4.2327979e-05 -4.7109856e-04"/>
+      <mass value="1.6408860e-02"/>
+      <inertia ixx="1.8835019e-06" ixy="-4.9293913e-09" ixz="-2.5700318e-08" iyy="1.2828797e-06" iyz="-4.0065947e-09" izz="2.2986135e-06"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/thumb_support_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  
-			# Index finger
-			
-  <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_index_knuckle_joint" type="revolute">
-    <origin rpy="-1.5707963267948966 -1.4835299330931884 -1.5707963267948966" xyz="-0.0033 -0.0195 0.0936994"/>
-    <parent link="left_hand_v1s_palm_link"/>
-    <child link="left_hand_v1s_index_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 -1"/>
-    <dynamics damping="0.08" friction="0.0"/>
+  <gazebo reference="left_hand_v1_wide_palm_thumb_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="left_hand_v1_wide_palm_thumb_support_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="left_hand_v1_wide_palm_central_little_virtual_joint" type="fixed">
+    <parent link="left_hand_v1_wide_palm_central_little_link"/>
+    <child link="left_hand_v1_wide_palm_little_link"/>
+    <origin rpy="0 0 0 " xyz="12e-3 4.66576e-08 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.17" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="left_hand_v1s_index_knuckle_link">
+  <link name="left_hand_v1_wide_palm_little_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_little.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
     <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.17998957"/>
+      <origin rpy="0 0 0" xyz="1.9466642e-02  5.5041380e-03 0.00079253974"/>
+      <inertia ixx=" 2.4776164e-04" ixy="-2.2762031e-06" ixz="2.5699035e-05" iyy="2.6460918e-04" iyz=" -1.5348716e-05" izz="5.9121350e-05"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_little_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_index_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_index_knuckle_link"/>
-    <child link="left_hand_v1s_index_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
+  <gazebo reference="left_hand_v1_wide_palm_little_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_palm_little_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Thumb Proximal  -->
+  <joint name="left_hand_v1_wide_thumb_knuckle_joint" type="fixed">
+    <parent link="left_hand_v1_wide_palm_thumb_support_link"/>
+    <child link="left_hand_v1_wide_thumb_knuckle_link"/>
+    <origin rpy="1.5707963 0 1.5707963" xyz="0 21.9577e-3 2.8e-3"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="1.57" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="left_hand_v1s_index_proximal_link">
+  <link name="left_hand_v1_wide_thumb_knuckle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_thumb.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
     <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="2.4657976e-02"/>
+      <origin rpy="0 0 0" xyz="2.2747515e-02  4.5872045e-03 -0.0013868568  "/>
+      <inertia ixx="2.6529131e-6" ixy="-2.6016685e-07" ixz="-1.3433999e-07" iyy="4.4499492e-06" iyz="7.5218787e-08" izz="5.0393400e-06"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_thumb_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_index_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_index_proximal_link"/>
-    <child link="left_hand_v1s_index_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
+  <gazebo reference="left_hand_v1_wide_thumb_knuckle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>0</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_thumb_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from thumb knuckle to thumb proximal   -->
+  <joint name="left_hand_v1_wide_thumb_proximal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="1.3962638 0 0" xyz="38.5e-3 4.82952e-3 0.000167417"/>
+    <parent link="left_hand_v1_wide_thumb_knuckle_link"/>
+    <child link="left_hand_v1_wide_thumb_proximal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="left_hand_v1s_index_middle_link">
+  <link name="left_hand_v1_wide_thumb_proximal_virtual_link">
     <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.033679189"/>
+      <inertia ixx="4.1328993e-06" ixy="-8.6599874e-08" ixz="0.0" iyy="7.4560101e-06" iyz="-1.0265429e-09" izz="6.6161853e-06"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
   </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_index_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_index_middle_link"/>
-    <child link="left_hand_v1s_index_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
+  <!-- Thumb Proximal joint  -->
+  <joint name="left_hand_v1_wide_thumb_proximal_virtual_joint" type="fixed">
+    <parent link="left_hand_v1_wide_thumb_proximal_virtual_link"/>
+    <child link="left_hand_v1_wide_thumb_proximal_link"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0 "/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="left_hand_v1s_index_distal_link">
+  <link name="left_hand_v1_wide_thumb_proximal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_medium_thumb.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
     <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.033679189"/>
+      <inertia ixx="4.1328993e-06" ixy="-8.6599874e-08" ixz="0.0" iyy="7.4560101e-06" iyz="-1.0265429e-09" izz="6.6161853e-06"/>
+      <origin rpy="0 0 0" xyz="2.0950700e-02  1.1175133e-03 -3.7424390e-05"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_medium_thumb_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  
-			# Middle finger
-			
-  <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_middle_knuckle_joint" type="revolute">
-    <origin rpy="3.1415 -1.5707963267948966 0.0" xyz="-0.0033 0.0 0.100699"/>
-    <parent link="left_hand_v1s_palm_link"/>
-    <child link="left_hand_v1s_middle_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 -1"/>
-    <dynamics damping="0.08" friction="0.0"/>
+  <gazebo reference="left_hand_v1_wide_thumb_proximal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_thumb_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_thumb_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from thumb proximal to thumb distal   -->
+  <joint name="left_hand_v1_wide_thumb_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_thumb_proximal_link"/>
+    <child link="left_hand_v1_wide_thumb_distal_virtual_link"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="left_hand_v1s_middle_knuckle_link">
+  <link name="left_hand_v1_wide_thumb_distal_virtual_link">
     <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.023674554"/>
+      <inertia ixx="2.578454e-06" ixy="0.0" ixz="0.0" iyy="2.9887569e-06" iyz="0.0" izz="3.8277106e-06"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
   </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_middle_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_middle_knuckle_link"/>
-    <child link="left_hand_v1s_middle_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
+  <!-- Thumb middle  -->
+  <joint name="left_hand_v1_wide_thumb_distal_joint" type="fixed">
+    <parent link="left_hand_v1_wide_thumb_distal_virtual_link"/>
+    <child link="left_hand_v1_wide_thumb_distal_link"/>
+    <origin rpy="0 0.0101229 0" xyz="8.99947e-3 0 -0.0973875e-3"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="left_hand_v1s_middle_proximal_link">
+  <link name="left_hand_v1_wide_thumb_distal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist_thumb.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
     <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.023674554"/>
+      <inertia ixx="2.578454e-06" ixy="0.0" ixz="0.0" iyy="2.9887569e-06" iyz="0.0" izz="3.8277106e-06"/>
+      <origin rpy="0 0 0" xyz="1.6161362e-02  1.6241404e-03 -3.2684152e-05 "/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist_thumb_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_middle_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_middle_proximal_link"/>
-    <child link="left_hand_v1s_middle_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_thumb_distal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_thumb_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_thumb_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Support -->
+  <joint name="left_hand_v1_wide_index_knuckle_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <limit effort="30" lower="0.0" upper="0.01" velocity="0.0"/>
+    <origin rpy="0.1748327 0 0 " xyz="5e-3 -44.8953e-3 112.230e-3"/>
+    <parent link="left_hand_v1_wide_palm_central_link"/>
+    <child link="left_hand_v1_wide_index_knuckle_link"/>
   </joint>
-  <link name="left_hand_v1s_middle_middle_link">
+  <link name="left_hand_v1_wide_index_knuckle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
     <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="7.4913242e-03"/>
+      <origin rpy="0 0 0" xyz="1.8035857e-02 -4.0351343e-03 -4.4165266e-05 "/>
+      <inertia ixx="5.3708642e-07" ixy="0.0" ixz="1.5304482e-07" iyy="6.1466440e-07" iyz="-4.4383298e-09" izz="5.5136271e-07"/>
     </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
     <collision>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup_collision.stl" scale="0.0009 0.0009 0.0009"/>
       </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_middle_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_middle_middle_link"/>
-    <child link="left_hand_v1s_middle_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_middle_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  
-			# Ring finger
-			
-  <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_ring_knuckle_joint" type="revolute">
-    <origin rpy="1.5707963267948966 -1.5184364298870514 1.5707963267948966" xyz="-0.0033 0.0195 0.0936994"/>
-    <parent link="left_hand_v1s_palm_link"/>
-    <child link="left_hand_v1s_ring_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 -1"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_ring_knuckle_link">
-    <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_ring_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_ring_knuckle_link"/>
-    <child link="left_hand_v1s_ring_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-  </joint>
-  <link name="left_hand_v1s_ring_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_ring_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_ring_proximal_link"/>
-    <child link="left_hand_v1s_ring_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_ring_middle_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_ring_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_ring_middle_link"/>
-    <child link="left_hand_v1s_ring_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_ring_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  
-			# Little finger
-			
-  <!-- KNUCKLE -->
-  <joint name="left_hand_v1s_little_knuckle_joint" type="revolute">
-    <origin rpy="1.5707963267948966 -1.4835299330931884 1.5707963267948966" xyz="-0.0033 0.039 0.0836994"/>
-    <parent link="left_hand_v1s_palm_link"/>
-    <child link="left_hand_v1s_little_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 -1"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_little_knuckle_link">
-    <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="left_hand_v1s_little_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_little_knuckle_link"/>
-    <child link="left_hand_v1s_little_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-  </joint>
-  <link name="left_hand_v1s_little_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="left_hand_v1s_little_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_little_proximal_link"/>
-    <child link="left_hand_v1s_little_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_little_middle_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="left_hand_v1s_little_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="left_hand_v1s_little_middle_link"/>
-    <child link="left_hand_v1s_little_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="left_hand_v1s_little_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- grasp joint -->
-  <joint name="left_hand_v1s_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.03 -0.06 0.10"/>
-    <parent link="left_hand_v1s_palm_link"/>
-    <child link="left_hand_v1s_grasp_link"/>
-  </joint>
-  <link name="left_hand_v1s_grasp_link">
-		</link>
-  <gazebo reference="left_hand_v1s_grasp_link">
+  <gazebo reference="left_hand_v1_wide_index_knuckle_link">
+    <selfCollide>0</selfCollide>
     <material>Gazebo/White</material>
   </gazebo>
-  
-		# Gazebo NEW custom synergy-plugin
-		
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_index_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="-1.5707963 -1.5707963 0" xyz=" -6.5e-3 0 24e-3"/>
+    <parent link="left_hand_v1_wide_index_knuckle_link"/>
+    <child link="left_hand_v1_wide_index_proximal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_index_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_index_proximal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_index_proximal_virtual_link"/>
+    <child link="left_hand_v1_wide_index_proximal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_index_proximal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_index_proximal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_index_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_index_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_index_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_index_proximal_link"/>
+    <child link="left_hand_v1_wide_index_middle_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_index_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_index_middle_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_index_middle_virtual_link"/>
+    <child link="left_hand_v1_wide_index_middle_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_index_middle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_index_middle_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_index_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_index_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from middle->distal   -->
+  <joint name="left_hand_v1_wide_index_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_index_middle_link"/>
+    <child link="left_hand_v1_wide_index_distal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_index_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_index_distal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_index_distal_virtual_link"/>
+    <child link="left_hand_v1_wide_index_distal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_index_distal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+      <origin rpy="0 0 0" xyz="1.2887396e-02 6.2001804e-05 -1.1041989e-03"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_index_distal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_index_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_index_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Support -->
+  <joint name="left_hand_v1_wide_middle_knuckle_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <limit effort="30" lower="0.0" upper="0.01" velocity="0.0"/>
+    <origin rpy="0 0 0 " xyz="5e-3 -12.5e-3 115e-3"/>
+    <parent link="left_hand_v1_wide_palm_central_link"/>
+    <child link="left_hand_v1_wide_middle_knuckle_link"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_knuckle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="7.4913242e-03"/>
+      <origin rpy="0 0 0" xyz="1.8035857e-02 -4.0351343e-03 -4.4165266e-05 "/>
+      <inertia ixx="5.3708642e-07" ixy="0.0" ixz="1.5304482e-07" iyy="6.1466440e-07" iyz="-4.4383298e-09" izz="5.5136271e-07"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_middle_knuckle_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/White</material>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_middle_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="-1.5707963 -1.5707963 0" xyz=" -6.5e-3 0 24e-3"/>
+    <parent link="left_hand_v1_wide_middle_knuckle_link"/>
+    <child link="left_hand_v1_wide_middle_proximal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_middle_proximal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_middle_proximal_virtual_link"/>
+    <child link="left_hand_v1_wide_middle_proximal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_proximal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_middle_proximal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_middle_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_middle_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_middle_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_middle_proximal_link"/>
+    <child link="left_hand_v1_wide_middle_middle_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_middle_middle_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_middle_middle_virtual_link"/>
+    <child link="left_hand_v1_wide_middle_middle_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_middle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_middle_middle_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_middle_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_middle_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from middle->distal   -->
+  <joint name="left_hand_v1_wide_middle_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_middle_middle_link"/>
+    <child link="left_hand_v1_wide_middle_distal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_middle_distal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_middle_distal_virtual_link"/>
+    <child link="left_hand_v1_wide_middle_distal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_middle_distal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+      <origin rpy="0 0 0" xyz="1.2887396e-02 6.2001804e-05 -1.1041989e-03"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_middle_distal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_middle_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_middle_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Support -->
+  <joint name="left_hand_v1_wide_ring_knuckle_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <limit effort="30" lower="0.0" upper="0.01" velocity="0.0"/>
+    <origin rpy="2.8797933 0 1.5707963 " xyz=" 8.6355e-3 5e-3 -44.4863e-3"/>
+    <parent link="left_hand_v1_wide_palm_little_link"/>
+    <child link="left_hand_v1_wide_ring_knuckle_link"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_knuckle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="7.4913242e-03"/>
+      <origin rpy="0 0 0" xyz="1.8035857e-02 -4.0351343e-03 -4.4165266e-05 "/>
+      <inertia ixx="5.3708642e-07" ixy="0.0" ixz="1.5304482e-07" iyy="6.1466440e-07" iyz="-4.4383298e-09" izz="5.5136271e-07"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_ring_knuckle_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/White</material>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_ring_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="-1.5707963 -1.5707963 0" xyz=" -6.5e-3 0 24e-3"/>
+    <parent link="left_hand_v1_wide_ring_knuckle_link"/>
+    <child link="left_hand_v1_wide_ring_proximal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_ring_proximal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_ring_proximal_virtual_link"/>
+    <child link="left_hand_v1_wide_ring_proximal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_proximal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_ring_proximal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_ring_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_ring_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_ring_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_ring_proximal_link"/>
+    <child link="left_hand_v1_wide_ring_middle_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_ring_middle_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_ring_middle_virtual_link"/>
+    <child link="left_hand_v1_wide_ring_middle_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_middle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_ring_middle_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_ring_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_ring_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from middle->distal   -->
+  <joint name="left_hand_v1_wide_ring_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_ring_middle_link"/>
+    <child link="left_hand_v1_wide_ring_distal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_ring_distal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_ring_distal_virtual_link"/>
+    <child link="left_hand_v1_wide_ring_distal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_ring_distal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+      <origin rpy="0 0 0" xyz="1.2887396e-02 6.2001804e-05 -1.1041989e-03"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_ring_distal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_ring_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_ring_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Support -->
+  <joint name="left_hand_v1_wide_little_knuckle_joint" type="fixed">
+    <axis xyz="0 1 0"/>
+    <limit effort="30" lower="0.0" upper="0.01" velocity="0.0"/>
+    <origin rpy="2.792527 0 1.5707963 " xyz="39.2985e-3 5e-3 -34.8419e-3"/>
+    <parent link="left_hand_v1_wide_palm_little_link"/>
+    <child link="left_hand_v1_wide_little_knuckle_link"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_knuckle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="7.4913242e-03"/>
+      <origin rpy="0 0 0" xyz="1.8035857e-02 -4.0351343e-03 -4.4165266e-05 "/>
+      <inertia ixx="5.3708642e-07" ixy="0.0" ixz="1.5304482e-07" iyy="6.1466440e-07" iyz="-4.4383298e-09" izz="5.5136271e-07"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_pros_sup_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_little_knuckle_link">
+    <selfCollide>0</selfCollide>
+    <material>Gazebo/White</material>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_little_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="-1.5707963 -1.5707963 0" xyz=" -6.5e-3 0 24e-3"/>
+    <parent link="left_hand_v1_wide_little_knuckle_link"/>
+    <child link="left_hand_v1_wide_little_proximal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_little_proximal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_little_proximal_virtual_link"/>
+    <child link="left_hand_v1_wide_little_proximal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_proximal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_little_proximal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_little_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_little_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from knuckle->proximal or proximal->middle   -->
+  <joint name="left_hand_v1_wide_little_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_little_proximal_link"/>
+    <child link="left_hand_v1_wide_little_middle_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_little_middle_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_little_middle_virtual_link"/>
+    <child link="left_hand_v1_wide_little_middle_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_middle_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.024190505"/>
+      <inertia ixx="1.9981795e-06" ixy="-6.0806048e-08" ixz="0.0" iyy="4.7810654e-06" iyz="0.0" izz="5.0961924e-06"/>
+      <origin rpy="0 0 0" xyz=" 2.0923634e-02  8.4162795e-04 -5.2131884e-05"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_little_middle_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_little_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_little_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Virtual joint from middle->distal   -->
+  <joint name="left_hand_v1_wide_little_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="41e-3 0 0"/>
+    <parent link="left_hand_v1_wide_little_middle_link"/>
+    <child link="left_hand_v1_wide_little_distal_virtual_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+    </inertial>
+  </link>
+  <!-- Proximal phalanx -->
+  <joint name="left_hand_v1_wide_little_distal_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="0" upper="0.785398" velocity="0.0"/>
+    <origin rpy="0 0 0" xyz="9e-3 0 0"/>
+    <parent link="left_hand_v1_wide_little_distal_virtual_link"/>
+    <child link="left_hand_v1_wide_little_distal_link"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <link name="left_hand_v1_wide_little_distal_link">
+    <visual>
+      <material name="grey"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.012475845"/>
+      <inertia ixx="7.5548908e-07" ixy="0.0" ixz="0.0" iyy="1.2532982e-06" iyz="0.0" izz="1.3218760e-06"/>
+      <origin rpy="0 0 0" xyz="1.2887396e-02 6.2001804e-05 -1.1041989e-03"/>
+    </inertial>
+    <collision>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_wide/left/phalanx_dist_collision.stl" scale="0.0009 0.0009 0.0009"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+  <gazebo reference="left_hand_v1_wide_little_distal_link">
+    <material>Gazebo/Gray</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_little_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="left_hand_v1_wide_little_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
   <gazebo>
-    <plugin filename="libsofthand_plugin.so" name="synergy_plugin">
-      <namespace>left_hand_v1s</namespace>
+    <plugin filename="libsofthand_mimic_plugin.so" name="synergy_plugin">
+      <namespace>right_hand_v1_2_research</namespace>
       <operation_mode>0</operation_mode>
+      <spring_k>5</spring_k>
+      <wide>False</wide>
+      <r_finger>0.0033</r_finger>
+      <R_pulley>0.0053</R_pulley>
+      <n_param>0.058</n_param>
+      <synS_thumb_j1>3</synS_thumb_j1>
+      <synS_thumb_j2>1.2</synS_thumb_j2>
+      <synS_thumb_j3>1.2</synS_thumb_j3>
+      <k_thumb_j1>0.8</k_thumb_j1>
+      <k_thumb_j2>0.8</k_thumb_j2>
+      <k_thumb_j3>0.8</k_thumb_j3>
+      <synS_index_j1>-0.3</synS_index_j1>
+      <synS_index_j2>1.57</synS_index_j2>
+      <synS_index_j3>1.25</synS_index_j3>
+      <synS_index_j4>0.8</synS_index_j4>
+      <k_index_j1>0.15</k_index_j1>
+      <k_index_j2>0.5</k_index_j2>
+      <k_index_j3>0.5</k_index_j3>
+      <k_index_j4>0.5</k_index_j4>
+      <synS_middle_j1>0</synS_middle_j1>
+      <synS_middle_j2>1.57</synS_middle_j2>
+      <synS_middle_j3>1.25</synS_middle_j3>
+      <synS_middle_j4>1.25</synS_middle_j4>
+      <k_middle_j1>0.15</k_middle_j1>
+      <k_middle_j2>0.5</k_middle_j2>
+      <k_middle_j3>0.5</k_middle_j3>
+      <k_middle_j4>0.5</k_middle_j4>
+      <synS_ring_j1>0</synS_ring_j1>
+      <synS_ring_j2>1.57</synS_ring_j2>
+      <synS_ring_j3>1.0</synS_ring_j3>
+      <synS_ring_j4>1.0</synS_ring_j4>
+      <k_ring_j1>0.15</k_ring_j1>
+      <k_ring_j2>0.5</k_ring_j2>
+      <k_ring_j3>0.5</k_ring_j3>
+      <k_ring_j4>0.5</k_ring_j4>
+      <synS_little_j1>0.1</synS_little_j1>
+      <synS_little_j2>1.57</synS_little_j2>
+      <synS_little_j3>1.25</synS_little_j3>
+      <synS_little_j4>1.0</synS_little_j4>
+      <k_little_j1>0.15</k_little_j1>
+      <k_little_j2>0.5</k_little_j2>
+      <k_little_j3>0.5</k_little_j3>
+      <k_little_j4>0.5</k_little_j4>
+      <!-- Palm thumb -->
+      <synS_palm_j1>1.57</synS_palm_j1>
+      <k_palm_j1>0.5</k_palm_j1>
+      <k_palm_j1_mimic>0.5</k_palm_j1_mimic>
+      <!-- Palm little -->
+      <synS_palm_j2>1.57</synS_palm_j2>
+      <k_palm_j2>0.5</k_palm_j2>
+      <k_palm_j2_mimic>0.5</k_palm_j2_mimic>
     </plugin>
   </gazebo>
-  
-
-    # Softhand VERSION 2.0
-    
-  
-
-    # Softhand VERSION 2.0 SIMPLIFIED (less joints)
-    
-  
-
-    # TODO: OTHER VERSIONs
-
-    
-  <gazebo>
-    <self_collide>1</self_collide>
-  </gazebo>
-  
-
-    # Softhand VERSION 1.0
-    
-  
-
-    # Softhand VERSION 1.0 SIMPLIFIED (less joints)
-    
-  
-		# Softhand Base
-		
-  <joint name="right_hand_base_joint" type="fixed">
-    <origin rpy="0 0 -1.570796326795" xyz="0 0 0"/>
+  <!-- World to palm base -->
+  <joint name="right_hand_v1_2_research_iso_joint" type="fixed">
     <parent link="arm_2_7"/>
-    <child link="right_hand_v1s_palm_base"/>
+    <child link="right_hand_v1_2_research_iso_link"/>
+    <origin rpy="0 0 3.14159265359" xyz="0 0.0 0.00"/>
   </joint>
-  <link name="right_hand_v1s_palm_base"/>
-  
-		# RIGHT HAND
-		
-  
-			# Palm
-			
-  <joint name="right_hand_v1s_palm_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.002 0.00695 0.0535"/>
-    <parent link="right_hand_v1s_palm_base"/>
-    <child link="right_hand_v1s_palm_link"/>
-  </joint>
-  <link name="right_hand_v1s_palm_link">
+  <link name="right_hand_v1_2_research_iso_link">
     <inertial>
-      <origin xyz="-0.004568758 -0.006808116 0.027653328"/>
-      <mass value="2.28"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <mass value="0.205"/>
+      <origin rpy="0 0 0" xyz="0.0 7.8738498e-04 1.5878899e-02"/>
+      <inertia ixx="0.00012506929" ixy="0.0" ixz="0.0" iyy="0.0001338779" iyz="0.0" izz="0.00019218394"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/palm_right_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/flange_iso_04.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="qbhand/base"/>
     </visual>
     <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/palm_right_m.stl"/>
-      </geometry>
-    </collision>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.002 -0.00695 -0.0535"/>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/softhand_base_right_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.002 -0.00695 -0.0535"/>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/softhand_base_right_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/flange_iso_04.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
-  
-			# Thumb finger
-			
-  <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_thumb_knuckle_joint" type="continuous">
-    <origin rpy="0.0 -0.38397275793662144 1.5707963267948966" xyz="0.00566972 0.0296160 0.0553140"/>
-    <parent link="right_hand_v1s_palm_link"/>
-    <child link="right_hand_v1s_thumb_knuckle_link"/>
+  <gazebo reference="right_hand_v1_2_research_iso_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>0</selfCollide>
+  </gazebo>
+  <!-- Fake joint and link for grasping -->
+  <joint name="right_hand_v1_2_research_grasp_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="0.03 0.06 0.10"/>
+    <parent link="right_hand_v1_2_research_iso_link"/>
+    <child link="right_hand_v1_2_research_grasp_link"/>
+  </joint>
+  <link name="right_hand_v1_2_research_grasp_link"/>
+  <joint name="right_hand_v1_2_research_palm_joint" type="fixed">
+    <origin rpy="1.57 0 0" xyz="-0.0045 0.0145 0.144"/>
+    <parent link="right_hand_v1_2_research_iso_link"/>
+    <child link="right_hand_v1_2_research_palm_link"/>
+  </joint>
+  <link name="right_hand_v1_2_research_palm_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0030 -0.0449 0.0135"/>
+      <mass value="0.45"/>
+      <inertia ixx="0.00045" ixy="0.0" ixz="0.0" iyy="0.00025" iyz="0.0" izz="0.0006"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/palm_pinch.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/palm_pinch.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="right_hand_v1_2_research_palm_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>0</selfCollide>
+  </gazebo>
+  <!-- Proximal JOINT -->
+  <joint name="right_hand_v1_2_research_thumb_knuckle_joint" type="fixed">
+    <origin rpy="-1.57 3.14 0.0" xyz="-0.044 -0.0465 -0.002"/>
+    <parent link="right_hand_v1_2_research_palm_link"/>
+    <child link="right_hand_v1_2_research_thumb_knuckle_link"/>
     <axis xyz="0 0 -1"/>
-    <dynamics damping="0.08" friction="0.0"/>
+    <limit effort="30" lower="0.0" upper="1.57" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
-  <link name="right_hand_v1s_thumb_knuckle_link">
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_thumb_knuckle_link">
     <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      <origin rpy="0 0 0" xyz="1.3071561e-02 -0.002734634 6.4090487e-04"/>
+      <mass value="0.01"/>
+      <inertia ixx="3.5865978e-07" ixy="2.0944224e-07" ixz="-6.8657569e-08" iyy="1.3885564e-06" iyz="3.2170608e-08" izz="1.3571203e-06"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/thumb_knuckle_right_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_thumb.stl" scale="0.001 0.001 0.001"/>
       </geometry>
+      <material name="qbhand/knuckle"/>
     </visual>
     <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/right/thumb_knuckle_right_m.stl"/>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_thumb.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_thumb_proximal_joint" type="continuous">
-    <origin rpy="0.426627741408745 0 0.0" xyz="0.033500000 -0.0033 0.0"/>
-    <parent link="right_hand_v1s_thumb_knuckle_link"/>
-    <child link="right_hand_v1s_thumb_proximal_link"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_thumb_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_thumb_distal_joint" type="continuous">
-    <origin rpy="0 0 0" xyz="0.020 0 0.0"/>
-    <parent link="right_hand_v1s_thumb_proximal_link"/>
-    <child link="right_hand_v1s_thumb_distal_link"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_thumb_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  
-			# Index finger
-			
-  <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_index_knuckle_joint" type="revolute">
-    <origin rpy="1.5707963267948966 -1.4835299330931884 1.5707963267948966" xyz="-0.0033 0.0195 0.0936994"/>
-    <parent link="right_hand_v1s_palm_link"/>
-    <child link="right_hand_v1s_index_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_index_knuckle_link">
-    <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_index_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_index_knuckle_link"/>
-    <child link="right_hand_v1s_index_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-  </joint>
-  <link name="right_hand_v1s_index_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_index_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_index_proximal_link"/>
-    <child link="right_hand_v1s_index_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_index_middle_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_index_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_index_middle_link"/>
-    <child link="right_hand_v1s_index_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_index_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  
-			# Middle finger
-			
-  <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_middle_knuckle_joint" type="revolute">
-    <origin rpy="3.141592 -1.5707963267948966 0.0" xyz="-0.003300000 0.0 0.100699"/>
-    <parent link="right_hand_v1s_palm_link"/>
-    <child link="right_hand_v1s_middle_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_middle_knuckle_link">
-    <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_middle_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_middle_knuckle_link"/>
-    <child link="right_hand_v1s_middle_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-  </joint>
-  <link name="right_hand_v1s_middle_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_middle_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_middle_proximal_link"/>
-    <child link="right_hand_v1s_middle_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_middle_middle_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_middle_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_middle_middle_link"/>
-    <child link="right_hand_v1s_middle_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_middle_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  
-			# Ring finger
-			
-  <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_ring_knuckle_joint" type="revolute">
-    <origin rpy="-1.5707963267948966 -1.5184364298870514 -1.5707963267948966" xyz="-0.0033 -0.0195 0.0936994"/>
-    <parent link="right_hand_v1s_palm_link"/>
-    <child link="right_hand_v1s_ring_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_ring_knuckle_link">
-    <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_ring_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_ring_knuckle_link"/>
-    <child link="right_hand_v1s_ring_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-  </joint>
-  <link name="right_hand_v1s_ring_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_ring_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_ring_proximal_link"/>
-    <child link="right_hand_v1s_ring_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_ring_middle_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_ring_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_ring_middle_link"/>
-    <child link="right_hand_v1s_ring_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_ring_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  
-			# Little finger
-			
-  <!-- KNUCKLE -->
-  <joint name="right_hand_v1s_little_knuckle_joint" type="revolute">
-    <origin rpy="-1.5707963267948966 -1.4835299330931884 -1.5707963267948966" xyz="-0.0033 -0.039 0.0836994"/>
-    <parent link="right_hand_v1s_palm_link"/>
-    <child link="right_hand_v1s_little_knuckle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_little_knuckle_link">
-    <inertial>
-      <origin xyz="0.001285644 0 0.000425011"/>
-      <mass value="0.09"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/knuckle_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- PROXIMAL PHALANGE -->
-  <joint name="right_hand_v1s_little_proximal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_little_knuckle_link"/>
-    <child link="right_hand_v1s_little_proximal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-  </joint>
-  <link name="right_hand_v1s_little_proximal_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- MIDDLE PHALANGE -->
-  <joint name="right_hand_v1s_little_middle_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_little_proximal_link"/>
-    <child link="right_hand_v1s_little_middle_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_little_middle_link">
-    <inertial>
-      <origin xyz="0.005074337 0 -0.000262953"/>
-      <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/phalanx_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- DISTAL PHALANGE -->
-  <joint name="right_hand_v1s_little_distal_joint" type="revolute">
-    <origin rpy="0 0 0" xyz="0.020 0 0"/>
-    <parent link="right_hand_v1s_little_middle_link"/>
-    <child link="right_hand_v1s_little_distal_link"/>
-    <limit effort="30" lower="-1.57" upper="1.57" velocity="1.0"/>
-    <axis xyz="0 -1 0"/>
-    <dynamics damping="0.08" friction="0.0"/>
-  </joint>
-  <link name="right_hand_v1s_little_distal_link">
-    <inertial>
-      <origin xyz="0.009849094 0 0.000820286"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://softhands_description/meshes/softhands/v1.0/common/fingertip_m.stl"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- grasp joint -->
-  <joint name="right_hand_v1s_grasp_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0.03 0.06 0.10"/>
-    <parent link="right_hand_v1s_palm_link"/>
-    <child link="right_hand_v1s_grasp_link"/>
-  </joint>
-  <link name="right_hand_v1s_grasp_link">
-		</link>
-  
-		# LEFT HAND
-		
-  
-		# Gazebo NEW custom synergy-plugin
-		
-  <gazebo>
-    <plugin filename="libsofthand_plugin.so" name="synergy_plugin">
-      <namespace>right_hand_v1s</namespace>
-      <operation_mode>0</operation_mode>
-    </plugin>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_knuckle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
   </gazebo>
-  
-
-    # Softhand VERSION 2.0
-    
-  
-
-    # Softhand VERSION 2.0 SIMPLIFIED (less joints)
-    
-  
-
-    # TODO: OTHER VERSIONs
-
-    
-  <gazebo>
-    <self_collide>1</self_collide>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
   </gazebo>
-  <!-- <gazebo reference="table_top_link">
-        <selfCollide> 1 </selfCollide>
-    </gazebo> -->
-  <transmission name="trans_left_hand_v1s_index_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_index_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_index_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_index_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_index_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_index_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_index_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_index_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_index_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_index_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_index_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_index_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_middle_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_middle_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_middle_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_middle_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_middle_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_middle_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_middle_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_middle_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_middle_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_middle_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_middle_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_middle_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_ring_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_ring_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_ring_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_ring_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_ring_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_ring_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_ring_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_ring_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_ring_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_ring_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_ring_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_ring_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_little_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_little_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_little_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_little_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_little_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_little_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_little_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_little_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_little_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_little_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_little_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_little_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_thumb_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_thumb_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_thumb_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_thumb_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_thumb_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_thumb_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_left_hand_v1s_thumb_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_hand_v1s_thumb_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="left_hand_v1s_thumb_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_index_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_index_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_index_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_index_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_index_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_index_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_index_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_index_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_index_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_index_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_index_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_index_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_middle_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_middle_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_middle_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_middle_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_middle_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_middle_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_middle_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_middle_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_middle_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_middle_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_middle_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_middle_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_ring_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_ring_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_ring_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_ring_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_ring_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_ring_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_ring_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_ring_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_ring_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_ring_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_ring_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_ring_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_little_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_little_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_little_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_little_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_little_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_little_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_little_middle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_little_middle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_little_middle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_little_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_little_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_little_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_thumb_knuckle_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_thumb_knuckle_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_thumb_knuckle_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_thumb_proximal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_thumb_proximal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_thumb_proximal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <transmission name="trans_right_hand_v1s_thumb_distal_joint">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="right_hand_v1s_thumb_distal_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="right_hand_v1s_thumb_distal_joint_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_thumb_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="-1.1415 0.0 0.0" xyz="0.0255 -0.0038 -0.00012"/>
+    <parent link="right_hand_v1_2_research_thumb_knuckle_link"/>
+    <child link="right_hand_v1_2_research_thumb_proximal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_thumb_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_thumb_proximal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_thumb_proximal_virtual_link"/>
+    <child link="right_hand_v1_2_research_thumb_proximal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_thumb_proximal_link">
+    <inertial>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+      <origin rpy="0 0 0" xyz="4.7601567e-03 -1.3786947e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_proximal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_thumb_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_thumb_proximal_link"/>
+    <child link="right_hand_v1_2_research_thumb_distal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_thumb_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_thumb_distal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_thumb_distal_virtual_link"/>
+    <child link="right_hand_v1_2_research_thumb_distal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_thumb_distal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+      <origin rpy="0 0 0" xyz="8.8025467e-03 -1.7219289e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_distal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_thumb_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Proximal JOINT -->
+  <joint name="right_hand_v1_2_research_index_knuckle_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="-0.02 -0.007 0.014"/>
+    <parent link="right_hand_v1_2_research_palm_link"/>
+    <child link="right_hand_v1_2_research_index_knuckle_link"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="30" lower="-0.524" upper="0.524" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_index_knuckle_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="4.2753603e-04  0.0 -1.4321738e-03"/>
+      <mass value="0.0095"/>
+      <inertia ixx="6.4337303e-07" ixy="0.0" ixz="-3.9373913e-08" iyy="1.1253771e-06" iyz="0.0" izz="7.2336948e-07"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_knuckle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.8</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_index_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_index_knuckle_link"/>
+    <child link="right_hand_v1_2_research_index_proximal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_index_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_index_proximal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_index_proximal_virtual_link"/>
+    <child link="right_hand_v1_2_research_index_proximal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_index_proximal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+      <origin rpy="0 0 0" xyz="8.7707437e-03 -1.7863138e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_proximal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_index_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
+    <parent link="right_hand_v1_2_research_index_proximal_link"/>
+    <child link="right_hand_v1_2_research_index_middle_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_index_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_index_middle_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.017 0 0"/>
+    <parent link="right_hand_v1_2_research_index_middle_virtual_link"/>
+    <child link="right_hand_v1_2_research_index_middle_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_index_middle_link">
+    <inertial>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+      <origin rpy="0 0 0" xyz="4.7601567e-03 -1.3786947e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_middle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_index_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_index_middle_link"/>
+    <child link="right_hand_v1_2_research_index_distal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_index_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_index_distal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_index_distal_virtual_link"/>
+    <child link="right_hand_v1_2_research_index_distal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_index_distal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+      <origin rpy="0 0 0" xyz="8.8025467e-03 -1.7219289e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_distal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_index_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Proximal JOINT -->
+  <joint name="right_hand_v1_2_research_middle_knuckle_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="0 0 0.014"/>
+    <parent link="right_hand_v1_2_research_palm_link"/>
+    <child link="right_hand_v1_2_research_middle_knuckle_link"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="30" lower="-0.524" upper="0.524" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_middle_knuckle_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="4.2753603e-04  0.0 -1.4321738e-03"/>
+      <mass value="0.0095"/>
+      <inertia ixx="6.4337303e-07" ixy="0.0" ixz="-3.9373913e-08" iyy="1.1253771e-06" iyz="0.0" izz="7.2336948e-07"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_knuckle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.8</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_middle_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_middle_knuckle_link"/>
+    <child link="right_hand_v1_2_research_middle_proximal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_middle_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_middle_proximal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_middle_proximal_virtual_link"/>
+    <child link="right_hand_v1_2_research_middle_proximal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_middle_proximal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+      <origin rpy="0 0 0" xyz="8.7707437e-03 -1.7863138e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_proximal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_middle_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
+    <parent link="right_hand_v1_2_research_middle_proximal_link"/>
+    <child link="right_hand_v1_2_research_middle_middle_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_middle_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_middle_middle_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.017 0 0"/>
+    <parent link="right_hand_v1_2_research_middle_middle_virtual_link"/>
+    <child link="right_hand_v1_2_research_middle_middle_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_middle_middle_link">
+    <inertial>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+      <origin rpy="0 0 0" xyz="4.7601567e-03 -1.3786947e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_middle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_middle_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_middle_middle_link"/>
+    <child link="right_hand_v1_2_research_middle_distal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_middle_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_middle_distal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_middle_distal_virtual_link"/>
+    <child link="right_hand_v1_2_research_middle_distal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_middle_distal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+      <origin rpy="0 0 0" xyz="8.8025467e-03 -1.7219289e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_distal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_middle_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Proximal JOINT -->
+  <joint name="right_hand_v1_2_research_ring_knuckle_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="0.02 -0.007 0.014"/>
+    <parent link="right_hand_v1_2_research_palm_link"/>
+    <child link="right_hand_v1_2_research_ring_knuckle_link"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="30" lower="-0.524" upper="0.524" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_ring_knuckle_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="4.2753603e-04  0.0 -1.4321738e-03"/>
+      <mass value="0.0095"/>
+      <inertia ixx="6.4337303e-07" ixy="0.0" ixz="-3.9373913e-08" iyy="1.1253771e-06" iyz="0.0" izz="7.2336948e-07"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_knuckle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.8</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_ring_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_ring_knuckle_link"/>
+    <child link="right_hand_v1_2_research_ring_proximal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_ring_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_ring_proximal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_ring_proximal_virtual_link"/>
+    <child link="right_hand_v1_2_research_ring_proximal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_ring_proximal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+      <origin rpy="0 0 0" xyz="8.7707437e-03 -1.7863138e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_proximal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_ring_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
+    <parent link="right_hand_v1_2_research_ring_proximal_link"/>
+    <child link="right_hand_v1_2_research_ring_middle_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_ring_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_ring_middle_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.017 0 0"/>
+    <parent link="right_hand_v1_2_research_ring_middle_virtual_link"/>
+    <child link="right_hand_v1_2_research_ring_middle_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_ring_middle_link">
+    <inertial>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+      <origin rpy="0 0 0" xyz="4.7601567e-03 -1.3786947e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_middle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_ring_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_ring_middle_link"/>
+    <child link="right_hand_v1_2_research_ring_distal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_ring_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_ring_distal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_ring_distal_virtual_link"/>
+    <child link="right_hand_v1_2_research_ring_distal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_ring_distal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+      <origin rpy="0 0 0" xyz="8.8025467e-03 -1.7219289e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_distal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_ring_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Proximal JOINT -->
+  <joint name="right_hand_v1_2_research_little_knuckle_joint" type="fixed">
+    <origin rpy="0 0 1.57" xyz="0.04 -0.012 0.014"/>
+    <parent link="right_hand_v1_2_research_palm_link"/>
+    <child link="right_hand_v1_2_research_little_knuckle_link"/>
+    <axis xyz="0 0 -1"/>
+    <limit effort="30" lower="-0.524" upper="0.524" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_little_knuckle_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="4.2753603e-04  0.0 -1.4321738e-03"/>
+      <mass value="0.0095"/>
+      <inertia ixx="6.4337303e-07" ixy="0.0" ixz="-3.9373913e-08" iyy="1.1253771e-06" iyz="0.0" izz="7.2336948e-07"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_knuckle.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_knuckle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.8</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_little_proximal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="1.57 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_little_knuckle_link"/>
+    <child link="right_hand_v1_2_research_little_proximal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_little_proximal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_little_proximal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_little_proximal_virtual_link"/>
+    <child link="right_hand_v1_2_research_little_proximal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_little_proximal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.2722068e-07" ixy="1.1586053e-08" ixz="0.0" iyy="5.5947233e-07" iyz="0.0" izz="5.9562195e-07"/>
+      <origin rpy="0 0 0" xyz="8.7707437e-03 -1.7863138e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_medium.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_proximal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_proximal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_proximal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_little_middle_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.013 0 0 "/>
+    <parent link="right_hand_v1_2_research_little_proximal_link"/>
+    <child link="right_hand_v1_2_research_little_middle_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_little_middle_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_little_middle_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.017 0 0"/>
+    <parent link="right_hand_v1_2_research_little_middle_virtual_link"/>
+    <child link="right_hand_v1_2_research_little_middle_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_little_middle_link">
+    <inertial>
+      <mass value="0.0063"/>
+      <inertia ixx="1.8024201e-07" ixy="5.756798e-09" ixz="0.0" iyy="2.3516266e-07" iyz="0.0" izz="2.691504e-07"/>
+      <origin rpy="0 0 0" xyz="4.7601567e-03 -1.3786947e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_short.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_middle_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_middle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_middle_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- Inner VIRTUAL JOINT -->
+  <joint name="right_hand_v1_2_research_little_distal_virtual_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.009 0 0"/>
+    <parent link="right_hand_v1_2_research_little_middle_link"/>
+    <child link="right_hand_v1_2_research_little_distal_virtual_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- VIRTUAL LINK -->
+  <link name="right_hand_v1_2_research_little_distal_virtual_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+    </inertial>
+  </link>
+  <!-- Outer JOINT -->
+  <joint name="right_hand_v1_2_research_little_distal_joint" type="fixed">
+    <axis xyz="0 0 -1"/>
+    <origin rpy="0 0 0" xyz="0.013 0 0"/>
+    <parent link="right_hand_v1_2_research_little_distal_virtual_link"/>
+    <child link="right_hand_v1_2_research_little_distal_link"/>
+    <limit effort="30" lower="0.0" upper="0.785398" velocity="10.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
+  </joint>
+  <!-- LINK -->
+  <link name="right_hand_v1_2_research_little_distal_link">
+    <inertial>
+      <mass value="0.009"/>
+      <inertia ixx="2.6586142e-07" ixy="1.2416847e-08" ixz="0.0" iyy="5.9935767e-07" iyz="0.0" izz="6.6781963e-07"/>
+      <origin rpy="0 0 0" xyz="8.8025467e-03 -1.7219289e-03 0.0"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="qbhand/palm"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://softhands_description/meshes/v1_2_research/right/ph_distal.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_distal_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>1</selfCollide>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_distal_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <!-- GAZEBO REF -->
+  <gazebo reference="right_hand_v1_2_research_little_distal_virtual_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <springStiffness>0.4</springStiffness>
+    <springReference>0</springReference>
+  </gazebo>
+  <gazebo reference="table_top_link">
+    <selfCollide>0</selfCollide>
+  </gazebo>
+  <!-- <xacro:repair_hand_transmission id="left" />
+
+    <xacro:repair_hand_transmission id="right" /> -->
 </robot>

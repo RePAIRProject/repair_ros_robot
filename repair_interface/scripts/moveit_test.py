@@ -214,6 +214,7 @@ if __name__ == '__main__':
     rospy.init_node(node_name)
 
     # Get and print parameters
+    sh_version = str(rospy.get_param("/sh_version"))
     side = str(rospy.get_param("/"+node_name+"/side"))
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
@@ -241,11 +242,20 @@ if __name__ == '__main__':
       hand_api = QbHand(side, gazebo)
       print('Connected!')
 
+      #close hand
+      hand_api.close_hand()
+      print('Closed!')
       # open hand
       hand_api.open_hand()
       print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    if sh_version == "mixed_hands":
+        if side == "right":
+            tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+        elif side == "left":
+            tf_hand = get_transform(parent_frame=side+"_hand_v1_wide_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    else:
+        tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
@@ -262,6 +272,7 @@ if __name__ == '__main__':
 
     print('Starting Point Cloud Processing')
     use_pyrealsense = False
+    debug = True
     if use_pyrealsense:
         pcd = get_point_cloud_from_real_rs(debug)
     else:
@@ -362,7 +373,7 @@ if __name__ == '__main__':
     moveit_test.go_to_pos(arm_target_pose)
 
     ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-    arm_target_pose_np[2] -= 0.175
+    arm_target_pose_np[2] -= 0.168
     arm_target_pose_np[3:] = q_new
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
