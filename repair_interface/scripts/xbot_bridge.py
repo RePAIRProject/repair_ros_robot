@@ -20,13 +20,9 @@ class XBotClient:
         self.nh.loginfo("XBot client initialized")
 
     def xbot_state_callback(self, msg: JointState):
-        #print("XBot state callback")
-        print(msg.header.stamp.to_sec())
-        print(rospy.Time.now().to_sec())
-        print(":::::::::::")
         # Process and handle XBot state information
         joint_state_msg = JointStateMsg()
-        joint_state_msg.header.stamp = msg.header.stamp
+        joint_state_msg.header.stamp = rospy.Time.now()
         joint_state_msg.name = msg.name
         joint_state_msg.position = msg.motor_position
         joint_state_msg.velocity = msg.motor_velocity

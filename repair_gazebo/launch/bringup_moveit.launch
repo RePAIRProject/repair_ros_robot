@@ -2,8 +2,6 @@
 <launch>
     <!-- launch gazebo flag -->
     <arg name="launch_gazebo" default="true" />
-
-
     <arg name="sh_version" default="v1_2_research"  doc="The version of the hand [ v1_2_research , v1_wide, mixed_hands]"/>
     <param name="sh_version" value="$(arg sh_version)" />
     <arg name="fixed_hands" default="true" doc="If use real robot fixed_hands:=true (default), if gazebo fixed_hands:=false"/>
@@ -37,5 +35,5 @@
     <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"/>
 
     <!-- launch the repair_interface node -->
-    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
+    <!-- <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" /> -->
 </launch>

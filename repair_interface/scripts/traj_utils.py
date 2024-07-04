@@ -17,9 +17,9 @@ class TrajectoryUtils:
         rospy.sleep(1)
 
         # interpolation params
-        self.num_points = 100
+        self.num_points = 500
 
-    def publish_pose_array(self, lin_points, rotations, frame_id="map"):
+    def publish_pose_array(self, lin_points, rotations, frame_id="world"):
         # create a pose array
         pose_array = PoseArray()
         pose_array.header.frame_id = frame_id
@@ -84,9 +84,6 @@ class TrajectoryUtils:
 
         t_sample = np.linspace(0, path.duration, num_points)
         qs_sample = path(t_sample)
-
-        print(joint_names)
-        print(qs_sample.shape)
 
         return qs_sample
 
