@@ -100,3 +100,91 @@ torso_trajectory_controller:
       d: 1
       i: 1
       i_clamp: 1
+both_arms_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - j_arm_1_1
+    - j_arm_1_2
+    - j_arm_1_3
+    - j_arm_1_4
+    - j_arm_1_5
+    - j_arm_1_6
+    - j_arm_1_7
+    - j_arm_2_1
+    - j_arm_2_2
+    - j_arm_2_3
+    - j_arm_2_4
+    - j_arm_2_5
+    - j_arm_2_6
+    - j_arm_2_7
+  gains:
+    j_arm_1_1:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_1_2:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_1_3:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_1_4:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_1_5:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_1_6:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_1_7:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_1:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_2:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_3:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_4:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_5:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_6:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    j_arm_2_7:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1

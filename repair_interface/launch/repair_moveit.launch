@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Run the main MoveIt executable with trajectory execution -->
+    <include file="$(find repair_moveit_config_v2)/launch/demo.launch" >
+        <!-- disable rviz -->
+        <arg name="use_rviz" value="false" />
+    </include>
+
+    <!-- Start moveit_rviz with the motion planning plugin -->
+    <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
+        <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
+    </include>
+
+    <!-- launch the repair_interface node -->
+    <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />
+</launch>

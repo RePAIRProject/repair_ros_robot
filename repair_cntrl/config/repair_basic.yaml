@@ -1,5 +1,5 @@
 XBotInterface:
-  urdf_path: $(rospack find repair_urdf)/urdf/repair_full.urdf
+  urdf_path: $(rospack find repair_urdf)/urdf/model.urdf
   srdf_path: $(rospack find repair_srdf)/srdf/repair_full.srdf
 
 ModelInterface:
@@ -30,12 +30,9 @@ xbotcore_plugins:
     
 # global parameters
 xbotcore_param:
-    /jm/tx_filter_autostart: {value: true, type: bool}
+    /xbot/hal/joint_safety/filter_autostart: {value: false, type: bool}  # autostart joint filter
+    /xbot/hal/joint_safety/filter_cutoff_hz: {value: 2.0, type: double}    # set default filter bandwidth
+    /xbot/hal/enable_safety: {value: false, type: bool}
+    /jm/tx_filter_autostart: {value: false, type: bool}
     /jm/tx_filter_cutoff: {value: 2.0, type: double}
     /jm/enable_safety: {value: false, type: bool}  # safety checks (can be disabled in running a simulation. DO NOT DO THIS ON A REAL PROTOTYPE)
-
-
-
-
-
-

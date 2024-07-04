@@ -197,6 +197,9 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
     // set joint positions
     joint_state.position = std::vector<double>(msg->link_position.begin(), msg->link_position.end());
 
+    // set joint velocities
+    joint_state.velocity = std::vector<double>(msg->link_velocity.begin(), msg->link_velocity.end());
+
     // publish joint state
     ros_joint_state_pub_.publish(joint_state);
 }
