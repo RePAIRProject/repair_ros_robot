@@ -47,7 +47,7 @@ class MoveItTest:
         self.wait_for_transform = 5
         self.transform_tries = 5
         self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
-        print("set moveit publisher")
+        
         # self.move_arm_to_pose_topic = "/move_arm_to_pose_srv" # for c++ client
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
 
@@ -106,17 +106,14 @@ class MoveItTest:
         #move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
 
         # create request
-        print("create request")
         move_arm_to_pose_req = MoveArmToPoseRequest()
         move_arm_to_pose_req.arm = arm.value
         move_arm_to_pose_req.target_pose = pose
 
         # call service
-        print("call service")
         move_arm_to_pose_resp = move_arm_to_pose_srv(move_arm_to_pose_req)
 
         # check response
-        print("check response")
         if move_arm_to_pose_resp.success:
             rospy.loginfo("Successfully moved arm to pose")
         else:

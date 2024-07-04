@@ -17,6 +17,10 @@ import pyrealsense2 as rs
 import matplotlib.pyplot as plt
 
 
+MAX_FRAGMENT_HEIGHT = 0.07
+TABLE_THICKNESS = 0.05
+
+
 def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
@@ -31,7 +35,6 @@ def get_transform(parent_frame='base_link', child_frame='camera_depth_frame'):
 
         return transform
 
-
 def get_hand_tf():
     quatR = R.from_quat([0, 0, 0, 1])
     quat_to_mat = quatR.as_matrix()
@@ -43,7 +46,6 @@ def get_hand_tf():
     matF_to_quat = R.from_matrix(matF).as_quat()
 
     return matF_to_quat
-
 
 def publish_tf_np(pose, par_frame="world", child_frame="goal_frame"):
     broadcaster = tf2_ros.StaticTransformBroadcaster()
@@ -125,7 +127,7 @@ def get_point_cloud_from_ros(debug=False):
 
 
     if debug:
-        o3d.visualization.draw_geometries([pcd])
+        o3d.visualization.draw_geometries([pcd], window_name="Raw PCD")
 
     return pcd
 
@@ -205,21 +207,77 @@ def get_point_cloud_from_real_rs(debug=False):
     print ('Received point cloud')
 
     if debug:
-        o3d.visualization.draw_geometries([pcd])
+        o3d.visualization.draw_geometries([pcd], window_name="Raw PCD")
 
     return pcd
 
-def segment_table(pcd):
-    plane_model, inliers = pcd.segment_plane(distance_threshold=0.015,
-                                             ransac_n=5,
-                                             num_iterations=1000)
-    [a, b, c, d] = plane_model
 
-    # Partial Point Cloud
-    inlier_cloud = pcd.select_by_index(inliers)
-    outlier_cloud = pcd.select_by_index(inliers, invert=True)
+def transform_pcd(pcd, original_frame, target_frame):
 
-    return inlier_cloud, outlier_cloud
+    """
+    Receives an Open3D pointcloud or list of pointclouds in referental original_frame, and returns
+    the same pointlouds in a new reference frame, target_frame
+    """
+
+    tf = get_transform(parent_frame=target_frame, child_frame=original_frame)
+    tran = np.array([tf.transform.translation.x, tf.transform.translation.y, tf.transform.translation.z])
+    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf.transform.rotation.w,
+                                                                     tf.transform.rotation.x,
+                                                                     tf.transform.rotation.y,
+                                                                     tf.transform.rotation.z]))
+
+    if type(pcd) is not list:
+        pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+    else:
+        for i in range(len(pcd)):
+            pcd[i].rotate(rot, center=(0, 0, 0)).translate(tran)
+    return pcd
+    
+
+def segment_table(pcd, segment_by_height=False):
+
+    if segment_by_height:
+        # == Transform pointcloud to table frame
+        pcd = transform_pcd(pcd, original_frame="camera_depth_optical_frame", target_frame="working_surface_link")
+        
+        # == Remove points above & below a certain height
+        points = np.asarray(pcd.points)    
+        object_cloud = pcd.select_by_index(np.where((points[:, 2] < MAX_FRAGMENT_HEIGHT + 0.01) & (points[:, 2] > 0.001))[0])
+        table_cloud = pcd.select_by_index( np.where(((points[:, 2] < 0.001) & (points[:, 2] > -TABLE_THICKNESS)))[0])
+        
+        # == Transform back to camera frame
+        object_cloud, table_cloud = transform_pcd([object_cloud, table_cloud], 
+                                                  original_frame="working_surface_link", target_frame="camera_depth_optical_frame")
+       
+    else:
+        plane_model, inliers = pcd.segment_plane(distance_threshold=0.015,
+                                                ransac_n=5,
+                                                num_iterations=1000)
+        [a, b, c, d] = plane_model
+
+        # Partial Point Cloud
+        table_cloud = pcd.select_by_index(inliers)
+        object_cloud = pcd.select_by_index(inliers, invert=True)
+    
+    return table_cloud, object_cloud
+
+
+def segment_robot_arms_and_floor(pcd, debug=False):
+
+    # == Transform pointcloud to table frame
+    pcd = transform_pcd(pcd, original_frame="camera_depth_optical_frame", target_frame="working_surface_link")
+    
+    # == Remove points above a certain height
+    points = np.asarray(pcd.points)
+    pcd = pcd.select_by_index(np.where((points[:, 2] < MAX_FRAGMENT_HEIGHT + 0.01) & (points[:, 2] > -TABLE_THICKNESS))[0])
+    
+    if debug:
+        o3d.visualization.draw_geometries([pcd], window_name="PCD Arms and floor filtered; working surface frame")
+
+    # == Transform back to camera frame
+    pcd = transform_pcd(pcd, original_frame="working_surface_link", target_frame="camera_depth_optical_frame")
+    
+    return pcd  
 
 
 def transform_pose_vislab(input_pose, from_frame, to_frame):
@@ -239,12 +297,15 @@ def transform_pose_vislab(input_pose, from_frame, to_frame):
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
         raise
 
+
 def get_pose_from_transform(T):
     quat = pyrot.quaternion_xyzw_from_wxyz(pyrot.quaternion_from_matrix(T[:3, :3]))
     pos = T[:3, 3]
     return np.concatenate((pos, quat))
 
-def get_max_cluster(pcd, debug=True):
+
+def get_max_cluster(pcd, debug=False):
+
     labels = np.array(pcd.cluster_dbscan(eps=0.02, min_points=10, print_progress=False))
 
     max_label = labels.max()
@@ -271,6 +332,7 @@ def get_max_cluster(pcd, debug=True):
 
     return clustered_cloud
 
+
 def get_number_of_frescos(debug=False, use_pyrealsense=False):
 
     print('Starting Point Cloud Processing')
@@ -279,35 +341,38 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
     else:
         pcd = get_point_cloud_from_ros(debug)
 
-    # == Transform pointcloud to table frame
-    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
-    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
-                                                                    tf_camera_to_world.transform.rotation.x,
-                                                                    tf_camera_to_world.transform.rotation.y,
-                                                                    tf_camera_to_world.transform.rotation.z]))
+
+    pcd = segment_robot_arms_and_floor(pcd, debug)
+
+#     # == Transform pointcloud to table frame
+#     tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
+#     tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
+#     rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
+#                                                                     tf_camera_to_world.transform.rotation.x,
+#                                                                     tf_camera_to_world.transform.rotation.y,
+#                                                                     tf_camera_to_world.transform.rotation.z]))
     
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
-    #o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
+#     pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+#     #o3d.visualization.draw_geometries([pcd], window_name="PCD Transformed table")
 
-    # == Remove points above a certain height
-    points = np.asarray(pcd.points)
-    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
-    #o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+#     # == Remove points above a certain height
+#     points = np.asarray(pcd.points)
+#     pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+#     #o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
 
-    # == Transform back to camera frame
-    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
-    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
-                                                                    tf_world_to_camera.transform.rotation.x,
-                                                                    tf_world_to_camera.transform.rotation.y,
-                                                                    tf_world_to_camera.transform.rotation.z]))
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
+#     # == Transform back to camera frame
+#     tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+#     tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+#     rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+#                                                                     tf_world_to_camera.transform.rotation.x,
+#                                                                     tf_world_to_camera.transform.rotation.y,
+#                                                                     tf_world_to_camera.transform.rotation.z]))
+#     pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
 
     #rospy.init_node('listener', anonymous=True)
-    print ('Detecting Number of Frescos')
 
-    table_cloud, object_cloud = segment_table(pcd)
+    print ('Detecting Number of Frescos')
+    table_cloud, object_cloud = segment_table(pcd, segment_by_height=False)
 
     voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
 
@@ -320,7 +385,6 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
         n_objects = 0
     else:
         max_label = labels.max()
-        #print(f"point cloud has {max_label + 1} clusters")
         colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
         colors = np.zeros((labels.shape[0], 3))
         colors[:, 0] = 1.
@@ -336,6 +400,7 @@ def get_number_of_frescos(debug=False, use_pyrealsense=False):
    
     return n_objects, pcd, table_cloud, object_cloud
 
+
 def check_frescos_left(debug, use_pyrealsense):
 
     if use_pyrealsense:
@@ -343,30 +408,8 @@ def check_frescos_left(debug, use_pyrealsense):
     else:
         pcd = get_point_cloud_from_ros(debug)
 
-
-    # == Transform pointcloud to table frame
-    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
-    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
-                                                                    tf_camera_to_world.transform.rotation.x,
-                                                                    tf_camera_to_world.transform.rotation.y,
-                                                                    tf_camera_to_world.transform.rotation.z]))
-    
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
-    # == Remove points above a certain height
-    points = np.asarray(pcd.points)
-    pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
-
-    # == Transform back to camera frame
-    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
-    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
-                                                                    tf_world_to_camera.transform.rotation.x,
-                                                                    tf_world_to_camera.transform.rotation.y,
-                                                                    tf_world_to_camera.transform.rotation.z]))
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)   
-
-    table_cloud, object_cloud = segment_table(pcd)
+    pcd = segment_robot_arms_and_floor(pcd, debug)
+    table_cloud, object_cloud = segment_table(pcd, segment_by_height=False)
 
     voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
 
@@ -397,9 +440,10 @@ def check_frescos_left(debug, use_pyrealsense):
             object_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
             table_cloud.paint_uniform_color([1., 0., 0.])
 
-            o3d.visualization.draw_geometries([object_cloud, table_cloud])
+            o3d.visualization.draw_geometries([object_cloud, table_cloud], window_name="Segmented fragments and table")
     
     return n_objects, object_cloud, table_cloud
+
 
 def prepare_scene(pcd, debug=False):
     """
@@ -407,40 +451,39 @@ def prepare_scene(pcd, debug=False):
     then segment the table, and returns the table and 
     a cleaned version of the objects on the table
     """
-    # == Transform pointcloud to table frame
-    tf_camera_to_world = get_transform(parent_frame="working_surface_link", child_frame="camera_depth_optical_frame")
-    tran = np.array([tf_camera_to_world.transform.translation.x, tf_camera_to_world.transform.translation.y, tf_camera_to_world.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_camera_to_world.transform.rotation.w,
-                                                                    tf_camera_to_world.transform.rotation.x,
-                                                                    tf_camera_to_world.transform.rotation.y,
-                                                                    tf_camera_to_world.transform.rotation.z]))
+    pcd = segment_robot_arms_and_floor(pcd, debug)
+    table_cloud, object_cloud = segment_table(pcd, segment_by_height=False)
 
-    pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
 
-    # == Remove points above & below a certain height
-    points = np.asarray(pcd.points)
-    # pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
-    # points = np.asarray(pcd.points)
-    
-    object_cloud = pcd.select_by_index(np.where((points[:, 2] < 0.08) & (points[:, 2] > 0.0001))[0])
-    table_cloud = pcd.select_by_index( np.where(((points[:, 2] < 0.0001) & (points[:, 2] > -0.05)))[0])
-    # pcd = pcd.select_by_index(np.where(points[:, 2] > -0.04)[0])
-   
     if debug:
         object_cloud.paint_uniform_color([1, 1, 0])
         table_cloud.paint_uniform_color([0, 0, 1])
-        o3d.visualization.draw_geometries([table_cloud, object_cloud])
-        # o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+        o3d.visualization.draw_geometries([table_cloud, object_cloud], window_name="Segmented fragments and table")
 
-    # == Transform back to camera frame
-    tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
-    # tf_world_to_camera = get_transform(parent_frame="world", child_frame="working_surface_link")
-    tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
-    rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
-                                                                    tf_world_to_camera.transform.rotation.x,
-                                                                    tf_world_to_camera.transform.rotation.y,                                              tf_world_to_camera.transform.rotation.z]))
-    # pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
-    object_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
-    table_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+#     # == Remove points above & below a certain height
+#     points = np.asarray(pcd.points)
+#     # pcd = pcd.select_by_index(np.where(points[:, 2] < 0.08)[0])
+#     # points = np.asarray(pcd.points)
+    
+#     object_cloud = pcd.select_by_index(np.where((points[:, 2] < 0.08) & (points[:, 2] > 0.0001))[0])
+#     table_cloud = pcd.select_by_index( np.where(((points[:, 2] < 0.0001) & (points[:, 2] > -0.05)))[0])
+#     # pcd = pcd.select_by_index(np.where(points[:, 2] > -0.04)[0])
+   
+#     if debug:
+#         object_cloud.paint_uniform_color([1, 1, 0])
+#         table_cloud.paint_uniform_color([0, 0, 1])
+#         o3d.visualization.draw_geometries([table_cloud, object_cloud])
+#         # o3d.visualization.draw_geometries([pcd], window_name="PCD Filtered")
+
+#     # == Transform back to camera frame
+#     tf_world_to_camera = get_transform(parent_frame="camera_depth_optical_frame", child_frame="working_surface_link")
+#     # tf_world_to_camera = get_transform(parent_frame="world", child_frame="working_surface_link")
+#     tran = np.array([tf_world_to_camera.transform.translation.x, tf_world_to_camera.transform.translation.y, tf_world_to_camera.transform.translation.z])
+#     rot = o3d.geometry.get_rotation_matrix_from_quaternion(np.array([tf_world_to_camera.transform.rotation.w,
+#                                                                     tf_world_to_camera.transform.rotation.x,
+#                                                                     tf_world_to_camera.transform.rotation.y,                                              tf_world_to_camera.transform.rotation.z]))
+#     # pcd.rotate(rot, center=(0, 0, 0)).translate(tran)
+#     object_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
+#     table_cloud.rotate(rot, center=(0, 0, 0)).translate(tran)
     
     return object_cloud, table_cloud
