@@ -48,3 +48,9 @@ controller_list:
       - j_arm_2_5
       - j_arm_2_6
       - j_arm_2_7
+  - name: sliding_guide_traj_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - j_sliding_guide

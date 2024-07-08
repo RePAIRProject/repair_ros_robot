@@ -40,6 +40,10 @@ controller_list:
     type: $(arg fake_execution_type)
     joints:
       - j_torso_1
+  - name: fake_sliding_guide_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - j_sliding_guide
 initial:  # Define initial robot poses per group
   - group: arm_1
     pose: home
@@ -49,3 +53,5 @@ initial:  # Define initial robot poses per group
     pose: home
   - group: torso
     pose: home
+  - group: sliding_guide
+    pose: right_end
