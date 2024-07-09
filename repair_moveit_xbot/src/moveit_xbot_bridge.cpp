@@ -48,7 +48,7 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
     ROS_INFO("Trajectory length: %d", amount_of_trajectory_points);
 
     // get current robot state
-    std::vector<float> current_joint_positions = current_joint_state_ptr_->link_position;
+    // std::vector<float> current_joint_positions = current_joint_state_ptr_->motor_position;
 
     ROS_INFO("Executing trajectory...");
 
@@ -64,7 +64,7 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
         publishJointCommand(joint_names, joint_positions);
 
         // sleep
-        ros::Duration(0.005).sleep();
+        ros::Duration(0.05).sleep();
 
         // TODO: check if this is the best way to do this to avoid infinite loop
         // get the current time
@@ -186,7 +186,7 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
     sensor_msgs::JointState joint_state;
 
     // set the joint state pointer
-    current_joint_state_ptr_->link_position = msg->link_position;
+    // current_joint_state_ptr_->motor_position = msg->motor_position;
 
     // set time stamp
     joint_state.header.stamp = ros::Time::now();
@@ -195,10 +195,10 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
     joint_state.name = msg->name;
 
     // set joint positions
-    joint_state.position = std::vector<double>(msg->link_position.begin(), msg->link_position.end());
+    joint_state.position = std::vector<double>(msg->motor_position.begin(), msg->motor_position.end());
 
     // set joint velocities
-    joint_state.velocity = std::vector<double>(msg->link_velocity.begin(), msg->link_velocity.end());
+    joint_state.velocity = std::vector<double>(msg->motor_velocity.begin(), msg->motor_velocity.end());
 
     // publish joint state
     ros_joint_state_pub_.publish(joint_state);

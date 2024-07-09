@@ -1,16 +1,22 @@
 <?xml version="1.0"?>
 <launch>
 
+    <node name="moveit_xbot_bridge" pkg="repair_moveit_xbot" type="moveit_xbot_bridge_node" output="screen" />
+
     <!-- Set the param that trajectory_execution_manager needs to find the controller plugin -->
-    <arg name="moveit_controller_manager" default="moveit_simple_controller_manager/MoveItSimpleControllerManager" />
-    <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
+    <arg name="moveit_controller_manager" default="simple" />
+    <!-- <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/> -->
     <!-- load controller_list -->
-    <rosparam file="$(find repair_moveit_xbot)/config/controllers.yaml"/>
+    <arg name="simple_moveit_controllers_yaml" default="$(find repair_moveit_xbot)/config/simple_moveit_controllers.yaml" />
+    <arg name="ros_controllers_yaml" default="$(find repair_moveit_xbot)/config/controllers.yaml" />
 
     <!-- Run the main MoveIt executable with trajectory execution -->
     <include file="$(find repair_moveit_config_v2)/launch/move_group.launch">
         <arg name="allow_trajectory_execution" value="true" />
+        <arg name="moveit_controller_manager" value="$(arg moveit_controller_manager)" />
         <arg name="fake_execution_type" value="interpolate" />
+        <arg name="simple_moveit_controllers_yaml" value="$(arg simple_moveit_controllers_yaml)" />
+        <arg name="ros_controllers_yaml" value="$(arg ros_controllers_yaml)" />
         <arg name="info" value="true" />
         <arg name="debug" value="false" />
         <arg name="pipeline" value="ompl" />
@@ -21,9 +27,9 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />-->
 
     <!-- Start moveit_rviz with the motion planning plugin -->
-    <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
+    <!-- <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
-    </include>
+    </include> -->
     
     <!-- start realsense node -->    
     <!--<include file="$(find realsense2_camera)/launch/rs_camera.launch.launch" />

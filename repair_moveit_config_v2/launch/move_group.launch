@@ -19,6 +19,9 @@
   <arg name="max_safe_path_cost" default="1"/>
   <arg name="publish_monitored_planning_scene" default="true"/>
 
+  <arg name="simple_moveit_controllers_yaml" default="$(find repair_moveit_config_v2)/config/simple_moveit_controllers.yaml"/>
+  <arg name="ros_controllers_yaml" default="$(find repair_moveit_config_v2)/config/ros_controllers.yaml"/>
+
   <arg name="capabilities" default=""/>
   <arg name="disable_capabilities" default=""/>
   <arg name="sh_version" default="v1_2_research" />
@@ -75,6 +78,8 @@
     <arg name="moveit_manage_controllers" value="true" />
     <arg name="moveit_controller_manager" value="$(arg moveit_controller_manager)" />
     <arg name="fake_execution_type" value="$(arg fake_execution_type)" />
+    <arg name="simple_moveit_controllers_yaml" value="$(arg simple_moveit_controllers_yaml)" />
+    <arg name="ros_controllers_yaml" value="$(arg ros_controllers_yaml)" />
   </include>
 
   <!-- Sensors Functionality -->

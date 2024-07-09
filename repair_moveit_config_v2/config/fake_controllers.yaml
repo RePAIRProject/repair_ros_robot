@@ -2,6 +2,7 @@ controller_list:
   - name: fake_arm_1_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_1
       - j_arm_1_1
       - j_arm_1_2
       - j_arm_1_3
@@ -12,6 +13,7 @@ controller_list:
   - name: fake_arm_2_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_1
       - j_arm_2_1
       - j_arm_2_2
       - j_arm_2_3
@@ -22,6 +24,7 @@ controller_list:
   - name: fake_both_arms_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_1
       - j_arm_1_1
       - j_arm_1_2
       - j_arm_1_3

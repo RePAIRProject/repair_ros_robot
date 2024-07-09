@@ -67,7 +67,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
             <!--robotNamespace>/</robotNamespace-->
             <!--robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType-->
         </plugin>
-        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <plugin name="gazebo_ros_control">
             <robotNamespace>/</robotNamespace>
         </plugin>
     </gazebo>

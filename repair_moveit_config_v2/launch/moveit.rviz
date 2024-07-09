@@ -4,9 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /TF1
         - /TF1/Frames1
-      Splitter Ratio: 0.6814988255500793
+      Splitter Ratio: 0.8173301815986633
     Tree Height: 683
   - Class: rviz/Help
     Name: Help
@@ -245,7 +244,7 @@ Visualization Manager:
         arm_1_7:
           Value: false
         arm_1_tcp:
-          Value: true
+          Value: false
         arm_2_1:
           Value: false
         arm_2_2:
@@ -261,7 +260,7 @@ Visualization Manager:
         arm_2_7:
           Value: false
         arm_2_tcp:
-          Value: true
+          Value: false
         camera_accel_frame:
           Value: false
         camera_accel_optical_frame:
@@ -293,7 +292,7 @@ Visualization Manager:
         dummy_prismatic_link:
           Value: false
         left_hand_v1_2_research_grasp_link:
-          Value: false
+          Value: true
         left_hand_v1_2_research_index_distal_link:
           Value: false
         left_hand_v1_2_research_index_distal_virtual_link:
@@ -381,7 +380,7 @@ Visualization Manager:
         obar4_link:
           Value: false
         right_hand_v1_2_research_grasp_link:
-          Value: false
+          Value: true
         right_hand_v1_2_research_index_distal_link:
           Value: false
         right_hand_v1_2_research_index_distal_virtual_link:
@@ -1243,9 +1242,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.16979697346687317
+      Pitch: 0.2652027904987335
       Target Frame: world
-      Yaw: 6.258135795593262
+      Yaw: 6.038133144378662
     Saved: ~
 Window Geometry:
   Displays:

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Run the main MoveIt executable with trajectory execution -->
+    <include file="$(find repair_moveit_xbot)/launch/bringup_moveit.launch" />
+
+    <!-- Start moveit_rviz with the motion planning plugin -->
+    <include file="$(find repair_moveit_config_v2)/launch/moveit_rviz.launch">
+        <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit.rviz" />
+    </include>
+
+    <!-- launch the moveit_client node -->
+    <!-- <node name="moveit_client" pkg="repair_interface" type="moveit_client.py" output="screen" /> -->
+</launch>
