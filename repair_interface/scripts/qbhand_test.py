@@ -5,6 +5,7 @@ import rospy
 
 from std_msgs.msg import Float64
 from ec_msgs.msg import HandCmd
+from ec_msgs.srv import GetMeasurements
 
 FREQ = 200
 
@@ -80,6 +81,24 @@ class QbHand:
         else:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
+
+    def read_current(self, side, sh_version):
+        # current_measure = "/qbhand1/get_async_measurements"
+        current_measure = "/" + side + "_hand_" + sh_version + "/get_async_measurments"
+        rospy.wait_for_service(current_measure)
+        try:
+            service = rospy.ServiceProxy(current_measure, GetMeasurements)
+            request = GetMeasurements.Request()
+            request.id = 1
+            request.max_repeats = 0
+            request.get_positions = False
+            request.get_currents = True
+            request.get_distinct_packages = False
+            request.get_commands = False
+            response = service(request)
+            return response
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
         
 if __name__ == "__main__":
     gazebo = False
