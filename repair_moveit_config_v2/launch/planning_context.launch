@@ -11,8 +11,8 @@
 
   <!-- The semantic description that corresponds to the URDF -->
 
-  <!-- <param name="$(arg robot_description)_semantic" textfile="$(find repair_moveit_config_v2)/config/repair_full.srdf" /> -->
-  <param name="$(arg robot_description)_semantic" command="xacro  '$(find repair_moveit_config_v2)/config/repair_full.srdf.xacro' sh_version:='$(arg sh_version)'" />
+  <param name="$(arg robot_description)_semantic" textfile="$(find repair_moveit_config_v2)/config/repair_full.srdf" />
+  <!-- <param name="$(arg robot_description)_semantic" command="xacro  '$(find repair_moveit_config_v2)/config/repair_full.srdf.xacro' sh_version:='$(arg sh_version)'" /> -->
 
   <!-- Load updated joint limits (override information from URDF) -->
   <group ns="$(arg robot_description)_planning">

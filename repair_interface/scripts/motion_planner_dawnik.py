@@ -19,6 +19,8 @@ from traj_utils import TrajectoryUtils
 from dawn_ik.msg import IKGoal
 from repair_interface.srv import *
 
+from xbot_msgs.msg import JointCommand
+
 
 class ARM_ENUM(Enum):
     ARM_1 = 0
@@ -42,21 +44,26 @@ class MotionPlanner:
         succ, self.kdl_tree = treeFromParam("robot_description")
         if not succ:
             raise RuntimeError("Failed to parse URDF")
-        self.left_arm_chain = self.kdl_tree.getChain(
+        
+        self.sliding_guide_chain = self.kdl_tree.getChain(
             "world",
+            "dummy_prismatic_link",
+        )
+
+        self.left_arm_chain = self.kdl_tree.getChain(
+            "dummy_prismatic_link",
             "left_hand_v1_2_research_grasp_link",
         )
         self.right_arm_chain = self.kdl_tree.getChain(
-            "world",
+            "dummy_prismatic_link",
             "right_hand_v1_2_research_grasp_link",
         )
-
-        self.num_joints = 8
 
         self.left_arm_grasp_link = "left_hand_v1_2_research_grasp_link"
         self.right_arm_grasp_link = "right_hand_v1_2_research_grasp_link"
 
         # ik solver
+        self.sliding_guide_ik_solver = kdl.ChainIkSolverPos_LMA(self.sliding_guide_chain)
         self.left_arm_ik_solver = kdl.ChainIkSolverPos_LMA(self.left_arm_chain)
         self.right_arm_ik_solver = kdl.ChainIkSolverPos_LMA(self.right_arm_chain)
 
@@ -70,10 +77,12 @@ class MotionPlanner:
 
         # service
         self.move_arm_to_pose_service = rospy.Service(
-            "/move_arm_to_pose",
+            "/motion_planner/dawnik",
             MoveArmToPose,
             self.handle_move_arm_to_pose,
         )
+
+        self.sliding_guide_joint = "j_sliding_guide"
 
         self.right_arm_joints = [
             "j_torso_1",
@@ -96,6 +105,12 @@ class MotionPlanner:
             "j_arm_1_6",
             "j_arm_1_7",
         ]
+
+        self.xbot_command_pub = rospy.Publisher(
+            "/xbotcore/command",
+            JointCommand,
+            queue_size=10,
+        )
 
     def handle_move_arm_to_pose(self, req: MoveArmToPoseRequest):
         arm = req.arm
@@ -122,7 +137,7 @@ class MotionPlanner:
 
         return response
 
-    def get_current_pose(self, arm: ARM_ENUM) -> PoseStamped:
+    def get_current_pose(self, arm: ARM_ENUM, target_frame:str = "world") -> PoseStamped:
 
         pose = PoseStamped()
 
@@ -136,13 +151,12 @@ class MotionPlanner:
         pose.header.frame_id = link
         pose.header.stamp = rospy.Time(0)
 
-        pose_in_world = self.tu.transform_pose_with_retries(pose, "world")
+        pose_in_world = self.tu.transform_pose_with_retries(pose, target_frame)
 
         return pose_in_world
 
     def check_reachability(self, pose: PoseStamped, arm: ARM_ENUM):
-        q_init = kdl.JntArray(self.num_joints)
-
+        
         # get joint state
         joint_state = rospy.wait_for_message(
             "/joint_states",
@@ -155,13 +169,20 @@ class MotionPlanner:
 
         if arm == ARM_ENUM.ARM_1.value:
             joints = self.left_arm_joints
+            n_joints = len(self.left_arm_joints)
         elif arm == ARM_ENUM.ARM_2.value:
             joints = self.right_arm_joints
+            n_joints = len(self.right_arm_joints)
         else:
             raise ValueError("Invalid arm")
 
+        q_init = kdl.JntArray(n_joints)
+
         for i, joint in enumerate(joints):
             q_init[i] = joint_state.position[joint_state.name.index(joint)]
+
+        # transform pose to "dummy_prismatic_link"
+        pose = self.tu.transform_pose_with_retries(pose, "dummy_prismatic_link")
 
         pose = tf_conversions.fromMsg(pose.pose)
 
@@ -170,18 +191,48 @@ class MotionPlanner:
     def compute_ik(self, pose, arm, q_init=None):
         if arm == ARM_ENUM.ARM_1.value:
             ik_solver = self.left_arm_ik_solver
+            n_joints = len(self.left_arm_joints)
         elif arm == ARM_ENUM.ARM_2.value:
             ik_solver = self.right_arm_ik_solver
+            n_joints = len(self.right_arm_joints)
         else:
             raise ValueError("Invalid arm")
 
         if q_init is None:
-            q_init = kdl.JntArray(self.num_joints)
+            q_init = kdl.JntArray(n_joints)
 
-        q_result = kdl.JntArray(self.num_joints)
+        q_result = kdl.JntArray(n_joints)
 
         # compute ik
         if ik_solver.CartToJnt(q_init, pose, q_result) >= 0:
+            rospy.loginfo("IK solution found")
+            return True, q_result
+        else:
+            rospy.logwarn("IK solution not found")
+            return False, None
+
+    def get_sliding_guide_ik(self, pose, q_init=None):
+        # get joint state
+        joint_state = rospy.wait_for_message(
+            "/joint_states",
+            JointState,
+            timeout=1.0,
+        )
+
+        if joint_state is None:
+            raise RuntimeError("Failed to get joint state")
+        
+        n_joints = 1
+        q_init = kdl.JntArray(n_joints)
+
+        q_init[0] = joint_state.position[joint_state.name.index(self.sliding_guide_joint)]
+
+        q_result = kdl.JntArray(n_joints)
+
+        pose = tf_conversions.fromMsg(pose)
+
+        # compute ik
+        if self.sliding_guide_ik_solver.CartToJnt(q_init, pose, q_result) >= 0:
             rospy.loginfo("IK solution found")
             return True, q_result
         else:
@@ -195,9 +246,33 @@ class MotionPlanner:
 
         if not reachable:
             rospy.logerr("Pose not reachable")
-            # return False, None
+            return False, None
 
-        pose_in_world = self.get_current_pose(arm)
+            # TODO: move the sliding guide
+            # sliding_guide_pose = self.tu.get_link_pose("dummy_prismatic_link")
+            # # assumption - the sliding guide axis is Y in world frame
+            # sliding_guide_pose.pose.position.y += (pose.pose.position.y - sliding_guide_pose.pose.position.y) / 2
+
+            # # compute ik
+            # succ, q_result = self.get_sliding_guide_ik(sliding_guide_pose.pose)
+
+            # if succ:
+            #     jc = JointCommand()
+            #     jc.header.stamp = rospy.Time.now()
+            #     jc.name = [self.sliding_guide_joint]
+            #     jc.position = [q_result[0]]
+            #     jc.ctrl_mode = [1]
+
+            #     self.xbot_command_pub.publish(jc)
+            #     rospy.sleep(1)
+
+            # else:
+            #     rospy.logerr("Failed to move sliding guide")
+            #     return False, None
+
+
+
+        pose_in_world = self.get_current_pose(arm, "world")
 
         # compute trajectory
         lin_points, rot_quats = self.traj_utils.compute_trajectory(pose_in_world, pose)
@@ -216,6 +291,8 @@ class MotionPlanner:
 
         for position, quat in zip(plan[0], plan[1]):
             dawn_ik_goal = IKGoal()
+            dawn_ik_goal.header.stamp = rospy.Time.now()
+            dawn_ik_goal.header.frame_id = "world"
             dawn_ik_goal.mode = IKGoal.MODE_1 + IKGoal.MODE_2
             dawn_ik_goal.m1_x = position[0]
             dawn_ik_goal.m1_y = position[1]

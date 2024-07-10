@@ -17,7 +17,9 @@ from typing import Union, List
 import numpy as np
 
 from tf.transformations import quaternion_from_euler, quaternion_multiply
+from transform_utils import TransformUtils
 
+from manipulation_utils import ManipulationUtils
 
 class ARM_ENUM(Enum):
     ARM_1 = 0
@@ -34,32 +36,8 @@ class HAND_STATE_ENUM(Enum):
 
 class MotionPlannerTest:
     def __init__(self):
-        self.move_arm_to_pose_topic = "/move_arm_to_pose"
-
-    def call_service(self, arm, target_pose):
-        # wait for service
-        rospy.loginfo("Waiting for move arm to pose service")
-        rospy.wait_for_service(self.move_arm_to_pose_topic)
-        rospy.loginfo("Service found")
-
-        # create service proxy
-        move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
-
-        # create request
-        move_arm_to_pose_req = MoveArmToPoseRequest()
-        move_arm_to_pose_req.arm = arm
-        move_arm_to_pose_req.target_pose = target_pose
-
-        # call service
-        move_arm_to_pose_resp = move_arm_to_pose_srv(move_arm_to_pose_req)
-
-        # check response
-        if move_arm_to_pose_resp.success:
-            rospy.loginfo("Successfully moved arm to pose")
-        else:
-            rospy.logwarn("Could not move arm to pose")
-
-        return move_arm_to_pose_resp
+        self.mu = ManipulationUtils()
+        self.tf_utils = TransformUtils()
 
 
     def go_to_place_pose_right_arm(self):
@@ -73,8 +51,8 @@ class MotionPlannerTest:
         right_arm_test_pose.pose.orientation.y = 0.76968
         right_arm_test_pose.pose.orientation.z = -0.083908
         right_arm_test_pose.pose.orientation.w = 0.60483
-       
-        self.call_service(ARM_ENUM.ARM_2.value, right_arm_test_pose)
+
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, right_arm_test_pose)
 
     def go_to_pick_pose_right_arm(self):
         right_arm_test_pose = PoseStamped()
@@ -87,7 +65,7 @@ class MotionPlannerTest:
         right_arm_test_pose.pose.orientation.z = 0.59477
         right_arm_test_pose.pose.orientation.w = 0.27198
 
-        self.call_service(ARM_ENUM.ARM_2.value, right_arm_test_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2.value, right_arm_test_pose)
 
     def go_to_pos_left_arm(self):
 
@@ -101,7 +79,7 @@ class MotionPlannerTest:
         left_arm_test_pose.pose.orientation.z = -0.023061
         left_arm_test_pose.pose.orientation.w = 0.40948
 
-        self.call_service(ARM_ENUM.ARM_1.value, left_arm_test_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_1.value, left_arm_test_pose)
 
     def go_to_pos2_left_arm(self):
 
@@ -115,20 +93,28 @@ class MotionPlannerTest:
         left_arm_test_pose.pose.orientation.z = -0.5178
         left_arm_test_pose.pose.orientation.w = 0.39816
 
-        self.call_service(ARM_ENUM.ARM_1.value, left_arm_test_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_1.value, left_arm_test_pose)
+
+    def test_sliding_guide(self):
+        # get the current pose of arm_1_tcp
+        current_pose = self.tf_utils.get_link_pose("right_hand_v1_2_research_grasp_link", "world")
+        current_pose.pose.position.z += .15
+        print(current_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2.value, current_pose)
 
 if __name__ == '__main__':
-    node_name = "moveit_test"
+    node_name = "motion_planner_dawnik_test"
     rospy.init_node(node_name)
 
     motion_planner_test = MotionPlannerTest()
-    rospy.loginfo("Going to pick pose")
-    motion_planner_test.go_to_pick_pose_right_arm()
-    rospy.sleep(3)
-    rospy.loginfo("Going to place pose")
-    motion_planner_test.go_to_place_pose_right_arm()
-    rospy.sleep(3)
+    # rospy.loginfo("Going to pick pose")
+    # motion_planner_test.go_to_pick_pose_right_arm()
+    # rospy.sleep(3)
+    # rospy.loginfo("Going to place pose")
+    # motion_planner_test.go_to_place_pose_right_arm()
+    # rospy.sleep(3)
     # motion_planner_test.go_to_pos2_right_arm()
     # motion_planner_test.go_to_pos2_left_arm()
+    motion_planner_test.test_sliding_guide()
     rospy.loginfo("Exiting...")
     

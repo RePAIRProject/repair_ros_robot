@@ -92,3 +92,47 @@ class TransformUtils:
         except tf.Exception as error:
             rospy.logwarn("Exception occurred: {0}".format(error))
             return None
+
+    def get_link_pose(self, link: str, target_frame: str = "world") -> Union[PoseStamped, None]:
+        """
+        Get the pose of a link in the target frame.
+
+        :param link: The name of the link.
+        :type link: String
+
+        :param target_frame: The name of the target frame.
+        :type target_frame: String
+
+        :return: The pose of the link in the target frame.
+        :rtype: geometry_msgs.msg.PoseStamped or None
+
+        """
+        
+        # lookup transform
+        try:
+            self.listener.waitForTransform(
+                link,
+                target_frame,
+                rospy.Time(0),
+                rospy.Duration(self.wait_for_transform),
+            )
+            (position, quaternion) = self.listener.lookupTransform(
+                target_frame, link, rospy.Time(0)
+            )
+
+            pose = PoseStamped()
+            pose.header.frame_id = target_frame
+            pose.header.stamp = rospy.Time(0)
+            pose.pose.position.x = position[0]
+            pose.pose.position.y = position[1]
+            pose.pose.position.z = position[2]
+            pose.pose.orientation.x = quaternion[0]
+            pose.pose.orientation.y = quaternion[1]
+            pose.pose.orientation.z = quaternion[2]
+            pose.pose.orientation.w = quaternion[3]
+
+            return pose
+
+        except tf.Exception as error:
+            rospy.logwarn("Exception occurred: {0}".format(error))
+            return None
