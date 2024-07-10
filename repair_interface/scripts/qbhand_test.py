@@ -82,9 +82,13 @@ class QbHand:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
 
-    def read_current(self, side, sh_version):
-        # current_measure = "/qbhand1/get_async_measurements"
-        current_measure = "/" + side + "_hand_" + sh_version + "/get_async_measurments"
+    def read_current(self, num):
+        if side == "right":
+            num = 1
+        elif side == "left":
+            num = 2
+
+        current_measure = "/qbhand" + num + "/get_async_measurements"
         rospy.wait_for_service(current_measure)
         try:
             service = rospy.ServiceProxy(current_measure, GetMeasurements)
