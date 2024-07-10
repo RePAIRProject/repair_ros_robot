@@ -16,5 +16,10 @@ add_message_files(
     HandCmd.msg
 )
 
+add_service_files(
+    FILES
+    GetMeasurements.srv
+)
+
 generate_messages(DEPENDENCIES std_msgs)
 catkin_package()

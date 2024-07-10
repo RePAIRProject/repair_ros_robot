@@ -36,4 +36,19 @@
 
     <!-- launch the repair_interface node -->
     <!-- <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" /> -->
+
+    <!-- spawn the first fragment -->
+    <!-- <arg name="fragment_model" default="$(find repair_urdf)/sdf/frag2/model.sdf"/>
+    <node name="fragment_description" pkg="gazebo_ros" type="spawn_model" 
+    args="-file $(arg fragment_model) -sdf -model frag1 -x 0.0 -y 0.0 -z 1.5" /> -->
+    
+    <!-- spawn the second fragment -->
+    <arg name="fragment_model1" default="$(find repair_urdf)/sdf/frag3/model.sdf"/>
+    <node name="fragment_description1" pkg="gazebo_ros" type="spawn_model" 
+    args="-file $(arg fragment_model1) -sdf -model frag2 -x 0.2 -y 0.0 -z 1.5" />
+    
+    <!-- spawn the third fragment -->
+    <arg name="fragment_model2" default="$(find repair_urdf)/sdf/frag3/model.sdf"/>
+    <node name="fragment_description2" pkg="gazebo_ros" type="spawn_model" 
+    args="-file $(arg fragment_model2) -sdf -model frag3 -x 0.0 -y 0.2 -z 1.5" />
 </launch>

@@ -84,11 +84,16 @@ class MoveItTest:
         move_arm_to_pose_req.target_pose = target_pose
         self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
-    def go_to_pos(self, target_pose):
+    def go_to_pos(self, target_pose, side = 2):
+        #QUIRINO, function modified to let both arms move
         move_arm_to_pose_req = MoveArmToPoseRequest()
-        move_arm_to_pose_req.arm = ARM_ENUM.ARM_2.value
         move_arm_to_pose_req.target_pose = target_pose
-        self.move_to_pose(ARM_ENUM.ARM_2, target_pose)
+        if side == 2:
+            move_arm_to_pose_req.arm = ARM_ENUM.ARM_2.value
+            self.move_to_pose(ARM_ENUM.ARM_2, target_pose)
+        elif side == 1:
+            move_arm_to_pose_req.arm = ARM_ENUM.ARM_1.value
+            self.move_to_pose(ARM_ENUM.ARM_1, target_pose)
 
     def move_to_pose(self, arm: ARM_ENUM, 
                         pose: PoseStamped):
@@ -235,6 +240,8 @@ if __name__ == '__main__':
         print("Error:Side value has to be left or right")
         raise ValueError
     
+    print(f"arm number is {arm_no}")
+
     hand = True
     if hand:
       # Create QbHand object for controlling the hand
@@ -340,7 +347,7 @@ if __name__ == '__main__':
     hand_pose_world_np[1] += 0.03
     hand_pose_world_np[2] = 1.15 + 0.15
     hand_pose_world_np[3:] = hand_tf
-    publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
+    publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')    
 
     hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
     T0 = pytr.transform_from_pq(hand_pose_world_np)
@@ -355,7 +362,7 @@ if __name__ == '__main__':
     ### 1. Go to position over the object
     moveit_test = MoveItTest()
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)
     
     ### 2. Tilt hand
     ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -370,17 +377,19 @@ if __name__ == '__main__':
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)
 
     ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-    arm_target_pose_np[2] -= 0.168
+    # arm_target_pose_np[2] -= 0.168
+    arm_target_pose_np[0] -= 0.08
+    arm_target_pose_np[2] -= 0.24
     arm_target_pose_np[3:] = q_new
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)
 
     if hand:
         ### 4. close hand
@@ -394,25 +403,31 @@ if __name__ == '__main__':
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)
 
     ### 5. Move side
-    arm_target_pose_np[:3] = [-0.087, -0.610, 1.57]
+    if side == "right":
+        arm_target_pose_np[:3] = [-0.087, -0.610, 1.57]
+    elif side == "left":
+        arm_target_pose_np[:3] = [-0.087, 0.610, 1.57]
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)
 
     # 6. Go down
-    arm_target_pose_np[:3] = [-0.110, -0.609, 1.257]
+    if side == "right":
+        arm_target_pose_np[:3] = [-0.110, -0.609, 1.257]
+    elif side == "left":
+        arm_target_pose_np[:3] = [-0.110, 0.609, 1.257]
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)
 
     if hand:
         ### 7. Open hand
@@ -420,10 +435,13 @@ if __name__ == '__main__':
         print('Opened!')
 
     ### 8. Go up
-    arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
+    if side == "right":
+        arm_target_pose_np[:3] = [-0.110, -0.609, 1.345]
+    elif side == "left":
+        arm_target_pose_np[:3] = [-0.110, 0.609, 1.345]
 
     publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
     arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
     print ("Planning trajectory")
-    moveit_test.go_to_pos(arm_target_pose)
+    moveit_test.go_to_pos(arm_target_pose, arm_no)

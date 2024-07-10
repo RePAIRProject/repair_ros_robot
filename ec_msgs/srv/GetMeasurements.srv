@@ -1,0 +1,11 @@
+# GetMeasurements.srv
+
+int32 id
+int32 max_repeats
+bool get_positions
+bool get_currents
+bool get_distinct_packages
+bool get_commands
+---
+float64 current
+float64 residual_current
