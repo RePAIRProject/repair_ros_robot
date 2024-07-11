@@ -22,7 +22,7 @@ class MoveitClient:
         self.traj_utils = TrajectoryUtils()
 
         self.num_samples = 500
-        print("using interpolation of", self.num_samples)
+        print("[MoveitClient] using interpolation of", self.num_samples)
 
         self.use_xbot = use_xbot
         self.use_gazebo = use_gazebo
@@ -45,7 +45,7 @@ class MoveitClient:
 
         self.state_pub = rospy.Publisher("/joint_states", JointStateMsg, queue_size=10)
 
-        self.nh.loginfo("Moveit client initialized")
+        self.nh.loginfo("[MoveitClient] Moveit client initialized")
 
     def init_moveit_client(self):
         self.robot = RobotCommander()
@@ -55,7 +55,7 @@ class MoveitClient:
 
         # create service server
         self.service_server = self.nh.Service(
-            "/move_arm_to_pose_py", MoveArmToPose, self.handle_move_arm_to_pose
+            "/motion_planner/moveit_py", MoveArmToPose, self.handle_move_arm_to_pose
         )
 
     def xbot_state_callback(self, msg: JointState):
@@ -103,10 +103,10 @@ class MoveitClient:
         len_points = len(plan.joint_trajectory.points)
 
         # print points
-        self.nh.loginfo(f'points in plan: {len(plan.joint_trajectory.points)}')
+        self.nh.loginfo(f'[MoveitClient] points in plan: {len(plan.joint_trajectory.points)}')
 
         if len_points == 0:
-            self.nh.logwarn("No plan found")
+            self.nh.logwarn("[MoveitClient] No plan found")
             return False
 
         qs_sample = self.traj_utils.interpolate_joint_trajectory(plan, self.num_samples)
@@ -116,7 +116,6 @@ class MoveitClient:
             if self.use_xbot:
                 self.publish_to_xbot(plan.joint_trajectory.joint_names, qs_sample[i])
             if self.use_gazebo:
-                print(f"Publishing to gazebo: {arm}")
                 self.pubslish_to_gazebo(
                     arm, plan.joint_trajectory.joint_names, qs_sample[i]
                 )
@@ -176,7 +175,7 @@ class MoveitClient:
     def publish_to_xbot(self, names, positions):
         # create a joint command
         joint_command = JointCommand()
-        joint_command.ctrl_mode = [1, 1, 1, 1, 1, 1, 1]
+        joint_command.ctrl_mode = [1] * len(names)
         joint_command.name = names
         joint_command.position = positions
         joint_command.header.stamp = rospy.Time.now()
