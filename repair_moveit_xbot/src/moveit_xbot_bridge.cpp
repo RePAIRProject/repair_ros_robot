@@ -54,17 +54,32 @@ void JointTrajectoryExecutor::executeCB(const control_msgs::FollowJointTrajector
 
     std::vector<double> joint_positions;
 
+    // ros::Duration previous_time_from_start(0.0); // Initialize with 0.0 seconds
+
     // loop through trajectory points
     for (int i = 0; i < trajectory_points.size(); i++)
     {
         // get joint positions from trajectory point
         joint_positions = trajectory_points[i].positions;
 
+        // ROS_INFO("Trajectory time from start: %f", trajectory_points[i].time_from_start.toSec());
+
+        // // Calculate time difference if it's not the first point
+        // if (i > 0)
+        // {
+        //     ros::Duration time_diff = trajectory_points[i].time_from_start - previous_time_from_start;
+        //     ROS_INFO("Time difference: %f", time_diff.toSec());
+        //     // Sleep for the time difference
+        //     time_diff.sleep();
+        // }
+
         // publish joint command
         publishJointCommand(joint_names, joint_positions);
 
-        // sleep
-        ros::Duration(0.005).sleep();
+        ros::Duration(0.1).sleep();
+
+        // Update previous_time_from_start
+        // previous_time_from_start = trajectory_points[i].time_from_start;
 
         // TODO: check if this is the best way to do this to avoid infinite loop
         // get the current time

@@ -217,15 +217,16 @@ if __name__ == '__main__':
     rospy.init_node(node_name)
 
     # Get and print parameters
-    sh_version = str(rospy.get_param("/sh_version"))
+    # if gazebo:
+    #     sh_version = str(rospy.get_param("/sh_version"))
+
     side = str(rospy.get_param("/"+node_name+"/side"))
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
     # print()
     # print("Parameters")
-    # print("side =", side)
-    # print("gazebo =", gazebo)
-    # print()
+    # print("sh_version =", sh_version)
+    
 
     # Create QbHand object for controlling the hand
     print('Connecting to qb Soft Hand')
@@ -252,13 +253,14 @@ if __name__ == '__main__':
       hand_api.open_hand()
       print('Opened!')
 
-    if sh_version == "mixed_hands":
-        if side == "right":
-            tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
-        elif side == "left":
-            tf_hand = get_transform(parent_frame=side+"_hand_v1_wide_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
-    else:
-        tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    if gazebo:
+        if sh_version == "mixed_hands":
+            if side == "right":
+                tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+            elif side == "left":
+                tf_hand = get_transform(parent_frame=side+"_hand_v1_wide_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+        else:
+            tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,

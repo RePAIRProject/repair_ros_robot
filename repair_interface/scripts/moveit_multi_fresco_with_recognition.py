@@ -218,6 +218,7 @@ if __name__ == '__main__':
     use_pyrealsense = False
 
     # Get and print parameters
+    # sh_version = str(/rospy.get_param("/sh_version"))
     side = str(rospy.get_param("/"+node_name+"/side"))
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
@@ -237,10 +238,18 @@ if __name__ == '__main__':
       print('Connected!')
 
       # open hand
-      hand_api.open_hand()
-      print('Opened!')
+    #   hand_api.close_hand()
+    #   print('Closed!')
+    #   hand_api.open_hand()
+    #   print('Opened!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+
+    if side == "right":
+        tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    elif side == "left":
+        tf_hand = get_transform(parent_frame=side+"_hand_v1_wide_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+
+    # tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     hand_arm_transform = pytr.transform_from_pq([tf_hand.transform.translation.x,
@@ -257,6 +266,7 @@ if __name__ == '__main__':
 
     print('Starting Point Cloud Processing')
     num_frescos, pcd, table, object_cloud = get_number_of_frescos(debug, use_pyrealsense)
+    print (f'Objects found: {num_frescos}')
     #if use_pyrealsense:
     #    pcd = get_point_cloud_from_real_rs(debug)
     #else:

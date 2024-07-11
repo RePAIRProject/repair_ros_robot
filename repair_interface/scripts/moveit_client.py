@@ -2,7 +2,7 @@
 
 # Importing necessary libraries
 from geometry_msgs.msg import PoseStamped
-from moveit_commander import MoveGroupCommander, RobotCommander, roscpp_initialize
+from moveit_commander import MoveGroupCommander, RobotCommander, roscpp_initialize, MoveItCommanderException
 from moveit_commander.conversions import pose_to_list
 import rospy
 import tf
@@ -18,7 +18,10 @@ from sensor_msgs.msg import JointState as JointStateMsg
 class MoveitClient:
     def __init__(self, node_handle, use_xbot, use_gazebo):
         self.nh = node_handle
-        self.init_moveit_client()
+        if not self.init_moveit_client():
+            self.nh.logerr("Failed to initialize Moveit client")
+            exit(1)
+            
         self.traj_utils = TrajectoryUtils()
 
         self.num_samples = 500
@@ -50,13 +53,30 @@ class MoveitClient:
     def init_moveit_client(self):
         self.robot = RobotCommander()
         # Initialize MoveGroupCommander for each arm
-        self.move_group_arm_1 = MoveGroupCommander("arm_1", wait_for_servers=10)
-        self.move_group_arm_2 = MoveGroupCommander("arm_2", wait_for_servers=10)
+        try:
+            self.move_group_arm_1 = MoveGroupCommander("arm_1")
+        except MoveItCommanderException as e:
+            self.nh.logerr("Failed to initialize MoveGroupCommander for arm_1: {}".format(e))
+            return False
+        except Exception as e:
+            self.nh.logerr("Failed to initialize MoveGroupCommander: {}".format(e))
+            return False
+
+        try:
+            self.move_group_arm_2 = MoveGroupCommander("arm_2")
+        except MoveItCommanderException as e:
+            self.nh.logerr("Failed to initialize MoveGroupCommander for arm_2: {}".format(e))
+            return False
+        except Exception as e:
+            self.nh.logerr("Failed to initialize MoveGroupCommander: {}".format(e))
+            return False
 
         # create service server
         self.service_server = self.nh.Service(
             "/move_arm_to_pose_py", MoveArmToPose, self.handle_move_arm_to_pose
         )
+
+        return True
 
     def xbot_state_callback(self, msg: JointState):
         joint_state_msg = JointStateMsg()
@@ -182,7 +202,7 @@ class MoveitClient:
         joint_command.header.stamp = rospy.Time.now()
 
         # publish the joint command
-        self.xbot_pub.publish(joint_command)
+        self.xbot_pub.publish(joint_command)    
 
     def pubslish_to_gazebo(self, arm_name, names, positions):
         # create a joint trajectory point
@@ -215,7 +235,6 @@ if __name__ == "__main__":
     moveit_client = MoveitClient(rospy, use_xbot, use_gazebo)
 
     rospy.spin()
-    # Spin
-    #rate = rospy.Rate(200)
-    #while not rospy.is_shutdown():
-    #    rate.sleep()
+    rate = rospy.Rate(200)
+    while not rospy.is_shutdown():
+        rate.sleep()
