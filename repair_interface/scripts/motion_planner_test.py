@@ -65,7 +65,7 @@ class MotionPlannerTest:
         right_arm_test_pose.pose.orientation.z = 0.59477
         right_arm_test_pose.pose.orientation.w = 0.27198
 
-        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2.value, right_arm_test_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, right_arm_test_pose)
 
     def go_to_pos_left_arm(self):
 
@@ -79,7 +79,7 @@ class MotionPlannerTest:
         left_arm_test_pose.pose.orientation.z = -0.023061
         left_arm_test_pose.pose.orientation.w = 0.40948
 
-        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_1.value, left_arm_test_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_1, left_arm_test_pose)
 
     def go_to_pos2_left_arm(self):
 
@@ -93,14 +93,17 @@ class MotionPlannerTest:
         left_arm_test_pose.pose.orientation.z = -0.5178
         left_arm_test_pose.pose.orientation.w = 0.39816
 
-        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_1.value, left_arm_test_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_1, left_arm_test_pose)
 
     def test_sliding_guide(self):
         # get the current pose of arm_1_tcp
         current_pose = self.tf_utils.get_link_pose("right_hand_v1_2_research_grasp_link", "world")
-        current_pose.pose.position.z += .15
+        current_pose.pose.position.x += 0.1
+        current_pose.pose.position.y += 0.1
+        # current_pose.pose.position.z -= .1
+
         print(current_pose)
-        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2.value, current_pose)
+        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, current_pose)
 
 if __name__ == '__main__':
     node_name = "motion_planner_dawnik_test"

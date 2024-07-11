@@ -577,7 +577,14 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <pointCloudCutoffMax>9.0</pointCloudCutoffMax>
     </plugin>
   </gazebo>
-  <!-- <link name="dummy_prismatic_link"/> -->
+  <joint name="j_sliding_guide" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="sliding_guide_link"/>
+    <child link="dummy_prismatic_link"/>
+    <!-- <axis xyz="0 0 -1"/> -->
+    <!-- <limit lower="${j_prismatic_lower[0]/2}" upper= "${j_prismatic_upper[0]/2}" effort="${j_prismatic_torque[0]}" velocity="${j_prismatic_velocity[0]}"/> -->
+  </joint>
+  <link name="dummy_prismatic_link"/>
   <link name="torso_1">
     <inertial>
       <origin xyz="0.0004977651 -0.00042604032 -0.16838189"/>
@@ -604,12 +611,13 @@ results of the optimization), otherwise we go with the old ones (generated for a
             <limit lower="${j_prismatic_lower[0]/2}" upper= "${j_prismatic_upper[0]/2}" effort="${j_prismatic_torque[0]}" velocity="${j_prismatic_velocity[0]}"/>
         </joint> -->
   <!-- torso -->
-  <joint name="j_torso_1" type="revolute">
-    <parent link="sliding_guide_link"/>
+  <joint name="j_torso_1" type="fixed">
+    <parent link="dummy_prismatic_link"/>
     <child link="torso_1"/>
-    <axis xyz="0 0 1"/>
+    <!-- <axis xyz="0 0 1" /> -->
     <origin rpy="1.570796326795 0.0 1.570796326795" xyz="0.0 0.0 0.0"/>
-    <limit effort="147.0" lower="-2.6" upper="2.6" velocity="3.86"/>
+    <!-- <limit lower="${j_torso_lower[0]}" upper="${j_torso_upper[0]}"
+            effort="${j_torso_torque[0]}" velocity="${j_torso_velocity[0]}" /> -->
   </joint>
   <!-- torso  -->
   <link name="arm_2_1">
@@ -620,11 +628,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_sh-pitch.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_1_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -638,11 +646,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_sh-roll.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_2_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -656,11 +664,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_sh-yaw.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_3_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -674,11 +682,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_elbow.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_4_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -692,11 +700,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_forearm-yaw.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_5_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -710,11 +718,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_wrist-pitch.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_6_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -728,11 +736,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_wrist-roll.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_2_7_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -908,11 +916,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_sh-pitch.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_1_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-pitch.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -926,11 +934,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_sh-roll.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_2_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-roll.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -944,11 +952,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_sh-yaw.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_3_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_sh-yaw.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -962,11 +970,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_elbow.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_4_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_elbow.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -980,11 +988,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_forearm-yaw.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_5_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_forearm-yaw.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -998,11 +1006,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_wrist-pitch.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_6_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-pitch.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -1016,11 +1024,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/mesh_wrist-roll.stl" scale="0.001 -0.001 0.001"/>
+        <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
-    <collision>
+    <collision name="arm_1_7_collision">
       <geometry>
         <mesh filename="package://repair_urdf/meshes/simplified/mesh_wrist-roll.stl" scale="0.001 -0.001 0.001"/>
       </geometry>
@@ -1215,7 +1223,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <!-- If you are using only the hand -->
   <!-- <link name="world"/> -->
   <!-- IF VERSION == 1_wide -->
-  <!-- IF VERSION == 1_wide -->
+  <!-- IF VERSION == mixed_hands -->
   <gazebo>
     <plugin filename="libsofthand_mimic_plugin.so" name="synergy_plugin">
       <namespace>left_hand_v1_wide</namespace>
@@ -1276,8 +1284,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <!-- World to palm base -->
   <joint name="left_hand_v1_wide_palm_central_joint" type="fixed">
     <parent link="arm_1_7"/>
-    <child link="left_hand_v1_2_research_iso_link"/>
-    <origin rpy="0 0 3.14159265359" xyz="0 -0. 0.00"/>
+    <child link="left_hand_v1_wide_palm_central_link"/>
+    <origin rpy="0 0 1.570796326795" xyz="0 0 0.0"/>
+    <dynamics damping="3e-2" friction="0.0"/>
   </joint>
   <link name="left_hand_v1_wide_palm_central_link">
     <visual>
@@ -1299,11 +1308,11 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </collision>
   </link>
-  <!-- Fake joint and link for grasping -->
-  <joint name="left_hand_v1_2_research_grasp_joint" type="fixed">
-    <origin rpy="0 0 1.57" xyz="0.03 0.06 0.10"/>
-    <parent link="left_hand_v1_2_research_iso_link"/>
-    <child link="left_hand_v1_2_research_grasp_link"/>
+  <joint name="left_hand_v1_wide_grasp_joint" type="fixed">
+    <!-- QUIRINO: modified grasp_link for wide_hand-->
+    <origin rpy="0 0 0" xyz="0.03 -0.10 0.15"/>
+    <parent link="left_hand_v1_wide_palm_central_link"/>
+    <child link="left_hand_v1_wide_grasp_link"/>
   </joint>
   <link name="left_hand_v1_wide_grasp_link"/>
   <!-- palm base to Thumb -->
@@ -2563,9 +2572,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <material>Gazebo/Grey</material>
     <selfCollide>0</selfCollide>
   </gazebo>
-  <!-- Fake joint and link for grasping -->
   <joint name="right_hand_v1_2_research_grasp_joint" type="fixed">
-    <origin rpy="0 0 1.57" xyz="0.03 0.06 0.10"/>
+    <origin rpy="0 0 1.57" xyz="-0.06 0.03 0.16"/>
     <parent link="right_hand_v1_2_research_iso_link"/>
     <child link="right_hand_v1_2_research_grasp_link"/>
   </joint>

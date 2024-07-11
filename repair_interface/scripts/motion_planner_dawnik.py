@@ -45,25 +45,25 @@ class MotionPlanner:
         if not succ:
             raise RuntimeError("Failed to parse URDF")
         
-        self.sliding_guide_chain = self.kdl_tree.getChain(
-            "world",
-            "dummy_prismatic_link",
-        )
+        # self.sliding_guide_chain = self.kdl_tree.getChain(
+        #     "world",
+        #     "dummy_prismatic_link",
+        # )
 
         self.left_arm_chain = self.kdl_tree.getChain(
-            "dummy_prismatic_link",
-            "left_hand_v1_2_research_grasp_link",
+            "world",
+            "left_hand_v1_wide_grasp_link",
         )
         self.right_arm_chain = self.kdl_tree.getChain(
-            "dummy_prismatic_link",
+            "world",
             "right_hand_v1_2_research_grasp_link",
         )
 
-        self.left_arm_grasp_link = "left_hand_v1_2_research_grasp_link"
+        self.left_arm_grasp_link = "left_hand_v1_wide_grasp_link"
         self.right_arm_grasp_link = "right_hand_v1_2_research_grasp_link"
 
         # ik solver
-        self.sliding_guide_ik_solver = kdl.ChainIkSolverPos_LMA(self.sliding_guide_chain)
+        # self.sliding_guide_ik_solver = kdl.ChainIkSolverPos_LMA(self.sliding_guide_chain)
         self.left_arm_ik_solver = kdl.ChainIkSolverPos_LMA(self.left_arm_chain)
         self.right_arm_ik_solver = kdl.ChainIkSolverPos_LMA(self.right_arm_chain)
 
@@ -82,10 +82,10 @@ class MotionPlanner:
             self.handle_move_arm_to_pose,
         )
 
-        self.sliding_guide_joint = "j_sliding_guide"
+        # self.sliding_guide_joint = "j_sliding_guide"
 
         self.right_arm_joints = [
-            "j_torso_1",
+            # "j_torso_1",
             "j_arm_2_1",
             "j_arm_2_2",
             "j_arm_2_3",
@@ -96,7 +96,7 @@ class MotionPlanner:
         ]
 
         self.left_arm_joints = [
-            "j_torso_1",
+            # "j_torso_1",
             "j_arm_1_1",
             "j_arm_1_2",
             "j_arm_1_3",
@@ -182,7 +182,7 @@ class MotionPlanner:
             q_init[i] = joint_state.position[joint_state.name.index(joint)]
 
         # transform pose to "dummy_prismatic_link"
-        pose = self.tu.transform_pose_with_retries(pose, "dummy_prismatic_link")
+        # pose = self.tu.transform_pose_with_retries(pose, "dummy_prismatic_link")
 
         pose = tf_conversions.fromMsg(pose.pose)
 

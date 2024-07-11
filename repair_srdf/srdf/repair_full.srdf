@@ -7,9 +7,9 @@
   <!-- <xacro:include filename="$(find softhands_description)/srdf/softhands.srdf.xacro"/>
     <xacro:include filename="$(find softhands_description)/srdf/softhands.srdf.xacro"/>
     <xacro:include filename="$(find softhands_description)/srdf/softhands_homing.srdf.xacro"/> -->
-  <group name="sliding_guide">
-    <chain base_link="sliding_guide_link" tip_link="torso_1"/>
-  </group>
+  <!-- <group name="sliding_guide">
+        <chain base_link="sliding_guide_link" tip_link="torso_1"/>
+    </group> -->
   <group name="arm1">
     <chain base_link="torso_1" tip_link="arm_1_tcp"/>
   </group>
@@ -17,7 +17,7 @@
     <chain base_link="torso_1" tip_link="arm_2_tcp"/>
   </group>
   <group name="chains">
-    <group name="sliding_guide"/>
+    <!-- <group name="sliding_guide" /> -->
     <group name="arm1"/>
     <group name="arm2"/>
     <!-- <group name="palm_right"/>

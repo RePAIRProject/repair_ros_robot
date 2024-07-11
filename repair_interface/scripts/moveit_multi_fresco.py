@@ -28,11 +28,15 @@ from vision_utils import segment_table, get_number_of_frescos, get_max_cluster, 
 
 from qbhand_test import QbHand
 from moveit_test import MoveItTest
+
+from manipulation_utils import ManipulationUtils, ARM_ENUM
         
 
 if __name__ == '__main__':
     node_name = "moveit_test"
     rospy.init_node(node_name)
+
+    mu = ManipulationUtils()
 
     debug = False
     use_pyrealsense = False
@@ -124,7 +128,8 @@ if __name__ == '__main__':
         ### 1. Go to position over the object
         moveit_test = MoveItTest()
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -139,7 +144,8 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
         arm_target_pose_np[2] -= 0.170
@@ -151,7 +157,8 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         if hand:
             ### 4. close hand
@@ -165,7 +172,8 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         ### 5. Move side
         arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, -0.60, 1.5]
@@ -174,7 +182,8 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         # 6. Go down
         arm_target_pose_np[:3] = [-0.130, -0.70 + 0.13* fresco_release, 1.17]
@@ -183,7 +192,8 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         if hand:
             ### 7. Open hand
@@ -197,7 +207,8 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        moveit_test.go_to_pos(arm_target_pose)
+        # moveit_test.go_to_pos(arm_target_pose)
+        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
 
         fresco_release += 1.
         num_frescos, object_cloud, table_cloud = check_frescos_left(debug, False)

@@ -31,7 +31,7 @@ class HAND_STATE_ENUM(Enum):
 class ManipulationUtils:
     def __init__(self):
         self.mp_moveit_topic = "/motion_planner/moveit_py"
-        self.mp_dawnik_topic = "/motion_planner/dawnik",
+        self.mp_dawnik_topic = "/motion_planner/dawnik"
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
         rospy.loginfo("[ManipulationUtils] Waiting for moveit motion planner service...")
@@ -80,3 +80,23 @@ class ManipulationUtils:
         except rospy.ServiceException as e:
             print("[ManipulationUtils] Service call for move_arm_to_pose_dawnik failed: %s" % e)
             return False
+        
+if __name__ == "__main__":
+    rospy.init_node("manipulation_utils_node")
+    mu = ManipulationUtils()
+    try:
+        move_arm_to_pose = rospy.ServiceProxy("/motion_planner/dawnik", MoveArmToPose)
+
+        # create request
+        req = MoveArmToPoseRequest()
+        req.arm = 1
+        req.target_pose = PoseStamped()
+
+        resp = move_arm_to_pose(req)
+        # check response
+        if resp.success:
+            rospy.loginfo("[ManipulationUtils] Dawnik motion planner service call successful!")
+        else:
+            rospy.logerr("[ManipulationUtils] Dawnik motion planner service call failed!")
+    except rospy.ServiceException as e:
+        print("[ManipulationUtils] Service call for move_arm_to_pose_dawnik failed: %s" % e)

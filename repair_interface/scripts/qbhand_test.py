@@ -5,7 +5,8 @@ import rospy
 
 from std_msgs.msg import Float64
 from ec_msgs.msg import HandCmd
-from ec_msgs.srv import GetMeasurements
+
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 FREQ = 200
 
@@ -17,15 +18,21 @@ class QbHand:
         if gazebo:
             self.gripperMsg = Float64()
             self.open_value = 0.0
-            self.close_value = 1.0
+            self.close_value = 0.9
         else:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
             self.close_value =19000.0
 
-        self.init_ros()
+        if gazebo:
+            self.init_ros()
         self.init_params()
-        rospy.sleep(1.0)
+
+        topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
+
+        self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
+
+        rospy.sleep(2)
         
 
     def move_hand(self, aperture, secs=1.0):
@@ -33,11 +40,16 @@ class QbHand:
         #print('Moving qb Soft Hand..')
         if self.gazebo:
             self.gripperMsg.data = aperture
-        else:
+            self.GripperPub.publish(self.gripperMsg)
+
+        elif self.gazebo == False and self.side == "right":
+            self.qbhand_contol(aperture)
+        
+        elif self.gazebo == False and self.side == "left":
+            #QUIRINO, TO_CHECK
             self.gripperMsg.pos_ref = aperture
         # print(self.gripperMsg)
-        self.GripperPub.publish(self.gripperMsg)
-
+        
         print('wait to finish')
         rospy.sleep(secs)
         
@@ -79,32 +91,32 @@ class QbHand:
             else:
                 self.GripperPub = rospy.Publisher("/"+self.side+"_hand_"+sh_version+"/synergy_command", Float64, queue_size=3)
         else:
-            hand_topic = "/xbotcore/"+self.side+"_hand/command"
-            self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
+            if side == "left":
+                hand_topic = "/xbotcore/"+self.side+"_hand/command"
+                # self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
+            else:
+                pass
+        
+        
+    def qbhand_contol(self, val):
+        
+        
 
-    def read_current(self, num):
-        if side == "right":
-            num = 1
-        elif side == "left":
-            num = 2
+        msg = JointTrajectory()
+        msg.joint_names = ['qbhand1_synergy_joint']
+        msg.header.stamp = rospy.Time.now()
+        point = JointTrajectoryPoint()
+        point.positions = [val]
+        point.time_from_start = rospy.Duration(1)
+        msg.points.append(point)
 
-        current_measure = "/qbhand" + num + "/get_async_measurements"
-        rospy.wait_for_service(current_measure)
-        try:
-            service = rospy.ServiceProxy(current_measure, GetMeasurements)
-            request = GetMeasurements.Request()
-            request.id = 1
-            request.max_repeats = 0
-            request.get_positions = False
-            request.get_currents = True
-            request.get_distinct_packages = False
-            request.get_commands = False
-            response = service(request)
-            return response
-        except rospy.ServiceException as e:
-            print("Service call failed: %s"%e)
+        self.qb_hand_pub.publish(msg)
+        rospy.sleep(2)
+
+
         
 if __name__ == "__main__":
+    rospy.init_node('qbhand_test', anonymous=True)
     gazebo = False
     side = "right"
     hand_api = QbHand(side, gazebo)
