@@ -21,3 +21,9 @@
 	path = realsense-ros
 	url = https://github.com/IntelRealSense/realsense-ros
 	branch = ros1-legacy
+[submodule "qbhand-ros"]
+	path = qbhand-ros
+	url = https://bitbucket.org/qbrobotics/qbhand-ros.git
+[submodule "qbdevice-ros"]
+	path = qbdevice-ros
+	url = https://bitbucket.org/qbrobotics/qbdevice-ros.git

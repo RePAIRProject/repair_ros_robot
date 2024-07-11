@@ -28,6 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
   interactive_markers
   message_generation
   xbot_msgs
+  qb_device_srvs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -62,7 +63,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES repair_interface
- CATKIN_DEPENDS dynamic_reconfigure geometry_msgs roscpp rospy sensor_msgs std_msgs message_runtime
+ CATKIN_DEPENDS dynamic_reconfigure geometry_msgs roscpp rospy sensor_msgs std_msgs message_runtime qb_device_srvs
 #  DEPENDS system_lib
 )
 

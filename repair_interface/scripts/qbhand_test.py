@@ -5,7 +5,9 @@ import rospy
 
 from std_msgs.msg import Float64
 from ec_msgs.msg import HandCmd
-from ec_msgs.srv import GetMeasurements
+
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from qb_device_srvs.srv import GetMeasurements
 
 FREQ = 200
 
@@ -14,16 +16,24 @@ class QbHand:
     def __init__(self, side= "right", gazebo=False):
         self.side = side
         self.gazebo = gazebo
+        
+        # QUIRINO: set close_value below the maximum possible to avoid self-collision of hand
+        # fingers against palm and have a good resisual current reading
         if gazebo:
             self.gripperMsg = Float64()
             self.open_value = 0.0
-            self.close_value = 1.0
+            self.close_value = 0.9
         else:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
-            self.close_value =19000.0
+            self.close_value =18000.0
+    
+        qbhand_topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
 
-        self.init_ros()
+        self.qb_hand_pub = rospy.Publisher(qbhand_topic, JointTrajectory, queue_size=10)
+
+        if gazebo:
+            self.init_ros()
         self.init_params()
         rospy.sleep(1.0)
         
@@ -33,10 +43,15 @@ class QbHand:
         #print('Moving qb Soft Hand..')
         if self.gazebo:
             self.gripperMsg.data = aperture
-        else:
+            self.GripperPub.publish(self.gripperMsg)
+
+        elif self.gazebo == False and self.side == "right":
+            self.qbhand_contol(aperture)
+        
+        elif self.gazebo == False and self.side == "left":
+            #QUIRINO, TO_CHECK
             self.gripperMsg.pos_ref = aperture
         # print(self.gripperMsg)
-        self.GripperPub.publish(self.gripperMsg)
 
         print('wait to finish')
         rospy.sleep(secs)
@@ -82,30 +97,46 @@ class QbHand:
             hand_topic = "/xbotcore/"+self.side+"_hand/command"
             self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
 
-    def read_current(self, num):
-        if side == "right":
+    def qbhand_control(self, val):
+        msg = JointTrajectory()
+        msg.joint_names = ['qbhand1_synergy_joint']
+        msg.header.stamp = rospy.Time.now()
+        point = JointTrajectoryPoint()
+        point.positions = [val]
+        point.time_from_start = rospy.Duration(1)
+        msg.points.append(point)
+
+        self.qb_hand_pub.publish(msg)
+        rospy.sleep(2)
+    
+    def read_current(self):
+        if self.side == "right":
             num = 1
-        elif side == "left":
+        elif self.side == "left":
             num = 2
 
-        current_measure = "/qbhand" + num + "/get_async_measurements"
+        current_measure = "/qbhand" + str(num) + "/get_async_measurements"
         rospy.wait_for_service(current_measure)
         try:
+            # service = rospy.ServiceProxy(current_measure, CurrentMeasure)
+            # request = CurrentMeasure._request_class()
             service = rospy.ServiceProxy(current_measure, GetMeasurements)
-            request = GetMeasurements.Request()
-            request.id = 1
+            request = GetMeasurements._request_class()
+            request.id = num
             request.max_repeats = 0
             request.get_positions = False
             request.get_currents = True
             request.get_distinct_packages = False
             request.get_commands = False
             response = service(request)
+            # return response.current, response.residual_current
             return response
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
+            return None, None
         
 if __name__ == "__main__":
-    gazebo = False
+    gazebo = True
     side = "right"
     hand_api = QbHand(side, gazebo)
 
@@ -115,5 +146,12 @@ if __name__ == "__main__":
         value = 19000.0/2
     #hand_api.move_hand(value)
     hand_api.close_hand()
+
+    resp = hand_api.read_current()
+    if resp.success == True:# is not None and residual_current is not None:
+        print(f"Current: {resp.currents[0]}, Residual Current: {resp.currents[1]}")#residual_current}")
+    else:
+        print("Failed to read current values.")
+
     hand_api.open_hand()
     print('Finish!')
