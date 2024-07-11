@@ -21,7 +21,7 @@ icp_voxel_size=0.001
 # paths and db models
 pc = 'vislab'
 model_pts = 50000
-id_list = ['RPf_00125', 'RPf_00126', 'RPf_00124'] #, 'RPf_00123']
+id_list = ['RPf_00125', 'RPf_00126', 'RPf_00124', 'RPf_00123']
 version = ''
 algorithm = 'icp'
 names_list = [f"{id_p}_{model_pts}.ply" for id_p in id_list]

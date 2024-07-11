@@ -292,6 +292,8 @@ First terminal
 roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
 ```
 
+Note: sh_version options are [v1_2_research, v1_wide, mixed_hands]
+
 Second terminal
 ```bash
 rosrun repair_interface moveit_client.py _use_gazebo:=true
