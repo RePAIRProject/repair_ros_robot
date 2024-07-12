@@ -71,16 +71,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <link name="world"/>
   <link name="table_top_link">
     <visual>
-      <origin xyz="0.0 0.0 0.975"/>
+      <origin xyz="0.0 0.0 0.964"/>
       <geometry>
-        <box size="1.0 2.5 0.05"/>
+        <box size="1.0 2.5 0.028"/>
       </geometry>
       <material name="wood"/>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.975"/>
+      <origin xyz="0.0 0.0 0.964"/>
       <geometry>
-        <box size="1.0 2.5 0.05"/>
+        <box size="1.0 2.5 0.028"/>
       </geometry>
     </collision>
   </link>
@@ -90,21 +90,21 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </joint>
   <joint name="leg1_joint" type="fixed">
     <parent link="table_top_link"/>
-    <origin rpy="0 0 0" xyz="0.5 1.25 1.0"/>
+    <origin rpy="0 0 0" xyz="0.5 1.25 0.978"/>
     <child link="leg1_link"/>
   </joint>
   <link name="leg1_link">
     <visual>
-      <origin rpy="0 0 0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
       <material name="silver_gray"/>
     </visual>
     <collision>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
     </collision>
   </link>
@@ -130,21 +130,21 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </link>
   <joint name="leg2_joint" type="fixed">
     <parent link="table_top_link"/>
-    <origin rpy="0 0 0" xyz="-0.5 1.25 1.0"/>
+    <origin rpy="0 0 0" xyz="-0.5 1.25 0.978"/>
     <child link="leg2_link"/>
   </joint>
   <link name="leg2_link">
     <visual>
-      <origin rpy="0 0 0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
       <material name="silver_gray"/>
     </visual>
     <collision>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
     </collision>
   </link>
@@ -170,21 +170,21 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </link>
   <joint name="leg3_joint" type="fixed">
     <parent link="table_top_link"/>
-    <origin rpy="0 0 0" xyz="0.5 -1.25 1.0"/>
+    <origin rpy="0 0 0" xyz="0.5 -1.25 0.978"/>
     <child link="leg3_link"/>
   </joint>
   <link name="leg3_link">
     <visual>
-      <origin rpy="0 0 0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
       <material name="silver_gray"/>
     </visual>
     <collision>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
     </collision>
   </link>
@@ -210,21 +210,21 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </link>
   <joint name="leg4_joint" type="fixed">
     <parent link="table_top_link"/>
-    <origin rpy="0 0 0" xyz="-0.5 -1.25 1.0"/>
+    <origin rpy="0 0 0" xyz="-0.5 -1.25 0.978"/>
     <child link="leg4_link"/>
   </joint>
   <link name="leg4_link">
     <visual>
-      <origin rpy="0 0 0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
       <material name="silver_gray"/>
     </visual>
     <collision>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.5"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.489"/>
       <geometry>
-        <cylinder length="1.0" radius="0.02"/>
+        <cylinder length="0.978" radius="0.02"/>
       </geometry>
     </collision>
   </link>
@@ -343,9 +343,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <material name="silver_gray"/>
     </visual>
     <collision>
-      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.0 0.275 0.0"/>
       <geometry>
-        <cylinder length="2.5" radius="0.02"/>
+        <box size="0.001 1.0 2.5"/>
       </geometry>
     </collision>
   </link>
@@ -898,16 +898,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <transmission name="trans_j_torso_1">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="j_torso_1">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="j_torso_1_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
+  <!-- <transmission name="trans_j_torso_1">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="j_torso_1">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="j_torso_1_motor">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission> -->
   <link name="arm_1_1">
     <inertial>
       <origin xyz="0.010200651000000002 0.021560998 0.09876702500000001"/>
@@ -1186,16 +1186,99 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <transmission name="trans_j_torso_1">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="j_torso_1">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="j_torso_1_motor">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
+  <!-- <transmission name="trans_j_torso_1">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="j_torso_1">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="j_torso_1_motor">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission> -->
+  <!-- add end-effector mount for both arms -->
+  <link name="arm_1_angle_flange">
+    <visual>
+      <origin rpy="0 -1.5707963 0" xyz="0.0425 0 -0.0430"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 -1.5707963 0" xyz="0.0425 0 -0.0430"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_1_angle_flange_joint" type="fixed">
+    <parent link="arm_1_7"/>
+    <child link="arm_1_angle_flange"/>
+    <origin rpy="0 1.5707963 0" xyz="0.0425 0 0.0430"/>
+  </joint>
+  <link name="arm_2_angle_flange">
+    <visual>
+      <origin rpy="0 -1.5707963 0" xyz="0.0425 0 -0.0430"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 -1.5707963 0" xyz="0.0425 0 -0.0430"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_2_angle_flange_joint" type="fixed">
+    <parent link="arm_2_7"/>
+    <child link="arm_2_angle_flange"/>
+    <origin rpy="0 1.5707963 0" xyz="0.0425 0 0.0380"/>
+  </joint>
+  <!-- add camera mounts -->
+  <link name="arm_1_camera_mount">
+    <visual>
+      <origin rpy="0 0.0 0" xyz="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/camera_supp_cover_wide_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0" xyz="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/camera_supp_cover_wide_left.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_1_camera_mount_joint" type="fixed">
+    <parent link="arm_1_7"/>
+    <child link="arm_1_camera_mount"/>
+    <origin rpy="0 1.5707963 0" xyz="0.17545 0.016874 -0.01"/>
+  </joint>
+  <link name="arm_2_camera_mount">
+    <visual>
+      <origin rpy="0 0.0 0" xyz="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/camera_supp_cover_sh1p2.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0.0 0" xyz="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/meshes/camera_supp_cover_sh1p2.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_2_camera_mount_joint" type="fixed">
+    <parent link="arm_2_7"/>
+    <child link="arm_2_camera_mount"/>
+    <!-- <origin xyz="0.2016 0.0168740 -0.00950" rpy="0 1.5707963 0"/> -->
+    <origin rpy="0 1.5707963 0" xyz="0.18145 0.00528118 -0.01350"/>
+  </joint>
   <material name="qbhand/optional">
     <color rgba="0.0 0.5 0.8 1.0"/>
   </material>
@@ -1283,9 +1366,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </gazebo>
   <!-- World to palm base -->
   <joint name="left_hand_v1_wide_palm_central_joint" type="fixed">
-    <parent link="arm_1_7"/>
+    <parent link="arm_1_angle_flange"/>
     <child link="left_hand_v1_wide_palm_central_link"/>
-    <origin rpy="0 0 1.570796326795" xyz="0 0 0.0"/>
+    <origin rpy="0 0 3.14159265359" xyz="0.005 0 0"/>
     <dynamics damping="3e-2" friction="0.0"/>
   </joint>
   <link name="left_hand_v1_wide_palm_central_link">
@@ -1372,8 +1455,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <dynamics damping="3e-2" friction="0.0"/>
   </joint>
   <link name="left_hand_v1_wide_palm_thumb_link">
-    <material name="grey"/>
     <visual>
+      <material name="grey"/>
       <geometry>
         <mesh filename="package://softhands_description/meshes/v1_wide/left/palm_thumb.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -1398,8 +1481,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <origin rpy="1.5707963 -0.5235992 1.5707963" xyz="5.0e-3 -24.2343e-3 9.13010e-3"/>
   </joint>
   <link name="left_hand_v1_wide_palm_thumb_support_link">
-    <material name="grey"/>
     <visual>
+      <material name="grey"/>
       <geometry>
         <mesh filename="package://softhands_description/meshes/v1_wide/left/thumb_support.stl" scale="0.001 0.001 0.001"/>
       </geometry>
@@ -2544,9 +2627,9 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </gazebo>
   <!-- World to palm base -->
   <joint name="right_hand_v1_2_research_iso_joint" type="fixed">
-    <parent link="arm_2_7"/>
+    <parent link="arm_2_angle_flange"/>
     <child link="right_hand_v1_2_research_iso_link"/>
-    <origin rpy="0 0 3.14159265359" xyz="0 0.0 0.00"/>
+    <origin rpy="0 0 1.570796326795" xyz="0.005 0 0"/>
   </joint>
   <link name="right_hand_v1_2_research_iso_link">
     <inertial>

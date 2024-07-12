@@ -28,9 +28,14 @@ class QbHand:
             self.init_ros()
         self.init_params()
 
-        topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
+        if self.side == "right":
+            topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
+            self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
+        elif self.side == "left":
+            topic = "/xbotcore/"+self.side+"_hand/command"
+            self.GripperPub = rospy.Publisher(topic, HandCmd, queue_size=3)
 
-        self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
+        
 
         rospy.sleep(2)
         
@@ -48,6 +53,7 @@ class QbHand:
         elif self.gazebo == False and self.side == "left":
             #QUIRINO, TO_CHECK
             self.gripperMsg.pos_ref = aperture
+            self.GripperPub.publish(self.gripperMsg)
         # print(self.gripperMsg)
         
         print('wait to finish')

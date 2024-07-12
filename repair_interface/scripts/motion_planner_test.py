@@ -98,12 +98,12 @@ class MotionPlannerTest:
     def test_sliding_guide(self):
         # get the current pose of arm_1_tcp
         current_pose = self.tf_utils.get_link_pose("right_hand_v1_2_research_grasp_link", "world")
-        current_pose.pose.position.x += 0.1
-        current_pose.pose.position.y += 0.1
-        # current_pose.pose.position.z -= .1
+        # current_pose.pose.position.x += 0.1
+        # current_pose.pose.position.y += 0.1
+        current_pose.pose.position.z -= .2
 
         print(current_pose)
-        self.mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, current_pose)
+        self.mu.move_arm_to_pose_moveit(ARM_ENUM.ARM_2, current_pose)
 
 if __name__ == '__main__':
     node_name = "motion_planner_dawnik_test"

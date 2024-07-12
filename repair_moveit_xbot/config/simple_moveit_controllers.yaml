@@ -1,16 +1,16 @@
 controller_list:
-  - name: torso_trajectory_controller
-    action_ns: follow_joint_trajectory
-    type: FollowJointTrajectory
-    default: True
-    joints:
-      - j_torso_1
+  # - name: torso_trajectory_controller
+  #   action_ns: follow_joint_trajectory
+  #   type: FollowJointTrajectory
+  #   default: True
+  #   joints:
+  #     - j_torso_1
   - name: arm_1_trajectory_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: True
     joints:
-      - j_torso_1
+      # - j_torso_1
       - j_arm_1_1
       - j_arm_1_2
       - j_arm_1_3
@@ -23,7 +23,7 @@ controller_list:
     type: FollowJointTrajectory
     default: True
     joints:
-      - j_torso_1
+      # - j_torso_1
       - j_arm_2_1
       - j_arm_2_2
       - j_arm_2_3

@@ -44,15 +44,15 @@
         <joint name="j_arm_1_3" value="0.5"/>
         <joint name="j_arm_1_4" value="-1.2"/>
         <joint name="j_arm_1_5" value="-0.5"/>
-        <joint name="j_arm_1_6" value="0.5"/>
-        <joint name="j_arm_1_7" value="0.5"/>
+        <joint name="j_arm_1_6" value="-1.5"/>
+        <joint name="j_arm_1_7" value="-0.05"/>
         <joint name="j_arm_2_1" value="0.5"/>
         <joint name="j_arm_2_2" value="0.7"/>
         <joint name="j_arm_2_3" value="-0.5"/>
         <joint name="j_arm_2_4" value="1.2"/>
         <joint name="j_arm_2_5" value="0.5"/>
-        <joint name="j_arm_2_6" value="-0.5"/>
-        <joint name="j_arm_2_7" value="-0.5"/>
+        <joint name="j_arm_2_6" value="1.5"/>
+        <joint name="j_arm_2_7" value="-0.05"/>
     </group_state>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="arm_1_1" link2="arm_1_2" reason="Adjacent"/>
@@ -1462,4 +1462,138 @@
     <disable_collisions link1="vbar2_link" link2="vbar3_link" reason="Never"/>
     <disable_collisions link1="vbar2_link" link2="vbar4_link" reason="Never"/>
     <disable_collisions link1="vbar3_link" link2="vbar4_link" reason="Never"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_index_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_index_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_index_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_index_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_little_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_little_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_little_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_little_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_middle_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_middle_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_middle_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_middle_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_palm_central_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_palm_little_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_palm_thumb_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_palm_thumb_support_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_ring_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_ring_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_ring_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_ring_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_thumb_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_thumb_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="left_hand_v1_wide_thumb_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="leg4_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="vbar4_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="leg1_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="leg2_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="leg3_link" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="obar2_link" reason="User"/>
+    <disable_collisions link1="arm_1_4" link2="arm_1_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_1_5" link2="arm_1_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_1_6" link2="arm_1_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_1_7" link2="arm_1_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_1_angle_flange" link2="arm_1_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_2_4" link2="arm_2_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_2_5" link2="arm_2_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_2_6" link2="arm_2_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_2_7" link2="arm_2_angle_flange" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="arm_2_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="leg4_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_index_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_index_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_index_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_index_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_iso_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_little_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_little_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_little_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_little_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_middle_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_middle_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_middle_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_middle_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_palm_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_ring_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_ring_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_ring_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_ring_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_thumb_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_thumb_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="right_hand_v1_2_research_thumb_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="leg1_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="leg2_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="leg3_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="obar1_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="vbar1_link" reason="User"/>
+    <disable_collisions link1="arm_2_angle_flange" link2="vbar2_link" reason="User"/>
+    <disable_collisions link1="arm_1_4" link2="arm_1_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_1_5" link2="arm_1_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_1_6" link2="arm_1_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_1_7" link2="arm_1_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="leg4_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="vbar4_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_index_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_index_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_index_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_index_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_little_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_little_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_little_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_little_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_middle_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_middle_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_middle_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_middle_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_palm_central_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_palm_little_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_palm_thumb_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_palm_thumb_support_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_ring_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_ring_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_ring_middle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_ring_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_thumb_distal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_thumb_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="left_hand_v1_wide_thumb_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="leg1_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="leg2_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="leg3_link" reason="User"/>
+    <disable_collisions link1="arm_1_camera_mount" link2="vbar3_link" reason="User"/>
+    <disable_collisions link1="arm_2_4" link2="arm_2_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_2_5" link2="arm_2_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_2_6" link2="arm_2_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_2_7" link2="arm_2_camera_mount" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="leg4_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="leg1_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="leg2_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="leg3_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="obar1_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_index_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_index_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_index_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_index_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_iso_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_little_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_little_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_little_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_little_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_middle_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_middle_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_middle_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_middle_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_palm_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_ring_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_ring_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_ring_middle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_ring_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_thumb_distal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_thumb_knuckle_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="right_hand_v1_2_research_thumb_proximal_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="vbar2_link" reason="User"/>
+    <disable_collisions link1="arm_2_camera_mount" link2="vbar1_link" reason="User"/>
+    <disable_collisions link1="arm_2_5" link2="arm_2_7" reason="User"/>
+    <disable_collisions link1="arm_1_5" link2="arm_1_7" reason="User"/>
 </robot>

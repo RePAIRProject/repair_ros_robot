@@ -4,8 +4,8 @@
     <xacro:property name="Table_x" value="0.0" />      
     <xacro:property name="Table_y" value="0.0" />
     <xacro:property name="Table_z" value="0.0" /> <!-- w.r.t world  --> 
-    <xacro:property name="table_top_thickness" value="0.05"/>
-    <xacro:property name="table_height" value="1.0"/>
+    <xacro:property name="table_top_thickness" value="0.028"/>
+    <xacro:property name="table_height" value="${0.95 + table_top_thickness}"/>
 
     
     <xacro:property name="Cage_x" value="1.0" />

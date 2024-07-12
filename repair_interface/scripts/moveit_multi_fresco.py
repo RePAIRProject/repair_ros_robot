@@ -34,8 +34,8 @@ from manipulation_utils import ManipulationUtils, ARM_ENUM
 from scipy.spatial.transform import Rotation as R
 import angle_utils
 
-initial_pose_left = pytr.transform_from_pq([0.247, 0.410, 1.315, 0.056, 0.819, 0.338, 0.459])
-initial_pose_right = pytr.transform_from_pq([0.245, -0.396, 1.309, -0.216, 0.771, -0.486, 0.348 ])
+initial_pose_left = pytr.transform_from_pq([0.18584, 0.47267, 1.345, -0.15708, 0.97996, 0.12039, 0.022494])
+initial_pose_right = pytr.transform_from_pq([0.18584, -0.47267, 1.345, 0.158, 0.98476, -0.071265, 0.014615])
 
         
 
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     use_pyrealsense = False
 
     # Get and print parameters
-    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo", False))
 
     hand = True
     if hand:
@@ -64,8 +64,8 @@ if __name__ == '__main__':
       hand_api_left.open_hand()
       print('Opened!')
 
-    tf_hand_left = get_transform(parent_frame="left_hand_v1_wide_grasp_link", child_frame="arm_1_tcp")
-    tf_hand_right = get_transform(parent_frame="right_hand_v1_2_research_grasp_link", child_frame="arm_2_tcp")
+    tf_hand_left = get_transform(parent_frame="left_hand_v1_wide_grasp_link", child_frame="arm_1_angle_flange")
+    tf_hand_right = get_transform(parent_frame="right_hand_v1_2_research_grasp_link", child_frame="arm_2_angle_flange")
    
     left_hand_arm_transform = pytr.transform_from_pq([tf_hand_left.transform.translation.x,
                                                       tf_hand_left.transform.translation.y,
@@ -110,22 +110,32 @@ if __name__ == '__main__':
     right_hand_arm_transform_np = get_pose_from_transform(initial_pose_right)
     publish_tf_np(right_hand_arm_transform_np, child_frame='right_initial_pose')
     right_arm_initial_pose = get_pose_stamped_from_arr(right_hand_arm_transform_np)
-    exit()
 
     fresco_release = 0
-    moveit_test = MoveItTest()
     while num_frescos > 0:
 
         # Move arms to initial pose
-        moveit_test.move_to_pose(ARM_ENUM.ARM_1, left_arm_initial_pose)
-        moveit_test.move_to_pose(ARM_ENUM.ARM_2, right_arm_initial_pose)
+        # mu.move_arm_to_pose_moveit(ARM_ENUM.ARM_1, left_arm_initial_pose)
+        # mu.move_arm_to_pose_moveit(ARM_ENUM.ARM_2, right_arm_initial_pose)
 
         # table_cloud, object_cloud = segment_table(pcd)
-        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)
+        # voxel_pc = object_cloud.voxel_down_sample(voxel_size=0.001)    exit()
         # object_cloud, ind = voxel_pc.remove_radius_outlier(nb_points=40, radius=0.03)
         print ('Getting object with max number of points')
         object_cloud = get_max_cluster(object_cloud, True)
         obj_bbox = object_cloud.get_oriented_bounding_box()
+
+        USE_WIDE_HAND_THRESHOLD = 0.09
+        use_wide_hand = True if obj_bbox.extent[1] > USE_WIDE_HAND_THRESHOLD else False
+        print("=== Extent:", obj_bbox.extent[1])
+        if use_wide_hand:
+            arm = ARM_ENUM.ARM_1
+            hand_api = hand_api_left
+            print("=== Using Wide Hand")
+        else:
+            arm = ARM_ENUM.ARM_2
+            hand_api = hand_api_right
+            print("=== Using QB Hand")
 
         use_fragment_alignment = False
         if use_fragment_alignment:
@@ -171,8 +181,14 @@ if __name__ == '__main__':
         ### Transform the pose from the camera frame to the base frame (world)
         hand_pose_world = transform_pose_vislab(initial_pose, "camera_depth_optical_frame", "world")
         hand_pose_world_np = get_arr_from_pose(hand_pose_world)
-        hand_pose_world_np[0] += 0.04
-        hand_pose_world_np[1] += 0.03
+        if arm == ARM_ENUM.ARM_1:
+            hand_pose_world_np[0] += 0.18
+        else:
+            hand_pose_world_np[0] += 0.18
+        if arm == ARM_ENUM.ARM_1:
+            hand_pose_world_np[1] += 0.03 - 0.12 
+        else:
+            hand_pose_world_np[1] += 0.03
         hand_pose_world_np[2] = 1.15 + 0.15
         if use_fragment_alignment:
             hand_pose_world_np[3:] = hand_tf_rotated
@@ -187,62 +203,72 @@ if __name__ == '__main__':
         T1_left = pytr.concat(left_hand_arm_transform, T0)
         T1_right = pytr.concat(right_hand_arm_transform, T0)
 
-        USE_WIDE_HAND_THRESHOLD = 0.035
-        use_wide_hand = True if obj_bbox.extent[1] > USE_WIDE_HAND_THRESHOLD else False
-        print("=== Extent:", obj_bbox.extent[1])
         if use_wide_hand:
             arm_target_pose_np = get_pose_from_transform(T1_left)
-            arm = ARM_ENUM.ARM_1
-            hand_api = hand_api_left
-            print("=== Using Wide Hand")
         else:
             arm_target_pose_np = get_pose_from_transform(T1_right)
-            arm = ARM_ENUM.ARM_2
-            hand_api = hand_api_right
-            print("=== Using QB Hand")
+            
+        q_orig = arm_target_pose_np[3:].copy()
+        q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), np.deg2rad(0))
+        q_new = quaternion_multiply(q_rot, q_orig)
+        arm_target_pose_np[3:] = q_new
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-        ### 1. Go to position over the object
-        moveit_test = MoveItTest()
+
+        ## 1. Go to position over the object
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
+
+        # wait for user input
+        input("Press Enter to continue...")
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
-        y_ang = -0.26
+        y_ang = 0.26
         q_rot = quaternion_from_euler(0, y_ang, 0)
 
         q_orig = arm_target_pose_np[3:].copy()
-        q_new = quaternion_multiply(q_orig, q_rot)
-
+        q_new = quaternion_multiply(q_rot, q_orig)
         arm_target_pose_np[3:] = q_new
+
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
+
+        # wait for user input
+        input("Press Enter to continue...")
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-        arm_target_pose_np[2] -= 0.170
+        if arm == ARM_ENUM.ARM_1:
+            arm_target_pose_np[2] -= 0.250
+        else:
+            arm_target_pose_np[2] -= 0.260
         arm_target_pose_np[0] += 0.02
         #arm_target_pose_np[1] += 0.02
-        arm_target_pose_np[3:] = q_new
-
+        
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
 
         if hand:
             ### 4. close hand
             hand_api.close_hand()
             print('Closed!')
+
+        # wait for user input
+        input("Press Enter to continue...")
 
         ### 5. Lift up
         arm_target_pose_np[2] += 0.173
@@ -251,52 +277,68 @@ if __name__ == '__main__':
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
+
+        # wait for user input
+        input("Press Enter to continue...")
 
         ### 5. Move side
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, 0.610, 1.5]
+            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, 0.50, 1.5]
         else:
-            arm_target_pose_np[:3] = [-0.1 + 0.15* fresco_release, -0.610, 1.5]
+            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, -0.50, 1.5]
         
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
+
+        # wait for user input
+        input("Press Enter to continue...")
 
         # 6. Go down
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [-0.130, -1*(-0.70 + 0.13* fresco_release), 1.17]
+            arm_target_pose_np[:3] = [0.20, -1*(-0.50 + 0.13* fresco_release), 1.15] # very high because we had sand box
         else:
-            arm_target_pose_np[:3] = [-0.130, -0.70 + 0.13* fresco_release, 1.17]
+            arm_target_pose_np[:3] = [0.20, -0.50 + 0.13* fresco_release, 1.08]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
 
         if hand:
             ### 7. Open hand
             hand_api.open_hand()
             print('Opened!')
 
+        # wait for user input
+        input("Press Enter to continue...")
+
         ### 8. Go up
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [-0.100, 0.609, 1.5]
+            arm_target_pose_np[:3] = [0.20, 0.5, 1.5]
         else:
-            arm_target_pose_np[:3] = [-0.100, -0.609, 1.5]
+            arm_target_pose_np[:3] = [0.20, -0.5, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
-        # moveit_test.go_to_pos(arm_target_pose)
-        mu.move_arm_to_pose_dawnik(ARM_ENUM.ARM_2, arm_target_pose)
+        # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            break
+
+        # wait for user input
+        input("Press Enter to continue...")
 
         fresco_release += 1.
         num_frescos, object_cloud, table_cloud = check_frescos_left(debug, False)

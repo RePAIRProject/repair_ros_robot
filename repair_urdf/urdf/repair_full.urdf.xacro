@@ -59,13 +59,106 @@
     <xacro:repair_arm id="1"  rot="-1"  parent="torso_1" useCollisionMesh="${useCollisionMesh}">
         <origin xyz="${Shoulder_1_Ox} ${-Shoulder_1_Oy} ${Shoulder_1_Oz}"
                 rpy="${-Shoulder_1_roll} ${Shoulder_1_pitch} ${Shoulder_1_yaw}" />
-      </xacro:repair_arm>
+    </xacro:repair_arm>
     
-    <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand) and mixed-->
+    <!-- add end-effector mount for both arms -->
+    <link name="arm_1_angle_flange" >
+        <visual>
+            <origin xyz="0.0425 0 -0.0430" rpy="0 -1.5707963 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="dark"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0425 0 -0.0430" rpy="0 -1.5707963 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="arm_1_angle_flange_joint" type="fixed">
+        <parent link="arm_1_7"/>
+        <child link="arm_1_angle_flange"/>
+        <origin xyz="0.0425 0 0.0430" rpy="0 1.5707963 0"/>
+    </joint>
+
+    <link name="arm_2_angle_flange" >
+        <visual>
+            <origin xyz="0.0425 0 -0.0430" rpy="0 -1.5707963 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="dark"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0425 0 -0.0430" rpy="0 -1.5707963 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/angle_flange_90.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="arm_2_angle_flange_joint" type="fixed">
+        <parent link="arm_2_7"/>
+        <child link="arm_2_angle_flange"/>
+        <origin xyz="0.0425 0 0.0380" rpy="0 1.5707963 0"/>
+    </joint>
+
+    <!-- add camera mounts -->
+    <link name="arm_1_camera_mount" >
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/camera_supp_cover_wide_left.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="dark"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/camera_supp_cover_wide_left.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="arm_1_camera_mount_joint" type="fixed">
+        <parent link="arm_1_7"/>
+        <child link="arm_1_camera_mount"/>
+        <origin xyz="0.17545 0.016874 -0.01" rpy="0 1.5707963 0"/>
+    </joint>
+
+    <link name="arm_2_camera_mount" >
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/camera_supp_cover_sh1p2.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="dark"/>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0"/>
+            <geometry>
+                <mesh filename="package://repair_urdf/meshes/camera_supp_cover_sh1p2.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="arm_2_camera_mount_joint" type="fixed">
+        <parent link="arm_2_7"/>
+        <child link="arm_2_camera_mount"/>
+        <!-- <origin xyz="0.2016 0.0168740 -0.00950" rpy="0 1.5707963 0"/> -->
+        <origin xyz="0.18145 0.00528118 -0.01350" rpy="0 1.5707963 0"/>
+    </joint>
+    
+    <!--QUIRINO/GIANNIROS: here change the version for v1_2_research (small hand) or v1_wide (wide hand) and mixed_hands-->
     <xacro:softhands
         version="$(arg sh_version)" 
-        position="0 0 0" 
-        orientation="${PI}" 
+        position="0.005 0 0" 
+        orientation="${PI}"
+        arm_1_parent="arm_1_angle_flange"
+        arm_2_parent="arm_2_angle_flange"
         fixed_hands="$(arg fixed_hands)">
     </xacro:softhands>
 

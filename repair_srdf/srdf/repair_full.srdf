@@ -11,10 +11,10 @@
         <chain base_link="sliding_guide_link" tip_link="torso_1"/>
     </group> -->
   <group name="arm1">
-    <chain base_link="torso_1" tip_link="arm_1_tcp"/>
+    <chain base_link="torso_1" tip_link="left_hand_v1_wide_grasp_link"/>
   </group>
   <group name="arm2">
-    <chain base_link="torso_1" tip_link="arm_2_tcp"/>
+    <chain base_link="torso_1" tip_link="right_hand_v1_2_research_grasp_link"/>
   </group>
   <group name="chains">
     <!-- <group name="sliding_guide" /> -->

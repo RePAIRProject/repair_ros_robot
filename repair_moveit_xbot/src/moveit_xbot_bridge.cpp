@@ -11,7 +11,7 @@ JointTrajectoryExecutor::JointTrajectoryExecutor(ros::NodeHandle nh, std::string
     joint_angle_tolerance_ = joint_angle_tolerance;
 
     // subscribers
-    // joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &JointTrajectoryExecutor::jointStateCB, this);
+    joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &JointTrajectoryExecutor::jointStateCB, this);
 
     // publishers
     xbot_joint_command_pub_ = nh_.advertise<xbot_msgs::JointCommand>("/xbotcore/command", 1);
@@ -171,7 +171,7 @@ MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
 
     arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
     arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
-    torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
+    // torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
 
     ROS_INFO("MoveIt! Xbot Bridge started!");
 }
@@ -186,7 +186,7 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
     sensor_msgs::JointState joint_state;
 
     // set the joint state pointer
-    // current_joint_state_ptr_->motor_position = msg->motor_position;
+    current_joint_state_ptr_->motor_position = msg->motor_position;
 
     // set time stamp
     joint_state.header.stamp = ros::Time::now();
@@ -212,7 +212,7 @@ int main(int argc, char** argv)
     MoveitXbotBridge moveit_xbot_bridge(nh);
 
     // set the rate hz
-    ros::Rate rate(100);
+    ros::Rate rate(300);
 
     // spin
     while (ros::ok())
