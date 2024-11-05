@@ -39,19 +39,19 @@ def move_to_q(robot, q0, q1, time):
         rospy.sleep(rospy.Duration(dt))
         current_time += dt
 
-def la_to_q(robot, q, la_q, signs):
+# def la_to_q(robot, q, la_q, signs):
 
-    la_idx = robot.getDofIndex('j_arm_1_1')
-    ra_idx = robot.getDofIndex('j_arm_2_1')
+    # la_idx = robot.getDofIndex('j_arm_1_1')
+    # ra_idx = robot.getDofIndex('j_arm_2_1')
 
-    ra_q = la_q * signs
+    # ra_q = la_q * signs
 
-    q1 = np.array(q)
+    # q1 = np.array(q)
 
-    q1[la_idx:(la_idx + 7)] = la_q[:7]
-    q1[ra_idx:(ra_idx + 7)] = ra_q[:7]
+    # q1[la_idx:(la_idx + 6)] = la_q[:6]
+    # q1[ra_idx:(ra_idx + 6)] = ra_q[:6]
 
-    return q1
+    # return q1
 
     
 
@@ -59,53 +59,42 @@ def main():
 
     rospy.init_node('repair_stress_test')
 
-    time = 2
+
+   
 
     # homing_arm_r = [0.5, 0.5, -0.5, 1.0, 0.5, 0.5, 1.0] # arm_1 
     # homing_arm_l = [-0.5, -0.5, 0.5, -1.0, -0.5, -0.5, -1.0] # arm_2
 
-    s = np.array([-1, -1, -1, -1, -1, -1, -1])
-
+    # s = np.array([-1, -1, -1, -1, -1, -1, -1])
     robot = get_robot()
-
-    # Rise arms and send them to the back
     q0 = robot.getMotorPosition()
+    q1 = - np.array([q0[0], 1.0, 2.0])
 
-    niter = 1
+    current_time = 0.0
+    dt = 0.01
+    max_time = 3.0
+    niter = 0
+
     t0 = rospy.Time.now()
+
 
     while not rospy.is_shutdown():
 
-        print('Started loop ', niter, ', elapsed time ', (rospy.Time.now() - t0).to_sec())
         niter += 1
-
-        la_q_1 = -np.array([1.0, 0.0, -0.5, 1.0, 2.0, 1.9, 0.0])
-        la_q_2 = -np.array([1.0, 1.0, -2.1, 0.5, -0.5, -1.5, -2.7])
-        la_q_3 = -np.array([0.5, 0.8, -0.7, 2.0, 0.5, 1.5, 1])
-        la_q_4 = -np.array([0.5, 0.4, -1.0, 0.7, 1.8, -1.0, -2.5])
+        print('Started loop ', niter, ', elapsed time ', (rospy.Time.now() - t0).to_sec())
         
-        q1 =la_to_q(robot, q0, la_q_1, s)
-        q2 =la_to_q(robot, q0, la_q_2, s)
-        q3 =la_to_q(robot, q0, la_q_3, s)
-        q4 =la_to_q(robot, q0, la_q_4, s)
+        move_to_q(robot, q0, q1, 1)
+        move_to_q(robot, q1, q0, 2)
+    # robot.get
+    # amplitude = 0.3
+    # while current_time <= time:
+    #     q = q0 + [0, amplitude * np.sin(0.5 * current_time), amplitude * np.sin(0.5 * current_time)]
+    #     print(q)
+    #     robot.setPositionReference(q)
+    #     robot.move()
+    #     rospy.sleep(rospy.Duration(dt))
+    #     current_time += dt
 
-
-        q1[0] = 0.4
-        q2[0] = 0.8
-        q3[0] = -0.4
-        q4[0] = -0.8
-
-        print('Moving from q0 -> q1 ')
-        move_to_q(robot, q0, q1, time)
-        print('Moving from q1 -> q2 ')
-        move_to_q(robot, q1, q2, time)
-        print('Moving from q2 -> q3 ')
-        move_to_q(robot, q2, q3, time)
-        print('Moving from q3 -> q4 ')
-        move_to_q(robot, q3, q4, time)
-        print('Moving from q4 -> q5 ')
-        move_to_q(robot, q4, q0, time)
-        print('Loop finished. Restarting...')
     
 
     print('Exiting..')
