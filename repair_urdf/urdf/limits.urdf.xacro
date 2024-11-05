@@ -3,7 +3,7 @@
 
     <!-- Origin -->
 
-    <xacro:property name="j_prismatic_lower" value="${[-2]}"/>
+    <xacro:property name="j_prismatic_lower" value="${[-0.80]}"/>
     <xacro:property name="j_torso_lower" value="${[-2.6]}"/>
 
     <xacro:property name="j_arm_1_lower" value="${[-2.6, -2.6]}"/>
@@ -14,12 +14,12 @@
     <xacro:property name="j_arm_6_lower" value="${[-2.8, -2.1]}"/>
     <xacro:property name="j_arm_7_lower" value="${[-2.8, -2.8]}"/>
 
-    <xacro:property name="j_prismatic_upper" value="${[2]}"/>
+    <xacro:property name="j_prismatic_upper" value="${[0.80]}"/>
     <xacro:property name="j_torso_upper" value="${[2.6]}"/>
 
     <xacro:property name="j_arm_1_upper" value="${[2.6, 2.6]}"/>
-    <xacro:property name="j_arm_2_upper" value="${[2.5, 0.1]}"/>
     <xacro:property name="j_arm_3_upper" value="${[2.6, 2.6]}"/>
+    <xacro:property name="j_arm_2_upper" value="${[2.5, 0.1]}"/>
     <xacro:property name="j_arm_4_upper" value="${[2.4, 0.8]}"/>
     <xacro:property name="j_arm_5_upper" value="${[2.8, 2.8]}"/>
     <xacro:property name="j_arm_6_upper" value="${[2.1, 2.8]}"/>

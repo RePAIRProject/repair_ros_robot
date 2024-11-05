@@ -17,7 +17,7 @@ ec_boards_base :
   log_level : 1
   #fault_power_off : true
   use_ecat_pos_as_id : false
-  pb_utils_verbose : false
+  pb_utils_verbose : true
 
 repl :
   enable_ft_ati : false
@@ -34,7 +34,7 @@ zmq_rep :
   #uri: "ipc:///tmp/ecat_master:5555"
   zmq_rcvtimeo_ms : 500
   pipe_prefix : "/proc/xenomai/registry/rtipc/xddp/"
-  pb_utils_verbose : false
+  pb_utils_verbose : true
 
 
 ati_config :
@@ -156,3 +156,8 @@ CentAcESC_301:
 CentAcESC_41:
   sign: -1
   pos_offset: 0
+
+  
+CentAcESC_1:
+  sign: 1
+  pos_offset: -5729.57795  # 100 rad

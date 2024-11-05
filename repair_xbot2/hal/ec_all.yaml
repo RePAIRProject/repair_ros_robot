@@ -21,6 +21,7 @@ xbotcore_devices:
             ignore_id:
                 type: vector<int>
                 value: []
+            j_torso_base/rot_2_lin: 0.02
     hand_ec:
         names: []
         thread: rt_main

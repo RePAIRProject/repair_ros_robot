@@ -1,6 +1,9 @@
 zmq_setup:
     timeout: 1000
 
+j_torso_base:
+    control_mode: idle
+
 j_arm_1_1:
     control_mode: idle
     motor_has_brake: false

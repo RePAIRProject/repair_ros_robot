@@ -1,5 +1,14 @@
 zmq_setup:
     timeout: 1000
+    
+j_torso_base:
+    control_mode: 3B_motor_pos_ctrl
+    motor_has_brake: false
+    pid:
+        position:
+            - 300.0
+            - 0.0
+            - 10.0
 
 j_torso_1:
     control_mode: D4_impedance_ctrl

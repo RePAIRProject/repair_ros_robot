@@ -3,8 +3,7 @@ solver_options:
     back_end: qpoases
 
 stack:
-  - [tcp]
-  - [postural]
+  - [tcp_1, tcp_2, torso]
 
 constraints:
   - jlim
@@ -19,10 +18,24 @@ vlim:
   type: VelocityLimits
   limits: 3.0
 
-tcp:
+tcp_1:
   type: Cartesian
   lambda: 0.1
   distal_link: arm_1_tcp
+  base_link: torso_1
+  use_local_subtasks: true
+
+tcp_2:
+  type: Cartesian
+  lambda: 0.1
+  distal_link: arm_2_tcp
+  base_link: torso_1
+  use_local_subtasks: true
+
+torso:
+  type: Cartesian
+  lambda: 0.1
+  distal_link: torso_1
   use_local_subtasks: true
 
 tcp_pos:
