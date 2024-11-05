@@ -27,11 +27,18 @@ class DawnikBridge {
   std::string xbot_command_topic_ = "/xbotcore/command";
   std::string xbot_state_topic_ = "/xbotcore/joint_states";
 
+//   std::vector<std::string> joint_names_arm1_ = {
+//       "j_torso_1", "j_arm_1_1", "j_arm_1_2", "j_arm_1_3",
+//       "j_arm_1_4", "j_arm_1_5", "j_arm_1_6", "j_arm_1_7"};
+//   std::vector<std::string> joint_names_arm2_ = {
+//       "j_torso_1", "j_arm_2_1", "j_arm_2_2", "j_arm_2_3",
+//       "j_arm_2_4", "j_arm_2_5", "j_arm_2_6", "j_arm_2_7"};
+
   std::vector<std::string> joint_names_arm1_ = {
-      "j_torso_1", "j_arm_1_1", "j_arm_1_2", "j_arm_1_3",
+      "j_arm_1_1", "j_arm_1_2", "j_arm_1_3",
       "j_arm_1_4", "j_arm_1_5", "j_arm_1_6", "j_arm_1_7"};
   std::vector<std::string> joint_names_arm2_ = {
-      "j_torso_1", "j_arm_2_1", "j_arm_2_2", "j_arm_2_3",
+      "j_arm_2_1", "j_arm_2_2", "j_arm_2_3",
       "j_arm_2_4", "j_arm_2_5", "j_arm_2_6", "j_arm_2_7"};
 
   // dawnik

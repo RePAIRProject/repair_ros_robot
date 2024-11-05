@@ -65,7 +65,7 @@ def publish_tf_np(pose, par_frame="world", child_frame="goal_frame"):
     static_transformStamped.transform.rotation.w = float(pose[6])
 
     broadcaster.sendTransform(static_transformStamped)
-    # rospy.sleep(1)
+    rospy.sleep(1)
 
     return True
 
@@ -232,7 +232,7 @@ def transform_pcd(pcd, original_frame, target_frame):
         for i in range(len(pcd)):
             pcd[i].rotate(rot, center=(0, 0, 0)).translate(tran)
     return pcd
-    
+
 
 def segment_table(pcd, segment_by_height=False):
 

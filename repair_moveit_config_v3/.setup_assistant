@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: repair_urdf
+    relative_path: urdf/repair_full.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/repair_full.srdf
+  CONFIG:
+    author_name: vamsi kalagaturu
+    author_email: vamsikalagaturu@gmail.com
+    generated_timestamp: 1720702437

@@ -290,9 +290,9 @@
     <material name="silver_gray" />
     </visual> 
     <collision>
-      <origin xyz="0.0 0.0 0" rpy="0.0 0.0 0.0" />
+      <origin xyz="0.0 0.275 0.0" rpy="0.0 0.0 0.0" />
       <geometry>
-        <cylinder radius="${Cage_leg_radius}" length="${Cage_y}" />
+        <box size="0.001 1.0 ${Cage_y}" />
       </geometry>
     </collision>
   </link>

@@ -7,7 +7,6 @@ from std_msgs.msg import Float64
 from ec_msgs.msg import HandCmd
 
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
-from qb_device_srvs.srv import GetMeasurements
 
 FREQ = 200
 
@@ -26,19 +25,22 @@ class QbHand:
         else:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
-            self.close_value =18000.0
-    
-        if self.side == "right":
-            qbhand_topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
-        elif self.side == "left":
-            qbhand_topic = "/qbhand2/control/qbhand2_synergy_trajectory_controller/command"
-
-        self.qb_hand_pub = rospy.Publisher(qbhand_topic, JointTrajectory, queue_size=10)
+            self.close_value =19000.0
 
         if gazebo:
             self.init_ros()
         self.init_params()
-        rospy.sleep(1.0)
+
+        if self.side == "right":
+            topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
+            self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
+        elif self.side == "left":
+            topic = "/xbotcore/"+self.side+"_hand/command"
+            self.GripperPub = rospy.Publisher(topic, HandCmd, queue_size=3)
+
+        
+
+        rospy.sleep(2)
         
 
     def move_hand(self, aperture, secs=1.0):
@@ -49,13 +51,14 @@ class QbHand:
             self.GripperPub.publish(self.gripperMsg)
 
         elif self.gazebo == False and self.side == "right":
-            self.qbhand_control(aperture)
+            self.qbhand_contol(aperture)
         
         elif self.gazebo == False and self.side == "left":
             #QUIRINO, TO_CHECK
             self.gripperMsg.pos_ref = aperture
+            self.GripperPub.publish(self.gripperMsg)
         # print(self.gripperMsg)
-
+        
         print('wait to finish')
         rospy.sleep(secs)
         
@@ -97,18 +100,19 @@ class QbHand:
             else:
                 self.GripperPub = rospy.Publisher("/"+self.side+"_hand_"+sh_version+"/synergy_command", Float64, queue_size=3)
         else:
-            hand_topic = "/xbotcore/"+self.side+"_hand/command"
-            self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
-
-    def qbhand_control(self, val):
+            if side == "left":
+                hand_topic = "/xbotcore/"+self.side+"_hand/command"
+                # self.GripperPub = rospy.Publisher(hand_topic, HandCmd, queue_size=3)
+            else:
+                pass
         
-        if self.side == "right":
-            qbhand_joints = 'qbhand1_synergy_joint'
-        elif self.side == "left":
-            qbhand_joints = 'qbhand2_synergy_joint'
+        
+    def qbhand_contol(self, val):
+        
+        
 
         msg = JointTrajectory()
-        msg.joint_names = [qbhand_joints]
+        msg.joint_names = ['qbhand1_synergy_joint']
         msg.header.stamp = rospy.Time.now()
         point = JointTrajectoryPoint()
         point.positions = [val]
@@ -117,35 +121,12 @@ class QbHand:
 
         self.qb_hand_pub.publish(msg)
         rospy.sleep(2)
-    
-    def read_current(self):
-        if self.side == "right":
-            num = 1
-        elif self.side == "left":
-            num = 2
 
-        current_measure = "/qbhand" + str(num) + "/get_async_measurements"
-        rospy.wait_for_service(current_measure)
-        try:
-            # service = rospy.ServiceProxy(current_measure, CurrentMeasure)
-            # request = CurrentMeasure._request_class()
-            service = rospy.ServiceProxy(current_measure, GetMeasurements)
-            request = GetMeasurements._request_class()
-            request.id = num
-            request.max_repeats = 0
-            request.get_positions = False
-            request.get_currents = True
-            request.get_distinct_packages = False
-            request.get_commands = False
-            response = service(request)
-            # return response.current, response.residual_current
-            return response
-        except rospy.ServiceException as e:
-            print("Service call failed: %s"%e)
-            return None
+
         
 if __name__ == "__main__":
-    gazebo = True
+    rospy.init_node('qbhand_test', anonymous=True)
+    gazebo = False
     side = "right"
     hand_api = QbHand(side, gazebo)
 

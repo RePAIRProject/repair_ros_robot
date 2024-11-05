@@ -1,8 +1,6 @@
 <launch>
-    <arg name="side" default="right"/>
     <arg name="gazebo" default="false"/>
     <node name="moveit_multi_test" pkg="repair_interface" type="moveit_multi_fresco_with_recognition.py" output="screen">
-    <param name="side" value="$(arg side)" />
-    <param name="gazebo" value="$(arg gazebo)" />
+    <param name="gazebo" value="true" />
     </node>
 </launch>

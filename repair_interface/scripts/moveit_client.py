@@ -39,9 +39,9 @@ class MoveitClient:
             "/xbotcore/command", JointCommand, queue_size=10
         )
 
-        self.xbot_state_sub = rospy.Subscriber(
-            "/xbotcore/joint_states", JointState, self.xbot_state_callback
-        )
+        # self.xbot_state_sub = rospy.Subscriber(
+        #     "/xbotcore/joint_states", JointState, self.xbot_state_callback
+        # )
 
         self.state_pub = rospy.Publisher("/joint_states", JointStateMsg, queue_size=10)
 
@@ -75,6 +75,10 @@ class MoveitClient:
 
         arm_name = "arm_1" if arm == 0 else "arm_2"
 
+        arm_name = arm_name.lower()
+
+        print(f'[MoveitClient] Moving arm: {arm_name}')
+
         # get pose
         pose = req.target_pose
 
@@ -87,6 +91,22 @@ class MoveitClient:
 
         # return response
         return resp
+    
+    def plan_cartesian_path(self, arm, waypoints):
+        move_group = self.move_group_arm_1 if arm == "arm_1" else self.move_group_arm_2
+
+        # move_group.set_joint_value_target(waypoints[-1])
+
+        (plan, fraction) = move_group.compute_cartesian_path(
+            waypoints, 0.01, 2.5
+        )
+        return plan, fraction
+    
+    def plan_regular_path(self, arm, pose):
+        move_group = self.move_group_arm_1 if arm == "arm_1" else self.move_group_arm_2
+        move_group.set_pose_target(pose)
+        _, plan, _, _ = move_group.plan()
+        return plan
 
     def send_pose_to_single_arm(self, pose, arm):
         """
@@ -95,10 +115,19 @@ class MoveitClient:
         :param arm: "arm_1" or "arm_2"
         """
         # Choose the appropriate arm
-        move_group = self.move_group_arm_1 if arm == "arm_1" else self.move_group_arm_2
-        move_group.set_pose_target(pose)
-        # get plan
-        _, plan, _, _ = move_group.plan()
+        # move_group = self.move_group_arm_1 if arm == "arm_1" else self.move_group_arm_2
+        
+        # move_group.set_pose_target(pose)
+        # _, plan, _, _ = move_group.plan()
+
+        # cartesian path
+        waypoints = []
+        waypoints.append(pose.pose)
+        plan, fraction = self.plan_cartesian_path(arm, waypoints)
+
+        if fraction < 1.0:
+            self.nh.logwarn("[MoveitClient] Incomplete cartesian path, trying regular plan")
+            plan = self.plan_regular_path(arm, pose)
 
         len_points = len(plan.joint_trajectory.points)
 
@@ -109,17 +138,29 @@ class MoveitClient:
             self.nh.logwarn("[MoveitClient] No plan found")
             return False
 
-        qs_sample = self.traj_utils.interpolate_joint_trajectory(plan, self.num_samples)
+        # qs_sample = self.traj_utils.interpolate_joint_trajectory(plan, self.num_samples)
+
+        # print(f'[MoveitClient] qs_sample shape: {qs_sample.shape}')
+        # print(qs_sample)
 
         # publish each point in the trajectory
-        for i in range(len(qs_sample)):
+        # for i in range(len(qs_sample)):
+        #     if self.use_xbot:
+        #         self.publish_to_xbot(plan.joint_trajectory.joint_names, qs_sample[i])
+        #     if self.use_gazebo:
+        #         self.pubslish_to_gazebo(
+        #             arm, plan.joint_trajectory.joint_names, qs_sample[i]
+        #         )
+        #     rospy.sleep(0.01)
+
+        for i in range(len_points):
             if self.use_xbot:
-                self.publish_to_xbot(plan.joint_trajectory.joint_names, qs_sample[i])
+                self.publish_to_xbot(plan.joint_trajectory.joint_names, plan.joint_trajectory.points[i].positions)
             if self.use_gazebo:
                 self.pubslish_to_gazebo(
-                    arm, plan.joint_trajectory.joint_names, qs_sample[i]
+                    arm, plan.joint_trajectory.joint_names, plan.joint_trajectory.points[i].positions
                 )
-            rospy.sleep(0.01)
+            rospy.sleep(0.1)
 
         return True
 
@@ -215,6 +256,6 @@ if __name__ == "__main__":
 
     rospy.spin()
     # Spin
-    #rate = rospy.Rate(200)
-    #while not rospy.is_shutdown():
+    # rate = rospy.Rate(200)
+    # while not rospy.is_shutdown():
     #    rate.sleep()
