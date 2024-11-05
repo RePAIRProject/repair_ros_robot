@@ -46,7 +46,8 @@ class MoveItTest:
         self.listener = tf.TransformListener()
         self.wait_for_transform = 5
         self.transform_tries = 5
-        self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
+        # self.move_arm_to_pose_topic = "/move_arm_to_pose_py" # for python client
+        self.move_arm_to_pose_topic = "/motion_planner/moveit_py"
         
         # self.move_arm_to_pose_topic = "/move_arm_to_pose_srv" # for c++ client
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)

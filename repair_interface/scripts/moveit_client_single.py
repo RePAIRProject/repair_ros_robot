@@ -44,8 +44,11 @@ class MoveitClient:
         self.move_group_arm_1 = MoveGroupCommander("arm_1", wait_for_servers=10)
         self.move_group_arm_2 = MoveGroupCommander("arm_2", wait_for_servers=10)
 
+        # self.service_server = self.nh.Service(
+        #     "/move_arm_to_pose_py", MoveArmToPose, self.handle_move_arm_to_pose
+        # )
         self.service_server = self.nh.Service(
-            "/move_arm_to_pose_py", MoveArmToPose, self.handle_move_arm_to_pose
+            "/motion_planner/moveit_py", MoveArmToPose, self.handle_move_arm_to_pose
         )
 
     def handle_move_arm_to_pose(self, req: MoveArmToPoseRequest):

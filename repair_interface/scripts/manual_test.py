@@ -29,6 +29,8 @@ class MoveItTest:
         self.wait_for_transform = 5
         self.transform_tries = 5
         #rospy.Subscriber("/joint_states", JointState, jointStatesCallback)
+        self.move_arm_to_pose_topic = "/motion_planner/moveit_py"
+
 
     def send_gripper_command(self, hand: HAND_ENUM, hand_state: HAND_STATE_ENUM, value: float = 0.0):
         rospy.loginfo("Waiting for gripper command service")
@@ -115,11 +117,12 @@ class MoveItTest:
        
         # wait for service
         rospy.loginfo("Waiting for move arm to pose service")
-        rospy.wait_for_service('/move_arm_to_pose_srv')
+        # rospy.wait_for_service('/move_arm_to_pose_srv')
+        rospy.wait_for_service(self.move_arm_to_pose_topic)
         rospy.loginfo("Service found")
 
         # create service proxy
-        move_arm_to_pose_srv = rospy.ServiceProxy('/move_arm_to_pose_srv', MoveArmToPose)
+        move_arm_to_pose_srv = rospy.ServiceProxy(self.move_arm_to_pose_topic, MoveArmToPose)
 
         # create request
         move_arm_to_pose_req = MoveArmToPoseRequest()
@@ -227,10 +230,49 @@ class MoveItTest:
 
 if __name__ == '__main__':
     node_name = "manual_test"
+
+    # rospy.init_node(node_name)
+
+    # # Get and print parameters
+    # side = str(rospy.get_param("/"+node_name+"/side"))
+    # gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
+
+    # # print()
+    # # print("Parameters")
+    # # print("side =", side)
+    # # print("gazebo =", gazebo)
+    # # print()
+
+    # # Create QbHand object for controlling the hand
+    # print('Connecting to qb Soft Hand')
+
+    # if side == "right":
+    #     arm_no = 2
+    # elif side == "left":
+    #     arm_no = 1
+    # else:
+    #     print("Error:Side value has to be left or right")
+    #     raise ValueError
+    
+    # hand_api = QbHand(side, gazebo)
+    # print('Connected!')
+
+    # # open hand
+    # hand_api.open_hand()
+    # print('Opened!')
+
+    # tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    # # print (tf)
+
+    # # get hand orientation
+    # hand_tf = get_hand_tf()
+
     rospy.init_node(node_name)
 
     # Get and print parameters
+    sh_version = str(rospy.get_param("/sh_version"))
     side = str(rospy.get_param("/"+node_name+"/side"))
+    print(side)
     gazebo = bool(rospy.get_param("/"+node_name+"/gazebo"))
 
     # print()
@@ -250,14 +292,29 @@ if __name__ == '__main__':
         print("Error:Side value has to be left or right")
         raise ValueError
     
-    hand_api = QbHand(side, gazebo)
-    print('Connected!')
+    print(f"arm number is {arm_no}")
 
-    # open hand
-    hand_api.open_hand()
-    print('Opened!')
+    hand = True
+    if hand:
+      # Create QbHand object for controlling the hand
+      print('Connecting to qb Soft Hand')
+      hand_api = QbHand(side, gazebo)
+      print('Connected!')
 
-    tf_hand = get_transform(parent_frame=side+"_hand_v1s_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+      #close hand
+      hand_api.close_hand()
+      print('Closed!')
+      # open hand
+      hand_api.open_hand()
+      print('Opened!')
+
+    if sh_version == "mixed_hands":
+        if side == "right":
+            tf_hand = get_transform(parent_frame=side+"_hand_v1_2_research_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+        elif side == "left":
+            tf_hand = get_transform(parent_frame=side+"_hand_v1_wide_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
+    else:
+        tf_hand = get_transform(parent_frame=side+"_hand_"+sh_version+"_grasp_link", child_frame="arm_"+str(arm_no)+"_tcp")
     # print (tf)
 
     # get hand orientation
