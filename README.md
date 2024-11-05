@@ -201,33 +201,44 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 	```
 
 ### Real robot
-- First, you have to configure your .bashrc so that the roscore is running on the robot PC. For this purpose, add the following lines to your .bashrc.
+ First, you have to configure your .bashrc so that the roscore is running on the robot PC. 
+ - Add the following lines to your .bashrc.
 	```bash
 	export ROS_MASTER_URI=http://{robot_IP}:11311
 	export ROS_IP={local_IP}
 	```
+- Source your .bashrc
+	```bash
+	source .bashrc
+	```
 
-- Then, source your .bashrc and connect via ssh to the real robot PC. You will need at least 3 remote command windows.
+- Connect via ssh to the real robot PC. (You will need at least 3 remote command windows, open and connect them at this moment.)
 	```bash
 	ssh -X {host_name}@{robot_IP}
 	```
 
-- Check in remote window 1 that the roscore is running. In case the roscore is not running you can restart it using the system command systemctl ```--user restart roscore.service```
+#### REMOTE Command Windows
+<b>At least 3 command windows </b>
+##### Remote Command Window 1
+- Check that the roscore is running. 
 	```bash
 	rostopic list
 	```
+In case the roscore is not running you can restart it using the system command systemctl ```--user restart roscore.service```
 
-- Then used the same window to start the ecat_master.
+- Use the same window to start the ecat_master.
 	```bash
 	ecat_master
 	```
 
-- Now start XBot in remote window 2
+##### Remote Command Window 2
+- Start XBot
 	```bash
 	xbot2-core --hw ec_pos
 	```
-	This starts the motors to be controllable with position control. Alternatively you can start them in idle mode using ```xbot2-core --hw idle```
+This starts the motors to be controllable with position control. Alternatively you can start them in idle mode using ```xbot2-core --hw idle```
 
+##### Remote Command Window 3
 - Now you have to manually start the motor cooling fans in remote window 3.
 	```bash
 	rosservice call /ec_client/set_motors_fan "motor_name: ['']
@@ -240,17 +251,25 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 	led: [false]"
 	```
 
-- On your local PC you will need at least 3 command windows. In command window 1, you have to open the robot GUI. Here, you have to move the robot to the home position by clicking on the ```Home``` button.
+#### <b>LOCAL Command Windows</b>
+<b>At least 3 command windows</b>
+
+##### Local Command Window 1 
+- Open the robot GUI. 
 	```bash
 	xbot2-gui
 	```
+Here, you have to move the robot to the home position by clicking on the ```Home``` button.
 
-- In local window 2 you have to start the bridge between XBot and Moveit.
+##### Local Command Window 2 
+- Start the bridge between XBot and Moveit.
 	```bash
 	rosrun repair_moveit_xbot moveit_xbot_bridge_node
 	```
 
-- Afterwards, you can start Moveit in local window 3.
+##### Local Command Window 3
+- Start Moveit
+
 	```bash
 	roslaunch repair_moveit_xbot bringup_moveit.launch
 	```
