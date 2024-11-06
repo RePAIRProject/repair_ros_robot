@@ -21,3 +21,6 @@
 	path = realsense-ros
 	url = https://github.com/IntelRealSense/realsense-ros
 	branch = ros1-legacy
+[submodule "repair_xbot2"]
+	path = repair_xbot2
+	url = https://github.com/RePAIRProject/repair_xbot2.git
