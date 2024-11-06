@@ -5,8 +5,8 @@
 <arg name="gui" default="true"/>
 <arg name="ver" default="1"/>
 
-<param name="/robot_description" command="xacro $(find repair_urdf)/urdf/repair.urdf.xacro"/>
-<param name="/robot_description_semantic" textfile="$(find repair_srdf)/srdf/repair.srdf"/>
+<param name="/robot_description" command="xacro $(find repair_urdf)/urdf/repair_full.urdf.xacro"/>
+<param name="/robot_description_semantic" textfile="$(find repair_srdf)/srdf/repair_full.srdf"/>
 
 <param name="/cartesian/problem_description" textfile="$(find repair_cartesio)/config/repair_simple.yaml"/>
 
