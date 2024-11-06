@@ -27,3 +27,6 @@
 [submodule "qbdevice-ros"]
 	path = qbdevice-ros
 	url = https://bitbucket.org/qbrobotics/qbdevice-ros.git
+[submodule "repair_xbot2"]
+	path = repair_xbot2
+	url = https://github.com/RePAIRProject/repair_xbot2.git
