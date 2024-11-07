@@ -6,6 +6,8 @@ from cartesian_interface.pyci_all import *
 import numpy as np
 import rospy
 
+from ec_msgs.msg import HandCmd
+
 def add_wp(mat, time, wp_list):
 
     wp = pyci.WayPoint(mat, time)
@@ -14,6 +16,10 @@ def add_wp(mat, time, wp_list):
 def main():
     rospy.init_node('repair_box_pick')
 
+    hand_pub = rospy.Publisher('/xbotcore/right_hand/command', HandCmd, queue_size=10)
+    
+    # Set the rate at which to publish messages (10 Hz)
+    rate = rospy.Rate(10)
     time = 3.0
 
     # robot = get_robot()
@@ -26,7 +32,8 @@ def main():
     waypoints_arm_1 = []
     waypoints_arm_2 = []
     waypoints_torso = []
-
+    
+    
     # 1
     # translation: [   0.31, 0.03872, -0.8109]
     # rotation   : [ 0.7235, 0.08488,   0.677,  0.1054]
@@ -63,10 +70,93 @@ def main():
     print(torso_start)
     print(arm_1_start)
     print(arm_2_start)
+
+
+
+    
+    
+    #SMALL AND WIDE HAND
+    # add_wp(Affine3(pos=[0.3116,  0.1199, -0.8384], rot=[0.6952, -0.3916,  0.5454,  0.2568]), 2*time, waypoints_arm_1)
+    # add_wp(Affine3(pos=[0.1835, -0.04574,  -0.8058], rot=[0.8107, -0.1026,  0.4771,  0.3236]), 2*time, waypoints_arm_2)
+    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+
+    # ci.waitReachCompleted('arm_1_tcp')
+    # ci.waitReachCompleted('arm_2_tcp')
+
+    # waypoints_arm_1.clear()
+    # waypoints_arm_2.clear()
+
+    # #left hand rotation
+    # # translation: [  0.2466, 0.009412,  -0.7748]
+    # # rotation   : [-0.5472,  0.6069, -0.5726, 0.06626]
+
+
+    # add_wp(Affine3(pos=[0.2466, 0.009412,  -0.7748], rot=[-0.5472,  0.6069, -0.5726, 0.06626]), 1*time, waypoints_arm_2)
+    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+
+    # ci.waitReachCompleted('arm_2_tcp')
+    
+    # waypoints_arm_2.clear()
+
     # exit(0)
+
+
     
-    add_wp(Affine3(pos=[0.3116,  0.1199, -0.8384], rot=[0.6952, -0.3916,  0.5454,  0.2568]), 2*time, waypoints_arm_1)
-    add_wp(Affine3(pos=[0.1835, -0.04574,  -0.8058], rot=[0.8107, -0.1026,  0.4771,  0.3236]), 2*time, waypoints_arm_2)
+    # #right hand rotation
+    # # translation: [ 0.3488,  0.1087, -0.7303]
+    # #rotation   : [ 0.7655, -0.2252,  0.4736,  0.3728]
+
+    # add_wp(Affine3(pos=[0.3488,  0.1087, -0.7303], rot=[0.7655, -0.2252,  0.4736,  0.3728]), 1*time, waypoints_arm_1)
+    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+
+    # ci.waitReachCompleted('arm_1_tcp')
+    # waypoints_arm_1.clear()
+    # waypoints_arm_2.clear()
+
+    # #right and left rotation
+    # # translation: [ 0.3357, 0.09681, -0.7826]
+    # # rotation   : [ 0.7122, 0.05171,  0.4219,  0.5587]
+    # # translation: [  0.2419, 0.001909,  -0.7709]
+    # # rotation   : [-0.4922,  0.6523, -0.5646,  0.1159]
+
+    # add_wp(Affine3(pos=[0.3357, 0.09681, -0.7826], rot=[0.7122, 0.05171,  0.4219,  0.5587]), 1*time, waypoints_arm_1)
+    # add_wp(Affine3(pos=[0.2419, 0.001909,  -0.7709], rot=[-0.4922,  0.6523, -0.5646,  0.1159]), 1*time, waypoints_arm_2)
+    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+
+    # ci.waitReachCompleted('arm_1_tcp')
+    # ci.waitReachCompleted('arm_2_tcp')
+
+    # waypoints_arm_1.clear()
+    # waypoints_arm_2.clear()
+
+
+    # #lift
+
+
+
+    # print('Motion completed!')
+    # exit(0)
+
+
+    
+    
+    
+    
+    #TWO SMALL HANDS
+
+    #AVVICINAMENTO
+    # translation: [ 0.3586,  0.2586, -0.8023]
+    # rotation   : [ 0.7511, -0.2193,    0.47,  0.4085]
+    # translation: [  0.1389, 0.009446,  -0.8135]
+    # rotation   : [ 0.7137, -0.4494,   0.516, -0.1496]
+
+
+
+
+    add_wp(Affine3(pos=[0.3586,  0.2586, -0.8023], rot=[0.7511, -0.2193,    0.47,  0.4085]), 2*time, waypoints_arm_1)
+    add_wp(Affine3(pos=[0.1389, 0.009446,  -0.8135], rot=[0.7137, -0.4494,   0.516, -0.1496]), 2*time, waypoints_arm_2)
     ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
     ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
 
@@ -76,195 +166,167 @@ def main():
     waypoints_arm_1.clear()
     waypoints_arm_2.clear()
 
-    #left hand rotation
-    # translation: [  0.2466, 0.009412,  -0.7748]
-    # rotation   : [-0.5472,  0.6069, -0.5726, 0.06626]
 
 
-    add_wp(Affine3(pos=[0.2466, 0.009412,  -0.7748], rot=[-0.5472,  0.6069, -0.5726, 0.06626]), 1*time, waypoints_arm_2)
-    ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+    #LEFT ROTATION
+    # translation: [ 0.3586,  0.2586, -0.8023]
+    # rotation   : [0.7707, 0.1349, 0.2413, 0.5741]
+    # translation: [  0.1389, 0.009446,  -0.8135]
+    # rotation   : [ 0.7137, -0.4494,   0.516, -0.1496]
 
-    ci.waitReachCompleted('arm_2_tcp')
-    
-    waypoints_arm_2.clear()
-
-    exit(0)
-
-
-    
-    #right hand rotation
-    # translation: [ 0.3488,  0.1087, -0.7303]
-    #rotation   : [ 0.7655, -0.2252,  0.4736,  0.3728]
-
-    add_wp(Affine3(pos=[0.3488,  0.1087, -0.7303], rot=[0.7655, -0.2252,  0.4736,  0.3728]), 1*time, waypoints_arm_1)
+    add_wp(Affine3(pos=[0.3586,  0.2586, -0.8023], rot=[0.7707, 0.1349, 0.2413, 0.5741]), 2*time, waypoints_arm_1)
     ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
 
     ci.waitReachCompleted('arm_1_tcp')
-    waypoints_arm_1.clear()
-    waypoints_arm_2.clear()
-
-    #right and left rotation
-    # translation: [ 0.3357, 0.09681, -0.7826]
-    # rotation   : [ 0.7122, 0.05171,  0.4219,  0.5587]
-    # translation: [  0.2419, 0.001909,  -0.7709]
-    # rotation   : [-0.4922,  0.6523, -0.5646,  0.1159]
-
-    add_wp(Affine3(pos=[0.3357, 0.09681, -0.7826], rot=[0.7122, 0.05171,  0.4219,  0.5587]), 1*time, waypoints_arm_1)
-    add_wp(Affine3(pos=[0.2419, 0.001909,  -0.7709], rot=[-0.4922,  0.6523, -0.5646,  0.1159]), 1*time, waypoints_arm_2)
-    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-
-    ci.waitReachCompleted('arm_1_tcp')
-    ci.waitReachCompleted('arm_2_tcp')
 
     waypoints_arm_1.clear()
     waypoints_arm_2.clear()
 
+    #RIGHT ROTATION
+    # translation: [ 0.3586,  0.2586, -0.8023]
+    # rotation   : [0.7707, 0.1349, 0.2413, 0.5741]
+    # translation: [ 0.1414, 0.02862, -0.8197]
+    # rotation   : [ 0.6157, -0.5764,  0.4784, -0.2446]
 
-    #lift
+    # add_wp(Affine3(pos=[0.3586,  0.2586, -0.8023], rot=[0.7707, 0.1349, 0.2413, 0.5741]), 2*time, waypoints_arm_1)
+    # add_wp(Affine3(pos=[0.1414, 0.02862, -0.8197], rot=[0.6157, -0.5764,  0.4784, -0.2446]), 2*time, waypoints_arm_2)
+    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+
+    # ci.waitReachCompleted('arm_1_tcp')
+    # ci.waitReachCompleted('arm_2_tcp')
+
+    # waypoints_arm_1.clear()
+    # waypoints_arm_2.clear()
+    i_loop = 0
+    msg = HandCmd()
+    msg.pos_ref = 7500.
+    while i_loop < 5:
+        hand_pub.publish(msg)
+        i_loop += 1
+        rate.sleep()
+
+    ci.getTask('arm_2_tcp').setBaseLink('arm_1_tcp')
+
+
+    #LIFT
+    # translation: [ 0.3586,  0.2586, -0.5659]
+    # rotation   : [0.7707, 0.1349, 0.2413, 0.5741]
+    # translation: [-0.3094, 0.08039, 0.09101]
+    # rotation   : [  0.347, -0.0123,   0.775,  0.5281]
+    add_wp(Affine3(pos=[0.3586,  0.2586, -0.6], rot=[0.7707, 0.1349, 0.2413, 0.5741]), 2*time, waypoints_arm_1)
+    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+
+    ci.waitReachCompleted('arm_1_tcp')
+
+    waypoints_arm_1.clear()
+
+
+
+    
+    
+    #TORSO ROTATION AND TRANSLATION
+
+    # translation: [-0.0706,  0.5556,    1.97]
+    # rotation   : [-1.718e-08, -2.476e-08,      0.556,     0.8312]
+    add_wp(Affine3(pos=[-0.0706,  0.5556,    1.97], rot=[ 0-1.718e-08, -2.476e-08,      0.556,     0.8312]), 2*time, waypoints_torso)
+    ci.setWaypoints('torso_1', waypoints_torso)
+    ci.waitReachCompleted('torso_1')
+
+    waypoints_torso.clear()
+
+
+
+    # PUT DOWN
+
+    #     translation: [ 0.3586, 0.06366,   -0.85]
+    # rotation   : [0.7707, 0.1349, 0.2413, 0.5741]
+
+    add_wp(Affine3(pos=[ 0.3586, 0.06366,   -0.8], rot=[0.7707, 0.1349, 0.2413, 0.5741]), 2*time, waypoints_arm_1)
+    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    ci.waitReachCompleted('arm_1_tcp')
+
+    waypoints_arm_1.clear()
+
+
+    # RELEASE
+    #RIGHT
+    # translation: [0.02314,  0.5567,   1.146]
+    # rotation   : [ 0.8323, -0.1365,  0.2617, -0.4692]
+
+    ci.getTask('arm_2_tcp').setBaseLink('world')
+    
+    add_wp(Affine3(pos=[0.02314,  0.5567,   1.146], rot=[ 0.8323, -0.1365,  0.2617, -0.4692]), 2*time, waypoints_arm_2)
+    ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+    ci.waitReachCompleted('arm_2_tcp')
+
+    waypoints_arm_2.clear()
+
+    i_loop = 0
+    msg = HandCmd()
+    msg.pos_ref = 0.
+    while i_loop < 5:
+        hand_pub.publish(msg)
+        i_loop += 1
+        rate.sleep()
+
+    #LEFT
+    # translation: [ 0.3215,  0.1443, -0.8353]
+    # rotation   : [0.7707, 0.1349, 0.2413, 0.5741]
+
+
+    add_wp(Affine3(pos=[ 0.3215,  0.1443, -0.8353], rot=[0.7707, 0.1349, 0.2413, 0.5741]), 1*time, waypoints_arm_1)
+    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    ci.waitReachCompleted('arm_1_tcp')
+
+    waypoints_arm_1.clear()
+
+    # AFTER
+    # translation: [ 0.3716,  0.1464, -0.7253]
+    # rotation   : [0.7707, 0.1349, 0.2413, 0.5741]
+    # translation: [0.1352, 0.5332,  1.255]
+    # rotation   : [ 0.8323, -0.1365,  0.2617, -0.4692]
+
+    add_wp(Affine3(pos=[0.3716,  0.1464, -0.7253], rot=[0.7707, 0.1349, 0.2413, 0.5741]), 1*time, waypoints_arm_1)
+    add_wp(Affine3(pos=[0.1352, 0.5332,  1.255], rot=[0.8323, -0.1365,  0.2617, -0.4692]), 1*time, waypoints_arm_2)
+    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+
+    ci.waitReachCompleted('arm_1_tcp')
+    ci.waitReachCompleted('arm_2_tcp')
+
+    waypoints_arm_1.clear()
+    waypoints_arm_2.clear()
+
+    #START POINT
+
+    ci.getTask('arm_2_tcp').setBaseLink('torso_1')
+
+    add_wp(Affine3(pos=arm_1_start.translation, rot=arm_1_start.quaternion), 2*time, waypoints_arm_1)
+    add_wp(Affine3(pos=arm_2_start.translation, rot=arm_2_start.quaternion), 2*time, waypoints_arm_2)
+    add_wp(Affine3(pos=torso_start.translation, rot=torso_start.quaternion), 2*time, waypoints_torso)
+    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
+    ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
+    ci.setWaypoints('torso_1', waypoints_torso)
+
+    ci.waitReachCompleted('arm_1_tcp')
+    ci.waitReachCompleted('arm_2_tcp')
+    ci.waitReachCompleted('torso_1')
+
+    waypoints_arm_1.clear()
+    waypoints_arm_2.clear()
+    waypoints_torso.clear()
+
 
 
 
     print('Motion completed!')
     exit(0)
 
-    add_wp(Affine3(pos=[0.3116,  0.1199, -0.7384], rot=[0.6952, -0.3916,  0.5454,  0.2568]), 1*time, waypoints_arm_1)
-    add_wp(Affine3(pos=[0.1835, -0.04574,  -0.7058], rot=[0.8107, -0.1026,  0.4771,  0.3236]), 1*time, waypoints_arm_2)
-    ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-
-    ci.waitReachCompleted('arm_1_tcp')
-    ci.waitReachCompleted('arm_2_tcp')
 
 
 
-        
-    
 
-    # move object on the other side
-    add_wp(Affine3(pos=[-0.3,    0, 1.97], rot=[-4.289e-09, -1.976e-08,     0.6066,      0.795]), 1*time, waypoints_torso)
-    
-    ci.setWaypoints('torso_1', waypoints_torso)
-    ci.waitReachCompleted('torso_1')
-
-    # add_wp(Affine3(pos=[0.2686, -0.2368, -0.8264], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-
-    # # move torso only
-    # add_wp(Affine3(pos=[-0.3,    0, 1.97], rot=[ -0.01132, -0.005572,    0.4434,    0.8962]), 1*time, waypoints_torso)
-    # ci.setWaypoints('torso_1', waypoints_torso)
-    # ci.waitReachCompleted('torso_1')
-
-    # waypoints_torso.clear()
-    # waypoints_arm_1.clear()
-    # waypoints_arm_2.clear()
-
-    # get close to object
-    # add_wp(Affine3(pos=[0.2686,  0.2368, -0.8264], rot=[0.5223,  -0.2147,   0.8194, -0.09796]), 1*time, waypoints_arm_1)
-    # add_wp(Affine3(pos=[0.2686, -0.2368, -0.8264], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-
-    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-    # ci.waitReachCompleted('arm_1_tcp')
-    # ci.waitReachCompleted('arm_2_tcp')
-
-    # waypoints_torso.clear()
-    # waypoints_arm_1.clear()
-    # waypoints_arm_2.clear()
-
-    # # close object
-    # add_wp(Affine3(pos=[0.2686,  0.16, -0.8264], rot=[0.5223,  -0.2147,   0.8194, -0.09796]), 1*time, waypoints_arm_1)
-    # add_wp(Affine3(pos=[0.2686, -0.16, -0.8264], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-
-    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-    # ci.waitReachCompleted('arm_1_tcp')
-    # ci.waitReachCompleted('arm_2_tcp')
-
-    # waypoints_torso.clear()
-    # waypoints_arm_1.clear()
-    # waypoints_arm_2.clear()
-
-    # # move object on the other side
-    # add_wp(Affine3(pos=[0.5419,  0.1368, -0.5204], rot=[0.5223,  -0.2147,   0.8194, -0.09796]), 1*time, waypoints_arm_1)
-    # add_wp(Affine3(pos=[0.5419, -0.1368, -0.5204], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-    # add_wp(Affine3(pos=[-0.3,    0, 1.97], rot=[0.0,  0.0,    -0.4505,     0.8928]), 1*time, waypoints_torso)
-    
-    # ci.setWaypoints('torso_1', waypoints_torso)
-    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-    # ci.waitReachCompleted('arm_1_tcp')
-    # ci.waitReachCompleted('arm_2_tcp')
-    # ci.waitReachCompleted('torso_1')
-
-    # waypoints_torso.clear()
-    # waypoints_arm_1.clear()
-    # waypoints_arm_2.clear()
-
-    # # open object
-    # add_wp(Affine3(pos=[0.4419,  0.1368, -0.8204], rot=[0.5223,  -0.2147,   0.8194, -0.09796]), 1*time, waypoints_arm_1)
-    # add_wp(Affine3(pos=[0.4419, -0.1368, -0.8204], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-    
-    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-    # ci.waitReachCompleted('arm_1_tcp')
-    # ci.waitReachCompleted('arm_2_tcp')
-
-    # waypoints_torso.clear()
-    # waypoints_arm_1.clear()
-    # waypoints_arm_2.clear()
-
-    # # free object
-    # add_wp(Affine3(pos=[0.4419,  0.3368, -0.8204], rot=[0.5223,  -0.2147,   0.8194, -0.09796]), 1*time, waypoints_arm_1)
-    # add_wp(Affine3(pos=[0.4419, -0.3368, -0.8204], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-    
-    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-    # ci.waitReachCompleted('arm_1_tcp')
-    # ci.waitReachCompleted('arm_2_tcp')
-
-    # waypoints_torso.clear()
-    # waypoints_arm_1.clear()
-    # waypoints_arm_2.clear()
-
-    # # starting position
-    # add_wp(Affine3(pos=[-0.3,    0, 1.97], rot=[0.0, 0.0, 0.0, 1.0]), 1*time, waypoints_torso)
-    # add_wp(Affine3(pos=[0.5419,  0.4373, -0.5204], rot=[0.5223,  -0.2147,   0.8194, -0.09796]), 1*time, waypoints_arm_1)
-    # add_wp(Affine3(pos=[0.5419, -0.4373, -0.5204], rot=[0.5223,  0.2147,  0.8194, 0.09796]), 1*time, waypoints_arm_2)
-    
-    # ci.setWaypoints('arm_1_tcp', waypoints_arm_1)
-    # ci.setWaypoints('arm_2_tcp', waypoints_arm_2)
-    # ci.setWaypoints('torso_1', waypoints_torso)
-    # ci.waitReachCompleted('arm_1_tcp')
-    # ci.waitReachCompleted('arm_2_tcp')
-    # ci.waitReachCompleted('torso_1')
-
-
-
-    
-
-
-    # niter = 1
-
-    # t0 = rospy.Time.now()
-    #
-    # while not rospy.is_shutdown():
-    #     print('Started loop ', niter, ', elapsed time ', (rospy.Time.now() - t0).to_sec())
-    #     niter += 1
-    #
-    #     q1 = np.array([-2.5, -2.5, -2.5, 0.7, -2.7, -2.7, -2.7])
-    #     move_to_q(robot, q0, q1, time)
-    #
-    #     q2 = np.array([0.0, -1.5, 0.0, -1.0, 0.0, -1.4, 0.0])
-    #     move_to_q(robot, q1, q2, time)
-    #
-    #     q3 = np.array([2.5, -0.5, 2.5, -2.3, 2.7, 2.0, 2.7])
-    #     move_to_q(robot, q2, q3, time)
-    #
-    #     move_to_q(robot, q3, q0, time)
-    #
-    #
-    #
-    # print('Exiting..')
 
 
 if __name__ == '__main__':

@@ -25,7 +25,7 @@
     <xacro:property name="j_arm_6_upper" value="${[2.1, 2.8]}"/>
     <xacro:property name="j_arm_7_upper" value="${[2.8, 2.8]}"/>
     
-    <xacro:property name="j_prismatic_velocity" value="${[5]}"/>
+    <xacro:property name="j_prismatic_velocity" value="${[3]}"/>
     <xacro:property name="j_torso_velocity" value="${[3.86]}"/>
 
     <xacro:property name="j_arm_1_velocity" value="${[3.86]}"/>

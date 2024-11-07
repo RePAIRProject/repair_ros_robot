@@ -27,7 +27,8 @@
         </link>
 
         <joint name="j_torso_base" type="prismatic">
-            <xacro:insert_block name="origin" />
+            <!-- <xacro:insert_block name="origin" /> -->
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
             <parent link="${parent}" />
             <child link="dummy_prismatic_link"/>
             <axis xyz="0 0 1"/>
