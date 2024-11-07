@@ -22,9 +22,9 @@
     <xacro:property name="Torso_Ox" value=" 0.0 "/> 
     <xacro:property name="Torso_Oy" value=" 0.0 "/>
     <xacro:property name="Torso_Oz" value=" 0.0 "/>
-    <xacro:property name="Torso_roll" value=" ${PI/2} "/>
+    <xacro:property name="Torso_roll" value=" 0.0 "/>
     <xacro:property name="Torso_pitch" value=" 0.0 "/> 
-    <xacro:property name="Torso_yaw" value=" ${PI/2}"/>
+    <xacro:property name="Torso_yaw" value=" 0.0"/>
 
     <!-- Origin -->
     <xacro:property name="Shoulder_1_Ox" value=" 0.0 "/>  <!-- 0.0  --> 

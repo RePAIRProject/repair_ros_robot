@@ -593,7 +593,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </collision>
   </link>
   <joint name="j_torso_base" type="prismatic">
-    <origin rpy="1.570796326795 0.0 1.570796326795" xyz="0.0 0.0 0.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
     <parent link="sliding_guide_link"/>
     <child link="dummy_prismatic_link"/>
     <axis xyz="0 0 1"/>
