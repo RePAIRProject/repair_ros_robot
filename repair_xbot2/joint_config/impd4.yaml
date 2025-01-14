@@ -165,7 +165,7 @@ j_arm_2_5:
 #            - 0.8
 
 j_arm_2_6:
-    control_mode: 3B_motor_pos_ctrl
+    control_mode: D4_impedance_ctrl
     motor_has_brake: false
     pid:
         position:

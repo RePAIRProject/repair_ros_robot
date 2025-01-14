@@ -71,6 +71,15 @@ def main():
     print(arm_1_start)
     print(arm_2_start)
 
+    exit()
+
+    # translation: [     -0.3, 2.559e-08,      1.97]
+    # rotation   : [ 5.171e-14,  5.174e-14, -4.371e-08,          1]
+    # translation: [ 0.5187,  0.2863, -0.7627]
+    # rotation   : [  0.9946,   -0.102,   0.0156, 0.007779]
+    # translation: [ 0.5419, -0.4373, -0.5204]
+    # rotation   : [ 0.5223,  0.2147,  0.8194, 0.09796]
+
 
 
     

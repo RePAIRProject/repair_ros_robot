@@ -598,7 +598,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <parent link="sliding_guide_link"/>
     <child link="dummy_prismatic_link"/>
     <axis xyz="0 0 1"/>
-    <limit effort="147" lower="-0.8" upper="0.8" velocity="2.0"/>
+    <limit effort="147" lower="-0.8" upper="0.8" velocity="2.2"/>
   </joint>
   <!-- torso -->
   <joint name="j_torso_1" type="revolute">
