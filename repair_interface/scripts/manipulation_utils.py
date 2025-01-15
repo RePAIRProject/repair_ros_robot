@@ -34,6 +34,7 @@ class ManipulationUtils:
         self.mp_dawnik_topic = "/motion_planner/dawnik"
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
+        print("planing for arm ", arm)
         rospy.loginfo("[ManipulationUtils] Waiting for moveit motion planner service...")
         rospy.wait_for_service(self.mp_moveit_topic)
         rospy.loginfo("[ManipulationUtils] Service found!")

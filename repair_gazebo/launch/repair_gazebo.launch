@@ -56,7 +56,7 @@
 
   <arg name="RPf_00126_model" default="$(find repair_urdf)/sdf/RPf_00126/model.sdf"/>
   <node name="RPf_00126_description" pkg="gazebo_ros" type="spawn_model" 
-  args="-file $(arg RPf_00126_model) -sdf -model RPf_00126 -x 0.0 -y 0.1 -z 1.15" />
+  args="-file $(arg RPf_00126_model) -sdf -model RPf_00126 -x 0.0 -y 0.1 -z 1.15" /> -->
 
   <!-- <arg name="frag2_model" default="$(find repair_urdf)/sdf/frag2/model.sdf"/>
   <node name="frag2_description" pkg="gazebo_ros" type="spawn_model" 

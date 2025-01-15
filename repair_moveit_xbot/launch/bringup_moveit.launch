@@ -32,11 +32,10 @@
     </include>
     
     <!-- start realsense node -->    
-    <!--<include file="$(find realsense2_camera)/launch/rs_camera.launch.launch" />
+    <!-- <include file="$(find realsense2_camera)/launch/rs_camera.launch" >
     	<arg name="filters" value="pointcloud" />
     	<arg name="initial_reset" value="true" />
-    </include>
-    -->	
+    </include> -->
 
     <!-- launch the repair_interface node
     <node name="repair_interface" pkg="repair_interface" type="repair_interface_node" output="screen" />-->

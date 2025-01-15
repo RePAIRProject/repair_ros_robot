@@ -22,18 +22,19 @@ class QbHand:
         else:
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
-            self.close_value =19000.0
+            self.close_value =14000.0
 
         if gazebo:
             self.init_ros()
         self.init_params()
 
-        if self.side == "right":
-            topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
-            self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
-        elif self.side == "left":
-            topic = "/xbotcore/"+self.side+"_hand/command"
-            self.GripperPub = rospy.Publisher(topic, HandCmd, queue_size=3)
+        # if self.side == "right":
+        #     # topic = "/qbhand1/control/qbhand1_synergy_trajectory_controller/command"
+        #     topic = "/xbotcore/"+self.side+"_hand/command"
+        #     self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
+        # elif self.side == "left":
+        topic = "/xbotcore/"+self.side+"_hand/command"
+        self.GripperPub = rospy.Publisher(topic, HandCmd, queue_size=3)
 
         
 
@@ -48,7 +49,8 @@ class QbHand:
             self.GripperPub.publish(self.gripperMsg)
 
         elif self.gazebo == False and self.side == "right":
-            self.qbhand_contol(aperture)
+            self.gripperMsg.pos_ref = aperture
+            self.GripperPub.publish(self.gripperMsg)
         
         elif self.gazebo == False and self.side == "left":
             #QUIRINO, TO_CHECK
@@ -105,9 +107,6 @@ class QbHand:
         
         
     def qbhand_contol(self, val):
-        
-        
-
         msg = JointTrajectory()
         msg.joint_names = ['qbhand1_synergy_joint']
         msg.header.stamp = rospy.Time.now()
@@ -116,7 +115,8 @@ class QbHand:
         point.time_from_start = rospy.Duration(1)
         msg.points.append(point)
 
-        self.qb_hand_pub.publish(msg)
+        # self.qb_hand_pub.publish(msg)
+        self.GripperPub.publish(msg)
         rospy.sleep(2)
 
 

@@ -45,24 +45,29 @@ if __name__ == '__main__':
 
     mu = ManipulationUtils()
 
-    debug = False
+    debug = True
     use_pyrealsense = False
 
     # Get and print parameters
-    gazebo = bool(rospy.get_param("/"+node_name+"/gazebo", False))
+    gazebo = False # bool(rospy.get_param("/"+node_name+"/gazebo", False))
 
     hand = True
     if hand:
-      # Create QbHand object for controlling the hand
-      print('Connecting to qb Soft Hand')
-      hand_api_right = QbHand('right', gazebo)
-      hand_api_left = QbHand('left', gazebo)
-      print('Connected!')
+        # Create QbHand object for controlling the hand
+        print('Connecting to qb Soft Hand')
+        hand_api_right = QbHand('right', gazebo)
+        hand_api_left = QbHand('left', gazebo)
+        print('Connected!')
+        
+        # close hand
+        #hand_api_right.close_hand()
+        #hand_api_left.close_hand()
+        #print('Closed!')
 
-      # open hand
-      hand_api_right.open_hand()
-      hand_api_left.open_hand()
-      print('Opened!')
+        # open hand
+        hand_api_right.open_hand()
+        hand_api_left.open_hand()
+        print('Opened!')
 
     tf_hand_left = get_transform(parent_frame="left_hand_v1_wide_grasp_link", child_frame="arm_1_angle_flange")
     tf_hand_right = get_transform(parent_frame="right_hand_v1_2_research_grasp_link", child_frame="arm_2_angle_flange")
@@ -220,6 +225,7 @@ if __name__ == '__main__':
         ## 1. Go to position over the object
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+        
         if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
             break
 

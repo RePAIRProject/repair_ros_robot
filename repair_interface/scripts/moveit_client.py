@@ -98,7 +98,7 @@ class MoveitClient:
         # move_group.set_joint_value_target(waypoints[-1])
 
         (plan, fraction) = move_group.compute_cartesian_path(
-            waypoints, 0.01, 2.5
+            waypoints, 0.01
         )
         return plan, fraction
     
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     rospy.init_node("moveit_client_node")
 
     # get parameters
-    use_xbot = rospy.get_param("~use_xbot", False)
+    use_xbot = rospy.get_param("~use_xbot", True)
     use_gazebo = rospy.get_param("~use_gazebo", False)
 
     # Create a MoveitClient object
