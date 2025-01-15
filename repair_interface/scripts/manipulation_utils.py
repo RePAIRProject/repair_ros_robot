@@ -35,7 +35,7 @@ class ManipulationUtils:
     def __init__(self):
         self.mp_moveit_topic = "/motion_planner/moveit_py"
         self.mp_dawnik_topic = "/motion_planner/dawnik"
-        self.mp_klampt_topic = "/repair_motion_controller/goal"
+        self.mp_klampt_topic = "/repair_motion_controller"
         self.klampt_mp_client = actionlib.SimpleActionClient(self.mp_klampt_topic, RepairMoveToAction)
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
@@ -95,16 +95,18 @@ class ManipulationUtils:
 
             goal = RepairMoveToGoal()
             
-            if arm.value == 0: #
-                pass
+            if arm.value == 2: #
+                rospy.loginfo(f"[ManipulationUtils] arm ENUM 2: NOT IMPLEMENTED")
 
-            if arm.value == 1: # Left Arm
+            if arm.value == 0: # Left Arm
                 goal.arm = 0
                 goal.target_pose_left = pose.pose
+                rospy.loginfo(f"[ManipulationUtils] left arm pose: {pose}")
                 goal.target_time = 5 # sec
 
-            if arm.value == 2: # Right Arm
+            if arm.value == 1: # Right Arm
                 goal.arm = 1
+                rospy.loginfo(f"[ManipulationUtils] right arm pose: {pose}")
                 goal.target_pose_right = pose.pose
                 goal.target_time = 5 # sec
             
