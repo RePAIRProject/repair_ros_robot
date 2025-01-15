@@ -7,6 +7,7 @@ import rospy
 import tf
 import time
 from geometry_msgs.msg import PoseStamped, Quaternion
+
 # from sensor_msgs.msg import JointState
 import math
 from enum import Enum
@@ -226,7 +227,8 @@ if __name__ == '__main__':
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
         
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input
@@ -246,7 +248,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input
@@ -265,7 +268,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         if hand:
@@ -284,7 +288,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input
@@ -301,7 +306,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input
@@ -318,7 +324,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         if hand:
@@ -340,7 +347,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input

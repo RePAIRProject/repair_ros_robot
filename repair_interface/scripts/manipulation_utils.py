@@ -7,6 +7,9 @@ import rospy
 import tf
 import time
 from geometry_msgs.msg import PoseStamped, Quaternion
+
+from repair_motion_controller.msg import RepairMoveToAction, RepairMoveToFeedback, RepairMoveToResult, RepairMoveToGoal
+import actionlib
 # from sensor_msgs.msg import JointState
 import math
 from enum import Enum
@@ -32,6 +35,8 @@ class ManipulationUtils:
     def __init__(self):
         self.mp_moveit_topic = "/motion_planner/moveit_py"
         self.mp_dawnik_topic = "/motion_planner/dawnik"
+        self.mp_klampt_topic = "/repair_motion_controller/goal"
+        self.klampt_mp_client = actionlib.SimpleActionClient(self.mp_klampt_topic, RepairMoveToAction)
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
         print("planing for arm ", arm)
@@ -80,6 +85,45 @@ class ManipulationUtils:
                 return False
         except rospy.ServiceException as e:
             print("[ManipulationUtils] Service call for move_arm_to_pose_dawnik failed: %s" % e)
+            return False
+        
+    def move_arm_to_pose_klampt(self, arm:ARM_ENUM, pose:PoseStamped):
+        try:
+            rospy.loginfo("[ManipulationUtils] Waiting for Klampt motion planner Action Service...")
+            self.klampt_mp_client.wait_for_server()
+            rospy.loginfo("[ManipulationUtils] Klampt motion planner Action Service is found!")
+
+            goal = RepairMoveToGoal()
+            
+            if arm.value == 0: #
+                pass
+
+            if arm.value == 1: # Left Arm
+                goal.arm = 0
+                goal.target_pose_left = pose.pose
+                goal.target_time = 5 # sec
+
+            if arm.value == 2: # Right Arm
+                goal.arm = 1
+                goal.target_pose_right = pose.pose
+                goal.target_time = 5 # sec
+            
+            
+            self.klampt_mp_client.send_goal(goal)
+            rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
+            rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+            self.klampt_mp_client.wait_for_result()
+
+            result = self.klampt_mp_client.get_result()
+            if result.success:
+                rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+                return True
+            else:
+                rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+                return False
+
+        except:
+            print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
             return False
         
 if __name__ == "__main__":

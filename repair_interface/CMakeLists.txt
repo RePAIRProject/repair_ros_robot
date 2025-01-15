@@ -13,6 +13,8 @@ set (CMAKE_CXX_FLAGS "-g")
 find_package(catkin REQUIRED COMPONENTS
   dynamic_reconfigure
   geometry_msgs
+  actionlib
+  actionlib_msgs
   roscpp
   rospy
   sensor_msgs
@@ -27,6 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_visual_tools
   interactive_markers
   message_generation
+  repair_motion_controller
   xbot_msgs
 )
 

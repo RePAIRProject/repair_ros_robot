@@ -12,6 +12,8 @@
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
@@ -26,17 +28,23 @@
   <build_depend>rviz_visual_tools</build_depend>
   <build_depend>tf2_ros</build_depend>
   <build_depend>message_generation</build_depend>
+  <build_depend>repair_motion_controller</build_depend>
   <build_depend>xbot_msgs</build_depend>
 
   <build_export_depend>dynamic_reconfigure</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>actionlib</build_export_depend>
+  <build_export_depend>actionlib_msgs</build_export_depend>
   <build_export_depend>sensor_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>repair_motion_controller</build_export_depend>
 
   <exec_depend>dynamic_reconfigure</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>actionlib_msgs</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
@@ -51,5 +59,6 @@
   <exec_depend>rviz_visual_tools</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>repair_motion_controller</exec_depend>
 
 </package>
