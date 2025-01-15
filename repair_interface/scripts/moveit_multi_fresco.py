@@ -132,7 +132,7 @@ if __name__ == '__main__':
         obj_bbox = object_cloud.get_oriented_bounding_box()
 
         USE_WIDE_HAND_THRESHOLD = 0.09
-        use_wide_hand = True if obj_bbox.extent[1] > USE_WIDE_HAND_THRESHOLD else False
+        use_wide_hand = False #True if obj_bbox.extent[1] > USE_WIDE_HAND_THRESHOLD else False
         print("=== Extent:", obj_bbox.extent[1])
         if use_wide_hand:
             arm = ARM_ENUM.ARM_1
@@ -297,9 +297,9 @@ if __name__ == '__main__':
 
         ### 5. Move side
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, 0.50, 1.5]
+            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, 0.50, 1.35]
         else:
-            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, -0.50, 1.5]
+            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, -0.50, 1.35]
         
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
@@ -338,9 +338,9 @@ if __name__ == '__main__':
 
         ### 8. Go up
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [0.20, 0.5, 1.5]
+            arm_target_pose_np[:3] = [0.20, 0.5, 1.35]
         else:
-            arm_target_pose_np[:3] = [0.20, -0.5, 1.5]
+            arm_target_pose_np[:3] = [0.20, -0.5, 1.35]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
