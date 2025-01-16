@@ -21,6 +21,4 @@
 	path = realsense-ros
 	url = https://github.com/IntelRealSense/realsense-ros
 	branch = ros1-legacy
-[submodule "repair_motion_controller"]
-	path = repair_motion_controller
-	url = https://github.com/RePAIRProject/repair_motion_controller.git
+
