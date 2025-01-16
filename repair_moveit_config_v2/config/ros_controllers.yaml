@@ -1,13 +1,13 @@
-torso_trajectory_controller:
-  type: position_controllers/JointTrajectoryController
-  joints:
-    - j_torso_1
-  gains:
-    j_torso_1:
-      p: 100
-      d: 1
-      i: 1
-      i_clamp: 1
+# torso_trajectory_controller:
+#   type: position_controllers/JointTrajectoryController
+#   joints:
+#     - j_torso_1
+#   gains:
+#     j_torso_1:
+#       p: 100
+#       d: 1
+#       i: 1
+#       i_clamp: 1
 sliding_guide_traj_controller:
   type: position_controllers/JointTrajectoryController
   joints:
@@ -21,7 +21,7 @@ sliding_guide_traj_controller:
 arm_1_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-    - j_torso_1
+    # - j_torso_1
     - j_arm_1_1
     - j_arm_1_2
     - j_arm_1_3
@@ -30,11 +30,11 @@ arm_1_trajectory_controller:
     - j_arm_1_6
     - j_arm_1_7
   gains:
-    j_torso_1:
-      p: 100
-      d: 1
-      i: 1
-      i_clamp: 1
+    # j_torso_1:
+    #   p: 100
+    #   d: 1
+    #   i: 1
+    #   i_clamp: 1
     j_arm_1_1:
       p: 100
       d: 1
@@ -74,7 +74,7 @@ arm_1_trajectory_controller:
 arm_2_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-    - j_torso_1
+    # - j_torso_1
     - j_arm_2_1
     - j_arm_2_2
     - j_arm_2_3
@@ -83,11 +83,11 @@ arm_2_trajectory_controller:
     - j_arm_2_6
     - j_arm_2_7
   gains:
-    j_torso_1:
-      p: 100
-      d: 1
-      i: 1
-      i_clamp: 1
+    # j_torso_1:
+    #   p: 100
+    #   d: 1
+    #   i: 1
+    #   i_clamp: 1
     j_arm_2_1:
       p: 100
       d: 1
@@ -127,7 +127,7 @@ arm_2_trajectory_controller:
 both_arms_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-    - j_torso_1
+    # - j_torso_1
     - j_arm_1_1
     - j_arm_1_2
     - j_arm_1_3
@@ -143,11 +143,11 @@ both_arms_controller:
     - j_arm_2_6
     - j_arm_2_7
   gains:
-    j_torso_1:
-      p: 100
-      d: 1
-      i: 1
-      i_clamp: 1
+    # j_torso_1:
+    #   p: 100
+    #   d: 1
+    #   i: 1
+    #   i_clamp: 1
     j_arm_1_1:
       p: 100
       d: 1

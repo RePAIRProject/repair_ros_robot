@@ -14,15 +14,15 @@
         <chain base_link="base_link" tip_link="arm_1_tcp"/>
     </group>
 
-    <!-- <group name="arm2">
+    <group name="arm2">
         <chain base_link="base_link" tip_link="arm_2_tcp"/>
-    </group> -->
+    </group>
 
 
     <group name="chains">
         <!-- <group name="sliding_guide" /> -->
         <group name="arm1"/>
-        <!-- <group name="arm2"/> -->
+        <group name="arm2"/>
     </group>
     
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
@@ -34,13 +34,13 @@
         <joint name="j_arm_1_5" value="0.0"/>
         <joint name="j_arm_1_6" value="1.0"/>
         <joint name="j_arm_1_7" value="0.5"/>
-        <!-- <joint name="j_arm_2_1" value="0.0"/>
+        <joint name="j_arm_2_1" value="0.0"/>
         <joint name="j_arm_2_2" value="2.0"/>
         <joint name="j_arm_2_3" value="1.5"/>
         <joint name="j_arm_2_4" value="1.5"/>
         <joint name="j_arm_2_5" value="0.0"/>
         <joint name="j_arm_2_6" value="-1.0"/>
-        <joint name="j_arm_2_7" value="0.5"/> -->
+        <joint name="j_arm_2_7" value="0.5"/>
     </group_state>
    
 

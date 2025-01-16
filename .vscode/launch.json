@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ROS: Launch",
+            "request": "launch",
+            // "target": "/home/vislab/repair_robot_ws/src/repair_ros_robot/repair_interface/launch/recognize_it_test.launch",
+            "target": "/home/vislab/repair_robot_ws/src/repair_ros_robot/repair_interface/launch/moveit_multi.launch",
+            // "target": "/home/vislab/repair_robot_ws/src/repair_ros_robot/repair_interface/launch/moveit_test.launch",
+            "arguments": [
+                // "side:=mixed_hands",
+                "gazebo:=true",
+            ],
+            "launch": [
+                "rviz",
+                "gz",
+                "gzclient",
+                "gzserver"
+            ],
+            "type": "ros",
+        }
+    ]
+}

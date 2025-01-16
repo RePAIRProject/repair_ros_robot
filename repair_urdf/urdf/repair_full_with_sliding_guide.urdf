@@ -611,12 +611,12 @@ results of the optimization), otherwise we go with the old ones (generated for a
             <limit lower="${j_prismatic_lower[0]/2}" upper= "${j_prismatic_upper[0]/2}" effort="${j_prismatic_torque[0]}" velocity="${j_prismatic_velocity[0]}"/>
         </joint> -->
   <!-- torso -->
-  <joint name="j_torso_1" type="revolute">
+  <joint name="j_torso_1" type="fixed">
     <parent link="dummy_prismatic_link"/>
     <child link="torso_1"/>
-    <axis xyz="0 0 1"/>
+    <!-- <axis xyz="0 0 1"/> -->
     <origin rpy="1.570796326795 0.0 1.570796326795" xyz="0.0 0.0 0.0"/>
-    <limit effort="147.0" lower="-2.6" upper="2.6" velocity="3.86"/>
+    <!-- <limit effort="147.0" lower="-2.6" upper="2.6" velocity="3.86"/> -->
   </joint>
   <!-- torso  -->
   <link name="arm_2_1">
@@ -897,7 +897,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <transmission name="trans_j_torso_1">
+  <!-- <transmission name="trans_j_torso_1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="j_torso_1">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -906,7 +906,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> -->
   <link name="arm_1_1">
     <inertial>
       <origin xyz="0.010200651000000002 0.021560998 0.09876702500000001"/>
@@ -1185,7 +1185,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <transmission name="trans_j_torso_1">
+  <!-- <transmission name="trans_j_torso_1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="j_torso_1">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -1194,7 +1194,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
-  </transmission>
+  </transmission> -->
   <material name="qbhand/optional">
     <color rgba="0.0 0.5 0.8 1.0"/>
   </material>

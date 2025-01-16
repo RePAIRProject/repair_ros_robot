@@ -23,9 +23,9 @@
         <group name="arm_1"/>
         <group name="arm_2"/>
     </group>
-    <group name="torso">
+    <!-- <group name="torso">
         <joint name="j_torso_1"/>
-    </group>
+    </group> -->
     <group name="sliding_guide">
         <joint name="j_sliding_guide"/>
     </group>
@@ -71,9 +71,9 @@
         <joint name="j_arm_2_6" value="-0.3323"/>
         <joint name="j_arm_2_7" value="0"/>
     </group_state>
-    <group_state name="home" group="torso">
+    <!-- <group_state name="home" group="torso">
         <joint name="j_torso_1" value="0"/>
-    </group_state>
+    </group_state> -->
     <!-- IF sh_version= v1_wide  -->
     <xacro:if value="${sh_version == 'v1_wide'}">
         <!-- IF sh_version = v1_wide -->
