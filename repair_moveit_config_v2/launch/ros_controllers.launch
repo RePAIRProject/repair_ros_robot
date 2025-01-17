@@ -5,10 +5,10 @@
   <rosparam file="$(find repair_moveit_config_v2)/config/ros_controllers.yaml" command="load"/>
 
   <!-- Load the controllers -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" args="arm_1_trajectory_controller arm_2_trajectory_controller "/>
   <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" args="sliding_guide_traj_controller arm_1_trajectory_controller arm_2_trajectory_controller "/> -->
+    output="screen" args="arm_1_trajectory_controller arm_2_trajectory_controller "/> -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="sliding_guide_traj_controller arm_1_trajectory_controller arm_2_trajectory_controller "/>
   <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
     output="screen" args="torso_trajectory_controller sliding_guide_traj_controller arm_1_trajectory_controller arm_2_trajectory_controller "/> -->
 

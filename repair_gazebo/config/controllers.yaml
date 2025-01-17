@@ -5,7 +5,7 @@ joint_state_controller:
 arm_1_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-    - j_sliding_guide
+    # - j_sliding_guide
     - j_arm_1_1
     - j_arm_1_2
     - j_arm_1_3
@@ -30,6 +30,7 @@ arm_1_trajectory_controller:
 arm_2_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
+    # - j_sliding_guide
     - j_arm_2_1
     - j_arm_2_2
     - j_arm_2_3
@@ -51,17 +52,17 @@ arm_2_trajectory_controller:
   state_publish_rate:  25
   action_monitor_rate: 10
 
-# sliding_guide_traj_controller:
-#   type: position_controllers/JointTrajectoryController
-#   joints:
-#     - j_sliding_guide
-#   constraints:
-#         goal_time: 0.6
-#         stopped_velocity_tolerance: 0.0
-#         torso: {trajectory: 0.1, goal: 0.1}
-#   stop_trajectory_duration: 0.5
-#   state_publish_rate:  25
-#   action_monitor_rate: 10
+sliding_guide_traj_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - j_sliding_guide
+  constraints:
+        goal_time: 0.6
+        stopped_velocity_tolerance: 0.0
+        torso: {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
 
 # torso_trajectory_controller:
 #   type: position_controllers/JointTrajectoryController

@@ -5,12 +5,12 @@ controller_list:
   #   default: True
   #   joints:
   #     - j_torso_1
-  # - name: sliding_guide_traj_controller
-  #   action_ns: follow_joint_trajectory
-  #   type: FollowJointTrajectory
-  #   default: True
-  #   joints:
-  #     - j_sliding_guide
+  - name: sliding_guide_traj_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - j_sliding_guide
   - name: arm_1_trajectory_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
@@ -30,6 +30,7 @@ controller_list:
     type: FollowJointTrajectory
     default: True
     joints:
+      - j_sliding_guide
       - j_arm_2_1
       - j_arm_2_2
       - j_arm_2_3

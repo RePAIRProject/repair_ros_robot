@@ -8,16 +8,16 @@
 #       d: 1
 #       i: 1
 #       i_clamp: 1
-# sliding_guide_traj_controller:
-#   type: position_controllers/JointTrajectoryController
-#   joints:
-#     - j_sliding_guide
-#   gains:
-#     j_sliding_guide:
-#       p: 100
-#       d: 1
-#       i: 1
-#       i_clamp: 1
+sliding_guide_traj_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - j_sliding_guide
+  gains:
+    j_sliding_guide:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
 arm_1_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
@@ -81,6 +81,7 @@ arm_2_trajectory_controller:
   type: position_controllers/JointTrajectoryController
   joints:
     # - j_torso_1
+    - j_sliding_guide
     - j_arm_2_1
     - j_arm_2_2
     - j_arm_2_3
@@ -94,6 +95,11 @@ arm_2_trajectory_controller:
     #   d: 1
     #   i: 1
     #   i_clamp: 1
+    j_sliding_guide:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
     j_arm_2_1:
       p: 100
       d: 1
