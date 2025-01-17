@@ -222,38 +222,36 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 	ecat_master
 	```
 
-- Now start XBot in remote window 2
+- Now start XBot in remote window 2:
 	```bash
 	xbot2-core --hw ec_pos
 	```
 	This starts the motors to be controllable with position control. Alternatively you can start them in idle mode using ```xbot2-core --hw idle```
 
-- Now you have to manually start the motor cooling fans in remote window 3.
-	```bash
-	rosservice call /ec_client/set_motors_fan "motor_name: ['']
-	position: [0]
-	velocity: [0]
-	torque: [0]
-	amperage: [0]
-	homing_position: [0]
-	fan: [true]
-	led: [false]"
-	```
-
-- On your local PC you will need at least 3 command windows. In command window 1, you have to open the robot GUI. Here, you have to move the robot to the home position by clicking on the ```Home``` button.
+- Finally use the following to start the gui:
 	```bash
 	xbot2-gui
 	```
+- On your local PC you will need at least 3 command windows.
 
-- In local window 2 you have to start the bridge between XBot and Moveit.
-	```bash
-	rosrun repair_moveit_xbot moveit_xbot_bridge_node
-	```
-
-- Afterwards, you can start Moveit in local window 3.
+- First, you can start Moveit:
 	```bash
 	roslaunch repair_moveit_xbot bringup_moveit.launch
 	```
+- Furthermore, start the moveit server:
+	```bash
+	rosrun repair_interface moveit_client.py
+	```
+ - In order to run the camera, use:
+	```bash
+	roslaunch realsense2_camera demo_pointcloud_new.launch
+	```
+
+ - Finally, In Order to use the Fresco recognition, run:
+	```bash
+	rosrun repair_interface sand_detection.py
+	```
+ Now the szstem is set-up, and other code can be started!
 
 ### Moveit configuration
 
@@ -271,38 +269,12 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 - Alternatively, velocity and acceleration scaling factors can be updated in the Rviz Motion Planning plugin before planning a path.
 
 ### Run the pick and place demo
-The goal of the demo is to pick and place a fresco fragment. There are 2 versions of the demo. The manual demo is moving to fixed poses while the moveit demo is using a perception pipeline to determine a grasp pose. Both demos can be run in Gazebo or with the real robot. For this purpose the ```gazebo``` argument has to be set accordingly. The ```side``` argument defines whether the left or the right hand is used to grasp the fragment.
-
-#### Without perception
+The goal of the demo is to pick and place any number of fresco fragments. 
 ```bash
-roslaunch repair_interface manual_test.launch side:=right gazebo:=false
+rosrun repair_interface moveit_multi_fresco_cleaned.py
 ```
-
-#### With perception
-First you have to move the arms and hands out of the field of view of the torso camera. Afterwards you can execute the following script.
-```bash
-roslaunch repair_interface moveit_test.launch side:=right gazebo:=false
-```
-
-In the beginning two windows will pop up which you have to close by pressing the ```q``` button.
-
-#### Int Week 2 partial update
-First terminal
-```bash
-roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
-```
-
 Note: sh_version options are [v1_2_research, v1_wide, mixed_hands]
 
-Second terminal
-```bash
-rosrun repair_interface moveit_client.py _use_gazebo:=true
-```
-
-Recognition
-```bash
-rosrun repair_interface moveit_multi_fresco_with_recognition.py _side:=right _gazebo:=true
-```
 
 To run recognition, a few files need to be added (ask Luca Palmieri for the files):
 - RPf_00123 to RPf_001266 should be added to ```repair_ros_robot/repair_urdf/sdf```
@@ -316,8 +288,7 @@ To run recognition, a few files need to be added (ask Luca Palmieri for the file
 - Send commands to the SoftHans using ```/{left/right}_hand_v1s/synergy_command``` topic, or inspect the state of each finger looking at ```/{left/right}_hand_v1s/{fingername}_state``` topic
 
 # 4) Known Issues
-- The URDF does not reflect the real robot yet.
-- The planning parameters have to be optimized so that the robot does not stop between subsequent poses.
+- Translation axis needs to be included
 
 # 5) Relevant publications
 T.B.A.

@@ -38,6 +38,7 @@ class ManipulationUtils:
         self.mp_klampt_topic = "/repair_motion_controller"
         self.klampt_mp_client = actionlib.SimpleActionClient(self.mp_klampt_topic, RepairMoveToAction)
 
+
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
         print("planing for arm ", arm)
         rospy.loginfo("[ManipulationUtils] Waiting for moveit motion planner service...")
@@ -128,6 +129,58 @@ class ManipulationUtils:
             print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
             return False
         
+    def move_to_home(self):
+        left_pose = PoseStamped()
+        right_pose = PoseStamped()
+
+        left_pose.pose.position.x = 0.2281434536725418
+        left_pose.pose.position.y = 0.2229998203688685
+        left_pose.pose.position.z = 1.5244485559609986
+        left_pose.pose.orientation.x =  0.3745776186543538
+        left_pose.pose.orientation.y =  -0.22078314586194223
+        left_pose.pose.orientation.z =  -0.046757647640861
+        left_pose.pose.orientation.w =  0.8993109209242547
+
+        right_pose.pose.position.x = 0.21597898714022729
+        right_pose.pose.position.y = -0.24652714722018665
+        right_pose.pose.position.z = 1.5566318838742945
+        right_pose.pose.orientation.x = -0.37453463410597837
+        right_pose.pose.orientation.y = -0.22085599528517516
+        right_pose.pose.orientation.z = 0.0462163918152999
+        right_pose.pose.orientation.w = 0.899338914052578
+
+        self.move_arm_to_pose_moveit(ARM_ENUM.ARM_1, left_pose)
+        self.move_arm_to_pose_moveit(ARM_ENUM.ARM_2, right_pose)
+
+    def move_out_of_path(self, arm):
+        pose = PoseStamped()
+
+        if arm == ARM_ENUM.ARM_2:
+            #move left
+            pose.pose.position.x = 0.2281434536725418
+            pose.pose.position.y = 0.4229998203688685
+            pose.pose.position.z = 1.5244485559609986
+            pose.pose.orientation.x =  0.3745776186543538
+            pose.pose.orientation.y =  -0.22078314586194223
+            pose.pose.orientation.z =  -0.046757647640861
+            pose.pose.orientation.w =  0.8993109209242547
+            move_arm = ARM_ENUM.ARM_1
+
+        else:
+            pose.pose.position.x = 0.21597898714022729
+            pose.pose.position.y = -0.44652714722018665
+            pose.pose.position.z = 1.5566318838742945
+            pose.pose.orientation.x = -0.37453463410597837
+            pose.pose.orientation.y = -0.22085599528517516
+            pose.pose.orientation.z = 0.0462163918152999
+            pose.pose.orientation.w = 0.899338914052578
+            move_arm = ARM_ENUM.ARM_2
+
+        self.move_arm_to_pose_moveit(move_arm, pose)
+
+
+
+
 if __name__ == "__main__":
     rospy.init_node("manipulation_utils_node")
     mu = ManipulationUtils()

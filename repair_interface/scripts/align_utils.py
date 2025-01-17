@@ -3,9 +3,12 @@ import numpy as np
 from copy import deepcopy,copy
 import matplotlib.pyplot as plt
 import os, random, pdb
-from open3d.utility import Vector3dVector as v3v 
+import open3d as o3d
 from open3d.visualization import draw_geometries as gdraw
 from parameters import *
+import rospy
+from sensor_msgs.msg import PointCloud2
+import sensor_msgs.point_cloud2 as pc2
 
 def load_from_db(folder, names_list):
     """
@@ -70,7 +73,7 @@ def filter_pcd(pcd, z=1):
     xyz = np.asarray(pcd.points)
     idx = np.where(xyz[:, 2] < z)     # Prune point cloud to 0.8 meters from camera in z direction
     xyz = xyz[idx]
-    cropped_pcd.points = v3v(xyz)
+    cropped_pcd.points = o3d.utility.Vector3dVector(xyz)
     return cropped_pcd
 
 def est_bbox_distance(source, target, transformation):
@@ -198,9 +201,9 @@ def recognize_objects(objects):
 
     # recreate a clean scene by merging pointcloud of the clustered objects
     clean_scene = o3d.geometry.PointCloud()
-    objects_data = v3v(clustered_objects[0].points)
+    objects_data = o3d.utility.Vector3dVector(clustered_objects[0].points)
     for j in range(1, len(clustered_objects)):
-        objects_data.extend(v3v(clustered_objects[j].points))
+        objects_data.extend(o3d.utility.Vector3dVector(clustered_objects[j].points))
     clean_scene.points = objects_data
 
     # rescale the models in the database so that we have simmilar points to 
@@ -453,6 +456,17 @@ def execute_fast_global_registration(source_down, target_down, source_fpfh,
         o3d.pipelines.registration.FastGlobalRegistrationOption(
             maximum_correspondence_distance=distance_threshold))
     return result
+
+def get_points_from_ros():
+    point_cloud = rospy.wait_for_message("/camera/depth/color/points", PointCloud2)
+    pc = []
+
+    for p in pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True):
+        # if np.linalg.norm(p) > 0.65:
+        pc.append([p[0], p[1], p[2]])
+    xyz = np.asarray(pc)
+    return xyz
+
 
 def refine_registration(source, target, source_fpfh, target_fpfh, voxel_size, init_tf=np.eye(4)):
     distance_threshold = voxel_size * 0.5

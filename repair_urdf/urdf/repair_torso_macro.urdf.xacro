@@ -42,14 +42,14 @@
             <limit lower="${j_prismatic_lower[0]/2}" upper= "${j_prismatic_upper[0]/2}" effort="${j_prismatic_torque[0]}" velocity="${j_prismatic_velocity[0]}"/>
         </joint> -->
 
-        <joint name="j_torso_base" type="prismatic">
-        <!-- <xacro:insert_block name="origin" /> -->
+        <!-- <joint name="j_torso_base" type="fixed">
+         <xacro:insert_block name="origin" /> 
         <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
         <parent link="sliding_guide_link"/>
                 <child link="dummy_prismatic_link"/>
                 <axis xyz="0 0 1"/>
         <limit effort="147" lower="-0.8" upper="0.8" velocity="2.2"/>
-            </joint>
+            </joint> -->
         <!-- torso -->
         <joint name="j_torso_1" type="revolute">
             <parent link="dummy_prismatic_link"/>

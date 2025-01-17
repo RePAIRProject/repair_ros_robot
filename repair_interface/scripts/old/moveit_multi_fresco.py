@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     mu = ManipulationUtils()
 
-    debug = True
+    debug = False
     use_pyrealsense = False
 
     # Get and print parameters
@@ -131,8 +131,8 @@ if __name__ == '__main__':
         object_cloud = get_max_cluster(object_cloud, True)
         obj_bbox = object_cloud.get_oriented_bounding_box()
 
-        USE_WIDE_HAND_THRESHOLD = 0.09
-        use_wide_hand = False #True if obj_bbox.extent[1] > USE_WIDE_HAND_THRESHOLD else False
+        USE_WIDE_HAND_THRESHOLD = 0.13
+        use_wide_hand = True # True if obj_bbox.extent[1] > USE_WIDE_HAND_THRESHOLD else False
         print("=== Extent:", obj_bbox.extent[1])
         if use_wide_hand:
             arm = ARM_ENUM.ARM_1
@@ -148,7 +148,7 @@ if __name__ == '__main__':
             # Get fragment bounding box pose, transform to world frame & publish
             bbox_pose = get_pose_from_arr(np.concatenate((obj_bbox.get_center(), R.from_matrix(obj_bbox.R.tolist()).as_quat())))
             bbox_pose_world = transform_pose_vislab(bbox_pose, "camera_depth_optical_frame", "world")
-            publish_tf_np(get_arr_from_pose(bbox_pose_world), child_frame='obj_box_rot')
+            publish_tf_np(get_arr_from_pose(bbox_pose_world), child_frame='obj_box_rot')   
             
             # Get fragment bounding box rotation
             bbox_rot = R.from_quat(get_arr_from_pose(bbox_pose_world)[3:]).as_euler('xyz')
@@ -222,17 +222,13 @@ if __name__ == '__main__':
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
-
         ## 1. Go to position over the object
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
         
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
-
-        # wait for user input
-        input("Press Enter to continue...")
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -248,8 +244,8 @@ if __name__ == '__main__':
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input
@@ -260,36 +256,89 @@ if __name__ == '__main__':
             arm_target_pose_np[2] -= 0.250
         else:
             arm_target_pose_np[2] -= 0.260
-        arm_target_pose_np[0] += 0.02
-        #arm_target_pose_np[1] += 0.02
+        #arm_target_pose_np[0] += 0.02
+        arm_target_pose_np[1] += 0.02
         
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         if hand:
             ### 4. close hand
-            hand_api.close_hand()
-            print('Closed!')
+            hand_api.close_hand_2()
+            print('Closing!')
 
-        # wait for user input
-        input("Press Enter to continue...")
+            ### 5. Lift up
+            arm_target_pose_np[2] += 0.10
+
+            publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+            arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+            print ("Planning trajectory")
+            # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+            if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+            #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+                break
+            
+            qbhand_curr = hand_api.get_current()
+            print('curre', qbhand_curr.m1_curr)
+            print('curre2', qbhand_curr.m2_curr)
+            print('Is the fresco present?')
+            while (not (int(qbhand_curr.m1_curr) > 100 and int(qbhand_curr.m2_curr) > 100)):
+
+                hand_api.open_hand()
+                rospy.sleep(1)
+
+                ### 5. Go down
+                arm_target_pose_np[2] -= 0.10
+
+                publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+                arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+                print ("Planning trajectory")
+                # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+                if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+                #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+                    break
+
+                hand_api.close_hand_2()  
+                rospy.sleep(1)
+
+                ### 5. Lift up
+                arm_target_pose_np[2] += 0.10
+
+                publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+                arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
+
+                print ("Planning trajectory")
+                # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
+                if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+                #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+                    break
+
+                qbhand_curr = hand_api.get_current()
+
+            print('Yes')
+
+
+        hand_api.close_hand()
+        print('Closing!')
 
         ### 5. Lift up
-        arm_target_pose_np[2] += 0.173
+        arm_target_pose_np[2] += 0.073
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         # wait for user input
@@ -297,35 +346,32 @@ if __name__ == '__main__':
 
         ### 5. Move side
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, 0.50, 1.35]
+            arm_target_pose_np[:3] = [0.20 + 0.10* fresco_release, 0.50, 1.5]
         else:
-            arm_target_pose_np[:3] = [0.20 + 0.15* fresco_release, -0.50, 1.35]
+            arm_target_pose_np[:3] = [0.20 + 0.10* fresco_release, -0.50, 1.5]
         
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
-
-        # wait for user input
-        input("Press Enter to continue...")
 
         # 6. Go down
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [0.20, -1*(-0.50 + 0.13* fresco_release), 1.15] # very high because we had sand box
+            arm_target_pose_np[:3] = [0.20, -1*(-0.50 + 0.10* fresco_release), 1.15] # very high because we had sand box
         else:
-            arm_target_pose_np[:3] = [0.20, -0.50 + 0.13* fresco_release, 1.08]
+            arm_target_pose_np[:3] = [0.20, -0.50 + 0.10* fresco_release, 1.08]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
 
         if hand:
@@ -333,23 +379,22 @@ if __name__ == '__main__':
             hand_api.open_hand()
             print('Opened!')
 
-        # wait for user input
-        input("Press Enter to continue...")
-
         ### 8. Go up
         if arm == ARM_ENUM.ARM_1:
-            arm_target_pose_np[:3] = [0.20, 0.5, 1.35]
+            arm_target_pose_np[:3] = [0.20, 0.5, 1.5]
         else:
-            arm_target_pose_np[:3] = [0.20, -0.5, 1.35]
+            arm_target_pose_np[:3] = [0.20, -0.5, 1.5]
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         arm_target_pose = get_pose_stamped_from_arr(arm_target_pose_np)
 
         print ("Planning trajectory")
         # mu.move_arm_to_pose_dawnik(arm, arm_target_pose)
-        # if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-        if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+        if not mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+        #if not mu.move_arm_to_pose_klampt(arm, arm_target_pose):
             break
+
+        mu.move_to_home()
 
         # wait for user input
         input("Press Enter to continue...")

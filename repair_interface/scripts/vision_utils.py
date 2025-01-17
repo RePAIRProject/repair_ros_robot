@@ -110,7 +110,6 @@ def get_arr_from_pose(pose):
 
 def get_point_cloud_from_ros(debug=False):
     point_cloud = rospy.wait_for_message("/camera/depth/color/points", PointCloud2)
-    print(point_cloud)
     pc = []
 
     for p in pc2.read_points(point_cloud, field_names=("x", "y", "z"), skip_nans=True):

@@ -4,12 +4,11 @@
 import rospy
 
 from std_msgs.msg import Float64
-from ec_msgs.msg import HandCmd
+from ec_msgs.msg import HandCmd, HandStatus
 
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 FREQ = 200
-
 
 class QbHand:
     def __init__(self, side= "right", gazebo=False):
@@ -20,9 +19,16 @@ class QbHand:
             self.open_value = 0.0
             self.close_value = 0.9
         else:
-            self.gripperMsg = HandCmd()
-            self.open_value = 0.0
-            self.close_value =14000.0
+            if side == "left":
+                self.gripperMsg = HandCmd()
+                self.open_value = 0.0
+                self.close_value =11000.0
+                self.hand_status = None
+            else:
+                self.gripperMsg = HandCmd()
+                self.open_value = 0.0
+                self.close_value =18000.0
+                self.hand_status = None
 
         if gazebo:
             self.init_ros()
@@ -36,10 +42,22 @@ class QbHand:
         topic = "/xbotcore/"+self.side+"_hand/command"
         self.GripperPub = rospy.Publisher(topic, HandCmd, queue_size=3)
 
-        
+        topic = "/xbotcore/"+self.side+"_hand/status"    
+        rospy.Subscriber(topic, HandStatus, self.hand_current_callback)
 
         rospy.sleep(2)
         
+    def hand_current_callback(self, msg):
+        self.hand_status = msg
+        
+    def get_current(self):
+          
+        return self.hand_status
+        # Print the response
+        #print("QbHand Current:", response.currents[0])
+        #print("QbHand Residual Current:", response.currents[1])
+
+        #return response.currents
 
     def move_hand(self, aperture, secs=1.0):
         # moving
@@ -65,6 +83,15 @@ class QbHand:
         # close
         print('Closing qb Soft Hand..')
         self.move_hand(self.close_value)
+
+    def close_hand_2(self, used_hand):
+        # close
+        print('Closing qb Soft Hand..')
+        if used_hand == "left":
+            self.move_hand(9000)
+        else:
+             self.move_hand(15000)
+
 
     def open_hand(self, secs=0.5):
         # open
@@ -132,6 +159,25 @@ if __name__ == "__main__":
     else:
         value = 19000.0/2
     #hand_api.move_hand(value)
+    #hand_api.close_hand()
+    #hand_api.open_hand()
+
+    ### 4. close hand
     hand_api.close_hand()
-    hand_api.open_hand()
+    print('Closing!')
+
+    qbhand_curr = hand_api.get_current()
+
+    print('Is the fresco present?')
+    while (not (int(qbhand_curr.m1_curr) > 100 and int(qbhand_curr.m2_curr) > 100)):
+
+        hand_api.open_hand()
+        rospy.sleep(1)
+
+        hand_api.close_hand()  
+        rospy.sleep(1)
+        qbhand_curr = hand_api.get_current()
+
+    print('Yes')
+
     print('Finish!')
