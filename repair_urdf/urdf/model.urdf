@@ -887,6 +887,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
     </actuator>
   </transmission>
   
+  <!-- <transmission name="trans_j_sliding_guide">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_sliding_guide">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="j_sliding_guide_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
   <!-- <transmission name="trans_j_torso_1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="j_torso_1">
@@ -1175,6 +1185,16 @@ results of the optimization), otherwise we go with the old ones (generated for a
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+  <!-- <transmission name="trans_j_sliding_guide">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_sliding_guide">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="j_sliding_guide_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
   <!-- <transmission name="trans_j_torso_1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="j_torso_1">
