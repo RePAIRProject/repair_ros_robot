@@ -43,6 +43,7 @@ controller_list:
     type: FollowJointTrajectory
     default: True
     joints:
+      - j_sliding_guide
       - j_arm_1_1
       - j_arm_1_2
       - j_arm_1_3

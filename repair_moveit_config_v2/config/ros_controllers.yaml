@@ -140,6 +140,7 @@ both_arms_controller:
   type: position_controllers/JointTrajectoryController
   joints:
     # - j_torso_1
+    - j_sliding_guide
     - j_arm_1_1
     - j_arm_1_2
     - j_arm_1_3
