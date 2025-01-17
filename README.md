@@ -133,19 +133,6 @@ This repository contains the software to control the simulated and real RePAIR r
 > For docs on `repair_interface`, go to the [repair_interface](https://github.com/RePAIRProject/repair_ros_robot/tree/main/repair_interface).
 
 # 3) Usage
-## RVIZ
-### RVIZ visualization with joint sliders
-
-```bash
-roslaunch repair_urdf repair_full_slider.launch 
-```
-
-### RVIZ visualization without joint sliders
-
-```bash
-roslaunch repair_urdf repair_full.launch
-```
-
 ## Gazebo simulation
 ### View the robot in Gazebo
 ```bash
