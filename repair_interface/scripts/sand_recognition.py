@@ -29,7 +29,9 @@ with the realsense point cloud. This is done with ICP, it worked, but the robust
 We know that their position is similar and there is only some offset, so ICP should be good enough for this alignment.
 """
 class SandRecognition():
-    def __init__(self):
+    def __init__(self, data_folder: str, model_name: str, placement_file: str):
+    # can we use parameters? otherwise just
+    # def __init__(self):
         self.rgb_info_sub = rospy.Subscriber('/camera/color/camera_info', CameraInfo, self.camera_info_callback_rgb)
         self.depth_info_sub = rospy.Subscriber('/camera/aligned_depth_to_color/camera_info', CameraInfo, self.camera_info_callback_depth)
 
@@ -53,21 +55,20 @@ class SandRecognition():
 
         ###############################################
         # PARAMETERS FOR RECOGNITION
-        self.new_fragments = False          # set to True for the newly made frags
-        self.global_recognition = False     # set to True if we use a general model for all fragments
-        self.group = 29                     # if we do not use global recognition, we can specify a group
-        self.root_folder_recognition_models = "/home/repair/dev/repair_vision/checkpoints"
-        if not os.path.exists(self.root_folder_recognition_models):
-            print(f"\n\nWARNING: missing root folder for models.\n{self.root_folder_recognition_models} not found\n\nCopy the models!")
+        self.data_folder = "/home/repair/dev/repair_vision/checkpoints"
+        if not os.path.exists(self.data_folder):
+            raise Exception(f"Missing root folder for models.\n{self.data_folder} not existing")
+        self.model_full_path = os.path.join(self.data_folder, model_name)
+        if not os.path.exists(self.model_full_path):
+            raise Exception(f"No trained model found at {self.model_full_path}, please check the path")
         # in-house trained YOLO models for recognition
-        if self.new_fragments == True:
-            self.rec_model_path = os.path.join(self.root_folder_recognition_models, 'yolo_2D_recognition_new_fragments.pt')
-        elif self.global_recognition == True:
-            self.rec_model_path = os.path.join(self.root_folder_recognition_models, 'yolo_2D_recognition_repair.pt')
-        else:
-            self.rec_model_path = os.path.join(self.root_folder_recognition_models, 'yolo_2D_recognition_group{self.group}.pt')
+        self.recognition_model = YOLO(self.model_full_path)
 
-        self.recognition_model = YOLO(self.rec_model_path)
+        self.fresco_placement_file_path = os.path.join(self.data_folder, placement_file)
+        if not os.path.exists(self.model_full_path):
+            raise Exception(f"No placement json file found at {self.fresco_placement_file_path}, please check the path")
+        with open(self.fresco_placement_file_path, 'r') as fpf:
+            self.placements_dict = json.load(fpf)
         ###############################################
         
 
