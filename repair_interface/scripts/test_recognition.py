@@ -10,7 +10,7 @@ def main():
     model_path = '/home/lucap/code/rp-playground/recognition/runs/obb/global_recognition_06_03/weights/best.pt'
     model = YOLO(model_path)
     out = model(test_img_path)
-
+    breakpoint()
     print(f'\nfound {len(out[0].obb)} fragments!\n')
     for obb in out[0].obb:
         xywhr = obb.xywhr[0]
