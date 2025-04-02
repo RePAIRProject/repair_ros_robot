@@ -816,7 +816,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <joint name="j_arm_2_7" type="revolute">
     <parent link="arm_2_6"/>
     <child link="arm_2_7"/>
-    <origin rpy="-1.570796326795 0.3316123 0.0" xyz="0.0 0.062877 0.05"/>
+    <origin rpy="-1.570796326795 0.03316123 0.0" xyz="0.0 0.062877 0.05"/>
     <axis xyz="0 0 1"/>
     <limit effort="55.0" lower="-2.8" upper="2.8" velocity="11.72"/>
   </joint>
@@ -1104,7 +1104,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   <joint name="j_arm_1_7" type="revolute">
     <parent link="arm_1_6"/>
     <child link="arm_1_7"/>
-    <origin rpy="1.570796326795 0.3316123 0.0" xyz="0.0 -0.062877 0.05"/>
+    <origin rpy="1.570796326795 0.03316123 0.0" xyz="0.0 -0.062877 0.05"/>
     <axis xyz="0 0 1"/>
     <limit effort="55.0" lower="-2.8" upper="2.8" velocity="11.72"/>
   </joint>

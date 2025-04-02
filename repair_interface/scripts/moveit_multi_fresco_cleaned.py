@@ -28,7 +28,7 @@ from vision_utils import transform_pose_vislab, get_pose_from_transform
 from vision_utils import segment_table, get_number_of_frescos, get_max_cluster, check_frescos_left
 
 from qbhand_test import QbHand
-from moveit_test import MoveItTest
+#from moveit_test import MoveItTest
 
 from manipulation_utils import ManipulationUtils, ARM_ENUM
 
@@ -42,6 +42,14 @@ initial_pose_right = pytr.transform_from_pq([0.18584, -0.47267, 1.345, 0.158, 0.
 
 class PicpkNPlaceDemo:
     def __init__(self, debug=False):
+        # right hand
+        # - Translation: [0.232, -0.114, 1.076]
+        #- Rotation: in Quaternion [0.130, 0.755, -0.226, 0.601]
+
+        # left hand
+        #- Translation: [0.083, 0.518, 1.112]
+        #- Rotation: in Quaternion [-0.064, 0.740, 0.276, 0.609]
+
         self.mu = ManipulationUtils()
         self.debug = debug
         self.use_gazebo = False
@@ -49,11 +57,12 @@ class PicpkNPlaceDemo:
         self.use_hands = True
         self.use_fragment_alignment = False
         self.fragment_pose_list = []
-
+        self.min_z_value_arm_1 = 1.112
+        self.min_z_value_arm_2 = 1.076
         if self.use_hands:
             self.hand_api_right = QbHand('right', False)
             self.hand_api_left = QbHand('left', False)
-            self.moveit = MoveItTest()
+            #self.moveit = MoveItTest()
             self.setup_hands()
 
         self.fragment_pose_sub = rospy.Subscriber('/detection/points', PoseArray, self.fragemnt_pose_callback)
@@ -116,10 +125,8 @@ class PicpkNPlaceDemo:
             object_center = copy.deepcopy(self.fragment_pose_list[0][:3])
             num_frescos = len(self.fragment_pose_list)
         else:
-            print(len(self.fragment_pose_list))
             num_frescos = len(self.fragment_pose_list)
             object_center = copy.deepcopy(self.fragment_pose_list[0][:3])
-        object_center[2] = 1.21
         return  object_center, num_frescos, o3d.geometry.PointCloud()
 
     def set_active_arm(self):
@@ -134,6 +141,19 @@ class PicpkNPlaceDemo:
             self.used_hand = "right"
             print("=== Using QB Hand")
         self.mu.move_out_of_path(self.arm)
+
+    def get_fresco_world_pose(self, fresco_position, z_offset=None):
+        if z_offset is not None: 
+            fresco_position[2] = z_offset
+        print("fresco position: ", fresco_position)
+        initial_fresco_pose = np.concatenate((fresco_position, self.hand_tf))
+        
+        initial_fresco_pose_ros = get_pose_from_arr(initial_fresco_pose)
+
+        ### Transform the pose of fragment from the camera frame to the base frame (world)
+        fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_color_optical_frame", "world")
+        fresco_pose_world_np = get_arr_from_pose(fresco_pose_world)
+        return fresco_pose_world, fresco_pose_world_np
 
 
     def run_demo(self):
@@ -155,18 +175,19 @@ class PicpkNPlaceDemo:
                 hand_tf_rotated = self.get_fresco_allignment(obj_size)
 
             # Get initial pose of fragment
-            #object_center = object_cloud.get_center()
-            #object_center = [0, 0 , 1.21]
-            initial_pose = np.concatenate((object_center, self.hand_tf))
-            initial_pose = get_pose_from_arr(initial_pose)
+            #object_center = np.array([0, 0, 0.64495862])
+            fresco_pose_world_orig, fresco_pose_world_np_orig = self.get_fresco_world_pose(object_center.copy())
+            self.fresco_world_z = fresco_pose_world_np_orig[2]
+            fresco_pose_world, fresco_pose_world_np = self.get_fresco_world_pose(object_center.copy(), z_offset=1.21)
 
-            ### Transform the pose from the camera frame to the base frame (world)
-            hand_pose_world = transform_pose_vislab(initial_pose, "camera_color_optical_frame", "world")
-            hand_pose_world_np = get_arr_from_pose(hand_pose_world)
-            print(hand_pose_world_np)
-            hand_pose_world_np = self.add_move_position(self.arm, hand_pose_world_np.copy(),
-                                                       [0.05, -0.15, 0],
-                                                       [0.07, 0.13, 0])
+            print(fresco_pose_world_np)
+            print('Orig: ', fresco_pose_world_np_orig)
+            input('Go To first pose')
+
+            #ToDo change 
+            hand_pose_world_np = self.add_move_position(self.arm, fresco_pose_world_np.copy(),
+                                                       [0.0, 0.15, 0],
+                                                       [0.0, 0.125, 0])
             hand_pose_world_np[2] = 1.29
 
             if self.use_fragment_alignment:
@@ -206,15 +227,18 @@ class PicpkNPlaceDemo:
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
             self.move_arm_moveit(self.arm, arm_target_pose_np)
 
-
             # wait for user input DEBUG
             #input("Press Enter to continue...")
 
 
             ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-            arm_target_pose_np = self.add_move_position(self.arm, arm_target_pose_np.copy(),
-                                                        [0, 0.0, -0.250 + 0.06],
-                                                        [0, 0.0, -0.260 + 0.06])
+            fresco_down_pose = arm_target_pose_np.copy()
+            fresco_down_pose[2] = self.fresco_world_z
+            arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
+                                                        fresco_down_pose[:3],
+                                                        fresco_down_pose[:3])
+            print("go down", arm_target_pose_np)
+            input('Go Down')
             self.move_arm_moveit(self.arm, arm_target_pose_np)
 
 
@@ -258,16 +282,21 @@ class PicpkNPlaceDemo:
     def set_move_position(self, arm, arm_target_pose_np, position_l, position_r):
         if arm == ARM_ENUM.ARM_1:
             arm_target_pose_np[:3] = position_l
+            arm_target_pose_np[2] = np.clip(arm_target_pose_np[2], a_min=self.min_z_value_arm_1, a_max=2.0)
         else:
             arm_target_pose_np[:3] = position_r
+            arm_target_pose_np[2] = np.clip(arm_target_pose_np[2], a_min=self.min_z_value_arm_2, a_max=2.0)
+
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         return arm_target_pose_np
 
     def add_move_position(self, arm, target_pose_np, position_l, position_r):
         if arm == ARM_ENUM.ARM_1:
             target_pose_np[:3] += position_l
+            target_pose_np[2] = np.clip(target_pose_np[2], a_min=self.min_z_value_arm_1, a_max=2.0)
         else:
             target_pose_np[:3] += position_r
+            target_pose_np[2] = np.clip(target_pose_np[2], a_min=self.min_z_value_arm_2, a_max=2.0)
         publish_tf_np(target_pose_np, child_frame='arm_grasp_pose')
         return target_pose_np
 

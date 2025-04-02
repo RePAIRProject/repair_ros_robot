@@ -238,6 +238,7 @@ class SandDetection():
             poses = []
             for vd_pt3d in points_in_3d_space:
                 vd_pt3d.apply_transform(T_opencv2rviz).apply_transform(result_T.transformation)
+                print('TEST: ', vd_pt3d.vertices[0])
                 poses.append(pt3d_to_pose(vd_pt3d.vertices[0]))
 
             # result_ransac = execute_global_registration(rp_d, rs_d,

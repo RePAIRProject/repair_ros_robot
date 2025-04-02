@@ -7,7 +7,7 @@ from moveit_commander.conversions import pose_to_list
 import rospy
 import tf
 import sys
-from traj_utils import TrajectoryUtils
+#from traj_utils import TrajectoryUtils
 from trajectory_msgs.msg import JointTrajectoryPoint, JointTrajectory
 from xbot_msgs.msg import JointCommand, JointState
 from repair_interface.srv import *
@@ -19,7 +19,7 @@ class MoveitClient:
     def __init__(self, node_handle, use_xbot, use_gazebo):
         self.nh = node_handle
         self.init_moveit_client()
-        self.traj_utils = TrajectoryUtils()
+        #self.traj_utils = TrajectoryUtils()
 
         self.num_samples = 500
         print("[MoveitClient] using interpolation of", self.num_samples)

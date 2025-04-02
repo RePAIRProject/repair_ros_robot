@@ -79,7 +79,7 @@
     <xacro:property name="Wrist_2_Oy" value=" 0.062877 "/>
     <xacro:property name="Wrist_2_Oz" value=" 0.050 "/>
     <xacro:property name="Wrist_2_roll" value=" ${-PI/2} "/>
-    <xacro:property name="Wrist_2_pitch" value=" 0.3316123 "/>
+    <xacro:property name="Wrist_2_pitch" value=" 0.0"/>
     <xacro:property name="Wrist_2_yaw" value=" 0.0 "/>
     
     <!-- END-EFFECTORS-->
