@@ -90,7 +90,7 @@ class QbHand:
         if used_hand == "left":
             self.move_hand(9000)
         else:
-             self.move_hand(15000)
+             self.move_hand(15500)
 
 
     def open_hand(self, secs=0.5):

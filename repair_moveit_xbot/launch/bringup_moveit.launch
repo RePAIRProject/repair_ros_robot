@@ -26,10 +26,10 @@
     <!-- Given the published joint states, publish tf for the robot links
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />-->
 
-    <!-- Start moveit_rviz with the motion planning plugin -->
+    <!-- Start moveit_rviz with the motion planning plugin
     <include file="$(find repair_moveit_config_v3)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
-    </include>
+    </include> -->
     
     <!-- start realsense node -->    
     <!-- <include file="$(find realsense2_camera)/launch/rs_camera.launch" >

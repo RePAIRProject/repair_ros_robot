@@ -59,6 +59,7 @@ class PicpkNPlaceDemo:
         self.fragment_pose_list = []
         self.min_z_value_arm_1 = 1.112
         self.min_z_value_arm_2 = 1.076
+        self.use_klampt = True
         if self.use_hands:
             self.hand_api_right = QbHand('right', False)
             self.hand_api_left = QbHand('left', False)
@@ -186,8 +187,8 @@ class PicpkNPlaceDemo:
 
             #ToDo change 
             hand_pose_world_np = self.add_move_position(self.arm, fresco_pose_world_np.copy(),
-                                                       [0.0, 0.15, 0],
-                                                       [0.0, 0.125, 0])
+                                                       [0.0, 0., 0],
+                                                       [0.0, 0., 0])
             hand_pose_world_np[2] = 1.29
 
             if self.use_fragment_alignment:
@@ -213,23 +214,17 @@ class PicpkNPlaceDemo:
             arm_target_pose_np[3:] = q_new
 
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+            self.move_arm(self.arm, arm_target_pose_np)
 
             ### 2. Tilt hand
             ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
-            y_ang = 0.26
-            q_rot = quaternion_from_euler(0, y_ang, 0)
-            q_orig = arm_target_pose_np[3:].copy()
-            q_new = quaternion_multiply(q_rot, q_orig)
-            arm_target_pose_np[3:] = q_new
-
+            arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
 
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+            self.move_arm(self.arm, arm_target_pose_np)
 
             # wait for user input DEBUG
             #input("Press Enter to continue...")
-
 
             ### 3. Go down to grasp (return to parallel, go down, then rotate again)
             fresco_down_pose = arm_target_pose_np.copy()
@@ -239,11 +234,11 @@ class PicpkNPlaceDemo:
                                                         fresco_down_pose[:3])
             print("go down", arm_target_pose_np)
             input('Go Down')
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+            self.move_arm(self.arm, arm_target_pose_np)
 
 
             # 4. Grasp Object
-            self.grasping_loop(arm_target_pose_np)
+            arm_target_pose_np = self.grasping_loop(arm_target_pose_np)
 
 
             # wait for user input DEBUG
@@ -251,17 +246,18 @@ class PicpkNPlaceDemo:
 
 
             ### 5. Go To Placing Area
+            z = arm_target_pose_np[2]
             arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                        [0.20 + 0.10 * fresco_release, 0.50, 1.5+ 0.06],
-                                                        [0.20 + 0.10 * fresco_release, -0.50, 1.5+ 0.06])
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+                                                        [0.20 + 0.10 * fresco_release, 0.50, z],
+                                                        [0.20 + 0.10 * fresco_release, -0.50, z])
+            self.move_arm(self.arm, arm_target_pose_np)
 
 
             # 6. Go down
             arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
                                                         [0.20, -1 * (-0.50 + 0.10 * fresco_release), 1.15],
-                                                        [0.20, -0.50 + 0.10 * fresco_release, 1.08])
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+                                                        [0.20, -0.50 + 0.10 * fresco_release, 1.1])
+            self.move_arm(self.arm, arm_target_pose_np)
 
 
             ### 7. Open hand
@@ -272,11 +268,19 @@ class PicpkNPlaceDemo:
 
             ### 8. Go up
             arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                        [0.20, 0.5, 1.5+ 0.06],
-                                                        [0.20, -0.5, 1.5+ 0.06])
+                                                        [0.20, 0.5, z],
+                                                        [0.20, -0.5, z])
             ### Go Back To Home Position
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+            self.move_arm(self.arm, arm_target_pose_np)
             self.mu.move_to_home()
+
+
+    def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):
+        q_rot = quaternion_from_euler(r_ang, p_ang, y_ang)
+        q_orig = arm_target_pose[3:].copy()
+        q_new = quaternion_multiply(q_rot, q_orig)
+        arm_target_pose[3:] = q_new
+        return arm_target_pose
 
 
     def set_move_position(self, arm, arm_target_pose_np, position_l, position_r):
@@ -290,6 +294,7 @@ class PicpkNPlaceDemo:
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         return arm_target_pose_np
 
+
     def add_move_position(self, arm, target_pose_np, position_l, position_r):
         if arm == ARM_ENUM.ARM_1:
             target_pose_np[:3] += position_l
@@ -300,11 +305,19 @@ class PicpkNPlaceDemo:
         publish_tf_np(target_pose_np, child_frame='arm_grasp_pose')
         return target_pose_np
 
-    def move_arm_moveit(self, arm, pose_np):
+
+    def move_arm(self, arm, pose_np):
         print("Planning trajectory")
         arm_target_pose = get_pose_stamped_from_arr(pose_np)
-        if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-            exit()
+        if self.use_klampt:
+            if not self.mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+                print("Klmapt failed, will try moveit")
+                if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+                    exit()
+        else:
+            if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+                exit()
+
 
     def grasping_loop(self, arm_target_pose_np):
         ### Attempt Grasping
@@ -315,22 +328,29 @@ class PicpkNPlaceDemo:
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
 
-        self.move_arm_moveit(self.arm, arm_target_pose_np)
+        self.move_arm(self.arm, arm_target_pose_np)
 
 
         qbhand_curr = self.hand_api.get_current()
         print('curre', qbhand_curr.m1_curr)
         print('curre2', qbhand_curr.m2_curr)
         print('Is the fresco present?')
+        grasp_count = 0
+        orig_arm_target_pose_np = arm_target_pose_np.copy()
+
         while (not (int(qbhand_curr.m1_curr) > 100 and int(qbhand_curr.m2_curr) > 100)):
 
             self.hand_api.open_hand()
             rospy.sleep(1)
 
+            if grasp_count > 0:
+                yaw_angle = np.random.uniform(-np.deg2rad(20), np.deg2rad(20))
+                arm_target_pose_np = self.change_hand_angle(orig_arm_target_pose_np,  y_ang=yaw_angle, p_ang=0)
+
             ### Go down
             arm_target_pose_np[2] -= 0.10 + 0.06
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+            self.move_arm(self.arm, arm_target_pose_np)
 
             self.hand_api.close_hand_2(self.used_hand)
             rospy.sleep(1)
@@ -338,18 +358,21 @@ class PicpkNPlaceDemo:
             ### Lift up
             arm_target_pose_np[2] += 0.10 + 0.06
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-            self.move_arm_moveit(self.arm, arm_target_pose_np)
+            self.move_arm(self.arm, arm_target_pose_np)
 
             qbhand_curr = self.hand_api.get_current()
+            grasp_count += 1
 
         print('Fresco is Grasped')
         self.hand_api.close_hand()
         print('Closing Hand Tight!')
 
         ### 5. Lift up
-        arm_target_pose_np[2] += 0.073 + 0.06
+        arm_target_pose_np[2] += 0.133
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        self.move_arm_moveit(self.arm, arm_target_pose_np)
+        self.move_arm(self.arm, arm_target_pose_np)
+        return arm_target_pose_np
+
 
     def get_fresco_allignment(self, obj_bbox):
         # Get fragment bounding box pose, transform to world frame & publish
