@@ -75,7 +75,12 @@ class SandRecognition():
             self.placements_dict = json.load(fpf)
         ###############################################
 
-        
+        # i am not proud, but i need it to work
+
+        self.hardcoded_alignment_matrix = np.asarray([[0.99969224,0.02345452,-0.00808201, -93.17143693],
+                                                    [-0.02330734,0.99956903,0.01784734, 100.71646801],
+                                                    [0.00849713,-0.01765348,0.99980806,-6.69656267],
+                                                    [0,0,0,1]])
 
     # Camera info callback
     def camera_info_callback_rgb(self, msg):
@@ -280,7 +285,7 @@ class SandRecognition():
 
         #     # refined_result = refine_registration(rp_d, rs_d, result_ransac, voxel_size)
 
-    def recognize_and_publish(self, pose_array_pub, verbosity=1, debug=False):
+    def recognize_and_publish(self, pose_array_pub, verbosity=1, debug=False, show_image_feed=False, use_hardcore=True):
         """
         The main loop with the 2D color recognition, reprojection and registration 
         """
@@ -289,11 +294,12 @@ class SandRecognition():
         while not rospy.is_shutdown():
             points3d_rs = get_points_from_ros()
             
-            det_res = self.recognition_model(self.rgb_image)
+            det_res = self.recognition_model(self.rgb_image, conf=0.5, iou=0.2)
             print(det_res)
             points_in_3d_space = []
             #cv2.imwrite(f'rgb_{counter}.png', self.rgb_image)
             counter += 1
+            
             if debug ==True:
                 vedo_spheres = []
                 img2draw = self.rgb_image.copy()
@@ -331,6 +337,20 @@ class SandRecognition():
             if debug == True:
                 cv2.imshow("image", img2draw)
                 cv2.waitKey(1)
+            if show_image_feed == True:
+                img2draw = self.rgb_image.copy()
+                if len(det_res[0].obb) > 0:
+                    for obb in det_res[0].obb:
+                        xywhr = obb.xywhr[0]
+                        centerx = np.round(obb.xywhr[0][0].item()).astype(int)
+                        centery = np.round(obb.xywhr[0][1].item()).astype(int)
+                        cv2.circle(img2draw, (centerx, centery), 2, (0, 0, 255), 3)
+                        rectpts = obb.xyxyxyxy.cpu().numpy().reshape(4,2).astype(np.int32)
+                        img2draw = cv2.polylines(img2draw, [rectpts], isClosed=True, color=(0, 0, 255))
+
+                cv2.imshow(f'recognition', img2draw)
+                print(f'detected {len(det_res[0].obb)} objects')
+                cv2.waitKey(1)
             # MISALIGNMENT CORRECTION
             # align reprojected pointcloud with realsense pointcloud
 
@@ -351,12 +371,13 @@ class SandRecognition():
                 print('mean point vedo_pcl', np.mean(pts3d))
             
             # STEP 2:
-            # ICP Alignment (to the RealSense point cloud)
-            realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
-            vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
-            rs_d, rs_f = preprocess_point_cloud(realsense_pcl_o3d, self.voxel_size)
-            rp_d, rp_f = preprocess_point_cloud(vedo_pcl_o3d, self.voxel_size)
-            align_to_realsenseT = align_with_icp(rp_d, rs_d, voxel_size=self.voxel_size, fast=False)
+            if use_hardcore == False:
+                # ICP Alignment (to the RealSense point cloud)
+                realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
+                vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
+                rs_d, rs_f = preprocess_point_cloud(realsense_pcl_o3d, self.voxel_size)
+                rp_d, rp_f = preprocess_point_cloud(vedo_pcl_o3d, self.voxel_size)
+                align_to_realsenseT = align_with_icp(rp_d, rs_d, voxel_size=self.voxel_size, fast=False)
 
             # STEP 3:
             # for each detected point in the scene, apply the transformation to get it to the correct location
@@ -364,20 +385,29 @@ class SandRecognition():
             transformed_points_in_3d_space = []
             for vd_pt3d, rotation in points_in_3d_space:
                 # print(vd_pt3d)
-                vd_pt3d.apply_transform(self.T_opencv2rviz).apply_transform(align_to_realsenseT.transformation)
+                vd_pt3d.apply_transform(self.T_opencv2rviz)
+                if use_hardcore == False:
+                    vd_pt3d.apply_transform(align_to_realsenseT.transformation)
+                else:
+                    vd_pt3d.apply_transform(self.hardcoded_alignment_matrix)
                 # print("transform")
                 # print(vd_pt3d)
                 transformed_points_in_3d_space.append(vd_pt3d)
                 poses.append(pt3d_to_pose(vd_pt3d.vertices[0], rotation=rotation))
 
-            if verbosity > 1:
-                print("# ALIGNMENT TO REALSENSE")
+            if verbosity > 0 and use_hardcore == False:
+                print("\n# ALIGNMENT TO REALSENSE")
                 print(align_to_realsenseT)
                 print(align_to_realsenseT.transformation)
+                print("\n# ALIGNMENT TO REALSENSE")
+
 
             if debug == True:
                 # vedo.show(vedo_pcl, realsense_pcl, vedo_spheres, transformed_points_in_3d_space, axes=1, interactive=True).close()
-                vedo.show(vedo_pcl.apply_transform(align_to_realsenseT.transformation), realsense_pcl, vedo_spheres, points_in_3d_space, axes=1, interactive=True).close()
+                if use_hardcore == False:
+                    vedo.show(vedo_pcl.apply_transform(align_to_realsenseT.transformation), realsense_pcl, vedo_spheres, points_in_3d_space, axes=1, interactive=True).close()
+                else:
+                    vedo.show(vedo_pcl.apply_transform(self.hardcoded_alignment_matrix), realsense_pcl, vedo_spheres, points_in_3d_space, axes=1, interactive=True).close()
             
             # STEP 4:
             # Create the PoseArray and publish
@@ -461,6 +491,6 @@ if __name__ == '__main__':
     recognition = SandRecognition(data_folder="/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix", 
                                   model_name="best.pt",
                                   placement_file='int_week_placements.json')
-    recognition.recognize_and_publish(pose_array_pub, verbosity=verbosity_level, debug=False)
+    recognition.recognize_and_publish(pose_array_pub, verbosity=verbosity_level, debug=False, show_image_feed=True, use_hardcore=True)
 
     rospy.spin()
