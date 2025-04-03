@@ -62,7 +62,7 @@ class ManipulationUtils:
         self.move_arm_to_pose_moveit(ARM_ENUM.ARM_2, right_pose)
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
-        print("planing for arm ", arm)
+        #print("planing for arm ", arm)
         rospy.loginfo("[ManipulationUtils] Waiting for moveit motion planner service...")
         rospy.wait_for_service(self.mp_moveit_topic)
         rospy.loginfo("[ManipulationUtils] Service found!")
@@ -112,9 +112,9 @@ class ManipulationUtils:
         
     def move_arm_to_pose_klampt(self, arm:ARM_ENUM, pose:PoseStamped):
         try:
-            rospy.loginfo("[ManipulationUtils] Waiting for Klampt motion planner Action Service...")
+            #rospy.loginfo("[ManipulationUtils] Waiting for Klampt motion planner Action Service...")
             self.klampt_mp_client.wait_for_server()
-            rospy.loginfo("[ManipulationUtils] Klampt motion planner Action Service is found!")
+            #rospy.loginfo("[ManipulationUtils] Klampt motion planner Action Service is found!")
 
             goal = RepairMoveToGoal()
             
@@ -124,19 +124,19 @@ class ManipulationUtils:
             if arm.value == 0: # Left Arm
                 goal.arm = 0
                 goal.target_pose_left = pose.pose
-                rospy.loginfo(f"[ManipulationUtils] left arm pose: {pose}")
+                #rospy.loginfo(f"[ManipulationUtils] left arm pose: {pose}")
                 goal.target_time = 5 # sec
 
             if arm.value == 1: # Right Arm
                 goal.arm = 1
-                rospy.loginfo(f"[ManipulationUtils] right arm pose: {pose}")
+                #rospy.loginfo(f"[ManipulationUtils] right arm pose: {pose}")
                 goal.target_pose_right = pose.pose
                 goal.target_time = 5 # sec
             
             
             self.klampt_mp_client.send_goal(goal)
-            rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
-            rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+            #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
+            #rospy.loginfo("[ManipulationUtils] Waiting for action result...")
             self.klampt_mp_client.wait_for_result()
 
             result = self.klampt_mp_client.get_result()

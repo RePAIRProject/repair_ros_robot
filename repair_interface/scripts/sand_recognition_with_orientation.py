@@ -54,8 +54,8 @@ class SandRecognition():
         self.voxel_size = 5
 
         # is this needed?
-        # self.tf_buffer = tf2_ros.Buffer()
-        # self.listener = tf2_ros.TransformListener(self.tf_buffer)
+        self.tf_buffer = tf2_ros.Buffer()
+        self.listener = tf2_ros.TransformListener(self.tf_buffer)
 
         ###############################################
         # PARAMETERS FOR RECOGNITION
@@ -122,153 +122,178 @@ class SandRecognition():
             rospy.logerr("Error converting Depth image: %s", str(e))
 
 
-    def transform_pose_array_to_world(self, input_pose, from_frame, to_frame):
-        pose_stamped = tf2_geometry_msgs.PoseStamped()
-        pose_stamped.pose = input_pose
-        pose_stamped.header.frame_id = from_frame
-        try:
-            # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
-            output_pose_stamped = self.tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(0.5))
-            print(output_pose_stamped.header)
-            return output_pose_stamped.pose
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-            print('hello')
-            raise
+    def transform_pose_array_to_world(self, poses):
+        transformed_poses = []
+        for pose in poses:
+            # Transform the poses into the world frame
+            pose_stamped = tf2_geometry_msgs.PoseStamped()
+            pose_stamped.pose = pose
+            pose_stamped.header.frame_id = "camera_color_optical_frame"
+            # pose_stamped.header.stamp = rospy.Time.now()
+            # rospy.sleep(1)
+            try:
+                # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
+                output_pose_stamped = self.tf_buffer.transform(pose_stamped, "world", rospy.Duration(1.0))
+                transformed_poses.append(output_pose_stamped.pose)
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                print('ERROR')
+                raise
+
+        transformed_pose_array_msg = PoseArray()
+        transformed_pose_array_msg.header.stamp = rospy.Time.now()
+        transformed_pose_array_msg.header.frame_id = "world"  # Now in the world frame
+        transformed_pose_array_msg.poses = transformed_poses
+
+        return transformed_pose_array_msg
+
+        # pose_stamped = tf2_geometry_msgs.PoseStamped()
+        # pose_stamped.pose = input_pose
+        # pose_stamped.header.frame_id = from_frame
+        # try:
+        #     # ** It is important to wait for the listener to start listening. Hence the rospy.Duration(1)
+        #     output_pose_stamped = self.tf_buffer.transform(pose_stamped, to_frame, rospy.Duration(0.5))
+        #     print(output_pose_stamped.header)
+        #     return output_pose_stamped.pose
+        # except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+        #     print('hello')
+        #     raise
     
     def mesh2pcl(self, mesh):
         pcl = o3d.geometry.PointCloud(points=o3d.utility.Vector3dVector(np.asarray(mesh.vertices)))
         return pcl
     
-    def recognize_and_publish_DEBUG(self, pose_array_pub, verbosity=1):
-        """
-        We use for debugging (3D interactive visualization to make sure everything is correct)
-        """
-        # main loop
-        T_opencv2rviz = np.eye(4)
-        while not rospy.is_shutdown():
-            points3d_rs = get_points_from_ros()
-            img2draw = self.rgb_image.copy()
-            # recognition
-            det_res = self.recognition_model(self.rgb_image)
-            points_in_3d_space = []
-            vedo_spheres = []
+    # def recognize_and_publish_DEBUG(self, pose_array_pub, verbosity=1):
+        # """
+        # We use for debugging (3D interactive visualization to make sure everything is correct)
+        # """
+        # # main loop
+        # T_opencv2rviz = np.eye(4)
+        # while not rospy.is_shutdown():
+        #     points3d_rs = get_points_from_ros()
+        #     img2draw = self.rgb_image.copy()
+        #     # recognition
+        #     det_res = self.recognition_model(self.rgb_image)
+        #     points_in_3d_space = []
+        #     vedo_spheres = []
 
-            # each box has a faragment
-            for bbox in det_res[0].boxes:
-                xywh = bbox.xywh[0].cpu().numpy()
-                xyxy = bbox.xyxy[0].cpu().numpy()
-                centerx = np.floor(xyxy[0] + (xyxy[2]-xyxy[0]) / 2).astype(int)
-                centery = np.floor(xyxy[1] + (xyxy[3]-xyxy[1]) / 2).astype(int)
-                depth = self.depth_image[centery, centerx] #depth_raw_frame.get_distance(coordinates[0], coordinates[1])
-                point_in_3d_space = rs.rs2_deproject_pixel_to_point(self.depth_intrinsics, [centery, centerx], depth)
-                fragment_id = int(bbox.cls.item())
-                # print("point 3d", point_in_3d_space, 'frag', fragment_id)
-                cv2.rectangle(img2draw, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), (0, 255, 0), 3)  # Green rectangle with thickness 3
-                cv2.circle(img2draw, (centerx, centery), 2, (0, 0, 255), 3)
-                test2 = np.asarray([int(xywh[0]), int(xywh[1])]).astype(int)
-                cv2.circle(img2draw, (test2[0], test2[1]), 2, (255, 0, 0), 1)
+        #     # each box has a faragment
+        #     for bbox in det_res[0].boxes:
+        #         xywh = bbox.xywh[0].cpu().numpy()
+        #         xyxy = bbox.xyxy[0].cpu().numpy()
+        #         centerx = np.floor(xyxy[0] + (xyxy[2]-xyxy[0]) / 2).astype(int)
+        #         centery = np.floor(xyxy[1] + (xyxy[3]-xyxy[1]) / 2).astype(int)
+        #         depth = self.depth_image[centery, centerx] #depth_raw_frame.get_distance(coordinates[0], coordinates[1])
+        #         point_in_3d_space = rs.rs2_deproject_pixel_to_point(self.depth_intrinsics, [centery, centerx], depth)
+        #         fragment_id = int(bbox.cls.item())
+        #         # print("point 3d", point_in_3d_space, 'frag', fragment_id)
+        #         cv2.rectangle(img2draw, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), (0, 255, 0), 3)  # Green rectangle with thickness 3
+        #         cv2.circle(img2draw, (centerx, centery), 2, (0, 0, 255), 3)
+        #         test2 = np.asarray([int(xywh[0]), int(xywh[1])]).astype(int)
+        #         cv2.circle(img2draw, (test2[0], test2[1]), 2, (255, 0, 0), 1)
                 
-                rospy.loginfo(f"Point in 3D: {point_in_3d_space}, Fragment ID: {fragment_id}, x {centerx}, y {centery}")
+        #         rospy.loginfo(f"Point in 3D: {point_in_3d_space}, Fragment ID: {fragment_id}, x {centerx}, y {centery}")
 
-                # Create Pose from the 3D point (position only)
-                pose = Pose()
-                pose.position.x = point_in_3d_space[0]/1000 
-                pose.position.y = point_in_3d_space[1]/1000 
-                pose.position.z = point_in_3d_space[2]/1000 #* 1.5
-                if verbosity > 1:
-                    print('before', pose.position)
-                T_opencv2rviz = np.asarray([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
-                pose_rviz = np.dot(T_opencv2rviz, np.asarray([pose.position.x, pose.position.y, pose.position.z, 1]))
+        #         # Create Pose from the 3D point (position only)
+        #         pose = Pose()
+        #         pose.position.x = point_in_3d_space[0]/1000 
+        #         pose.position.y = point_in_3d_space[1]/1000 
+        #         pose.position.z = point_in_3d_space[2]/1000 #* 1.5
+        #         if verbosity > 1:
+        #             print('before', pose.position)
+        #         T_opencv2rviz = np.asarray([[0, 1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+        #         pose_rviz = np.dot(T_opencv2rviz, np.asarray([pose.position.x, pose.position.y, pose.position.z, 1]))
 
-                pose.position.x = pose_rviz[0]      
-                pose.position.y = pose_rviz[1]      
-                pose.position.z = pose_rviz[2]      
-                if verbosity > 1:
-                    print('after', pose.position)
+        #         pose.position.x = pose_rviz[0]      
+        #         pose.position.y = pose_rviz[1]      
+        #         pose.position.z = pose_rviz[2]      
+        #         if verbosity > 1:
+        #             print('after', pose.position)
 
-                # Optionally, you can set orientation (we'll keep it as the identity here)
-                #0.4999998, -0.4996018, 0.4999998, 0.5003982
-                quat = quaternion_from_euler(0, 0, 0) #0.52, 0, 1.5707963267948966)
-                pose.orientation.x = quat[0]
-                pose.orientation.y = quat[1]
-                pose.orientation.z = quat[2]
-                pose.orientation.w = quat[3]  # Identity quaternion (no rotation)
+        #         # Optionally, you can set orientation (we'll keep it as the identity here)
+        #         #0.4999998, -0.4996018, 0.4999998, 0.5003982
+        #         quat = quaternion_from_euler(0, 0, 0) #0.52, 0, 1.5707963267948966)
+        #         pose.orientation.x = quat[0]
+        #         pose.orientation.y = quat[1]
+        #         pose.orientation.z = quat[2]
+        #         pose.orientation.w = quat[3]  # Identity quaternion (no rotation)
 
-                # world_pose = pose #self.transform_pose_array_to_world(pose, "camera_color_optical_frame", "world")
+        #         # world_pose = pose #self.transform_pose_array_to_world(pose, "camera_color_optical_frame", "world")
 
-                points_in_3d_space.append(vedo.Point(point_in_3d_space))
-                vedo_sphere = vedo.Sphere(point_in_3d_space, c="red", r=50)#.apply_transform(T_opencv2rviz)
-                vedo_spheres.append(vedo_sphere)
+        #         points_in_3d_space.append(vedo.Point(point_in_3d_space))
+        #         vedo_sphere = vedo.Sphere(point_in_3d_space, c="red", r=50)#.apply_transform(T_opencv2rviz)
+        #         vedo_spheres.append(vedo_sphere)
 
-            # MISALIGNMENT CORRECTION
-            # align reprojected pointcloud with realsense pointcloud
-            pts3d = []
-            colors3d = []
-            for _x in range(self.rgb_image.shape[1]):
-                for _y in range(self.rgb_image.shape[0]):
-                    pts3d.append(rs.rs2_deproject_pixel_to_point(self.depth_intrinsics, [_y, _x], self.depth_image[_y, _x]))
-                    colors3d.append(self.rgb_image[_y, _x])
+        #     # MISALIGNMENT CORRECTION
+        #     # align reprojected pointcloud with realsense pointcloud
+        #     pts3d = []
+        #     colors3d = []
+        #     for _x in range(self.rgb_image.shape[1]):
+        #         for _y in range(self.rgb_image.shape[0]):
+        #             pts3d.append(rs.rs2_deproject_pixel_to_point(self.depth_intrinsics, [_y, _x], self.depth_image[_y, _x]))
+        #             colors3d.append(self.rgb_image[_y, _x])
 
-            realsense_pcl = vedo.Points(points3d_rs * 1000)
-            vedo_pcl = vedo.Points(pts3d)
-            vedo_pcl.apply_transform(T_opencv2rviz)
-            vedo_pcl.pointcolors = np.asarray(colors3d)
-            if verbosity > 1:
-                print('mean point realsense', np.mean(points3d_rs))
-                print('mean point vedo_pcl', np.mean(pts3d))
+        #     realsense_pcl = vedo.Points(points3d_rs * 1000)
+        #     vedo_pcl = vedo.Points(pts3d)
+        #     vedo_pcl.apply_transform(T_opencv2rviz)
+        #     vedo_pcl.pointcolors = np.asarray(colors3d)
+        #     if verbosity > 1:
+        #         print('mean point realsense', np.mean(points3d_rs))
+        #         print('mean point vedo_pcl', np.mean(pts3d))
             
-            # OPEN3D
-            voxel_size = 5
-            realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
-            vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
-            rs_d, rs_f = preprocess_point_cloud(realsense_pcl_o3d, voxel_size)
-            rp_d, rp_f = preprocess_point_cloud(vedo_pcl_o3d, voxel_size)
-            align_to_realsenseT = align_with_icp(rp_d, rs_d, voxel_size=voxel_size, fast=False)
+        #     # OPEN3D
+        #     voxel_size = 5
+        #     realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
+        #     vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
+        #     rs_d, rs_f = preprocess_point_cloud(realsense_pcl_o3d, voxel_size)
+        #     rp_d, rp_f = preprocess_point_cloud(vedo_pcl_o3d, voxel_size)
+        #     align_to_realsenseT = align_with_icp(rp_d, rs_d, voxel_size=voxel_size, fast=False)
 
-            poses = []
-            for vd_pt3d in points_in_3d_space:
-                vd_pt3d.apply_transform(T_opencv2rviz).apply_transform(align_to_realsenseT.transformation)
-                poses.append(pt3d_to_pose(vd_pt3d.vertices[0]))
+        #     poses = []
+        #     for vd_pt3d in points_in_3d_space:
+        #         vd_pt3d.apply_transform(T_opencv2rviz).apply_transform(align_to_realsenseT.transformation)
+        #         poses.append(pt3d_to_pose(vd_pt3d.vertices[0]))
 
-            if verbosity > 1:
-                print("# ALIGNMENT TO REALSENSE")
-                print(align_to_realsenseT)
-                print(align_to_realsenseT.transformation)
+        #     if verbosity > 1:
+        #         print("# ALIGNMENT TO REALSENSE")
+        #         print(align_to_realsenseT)
+        #         print(align_to_realsenseT.transformation)
 
-            pose_array_msg = PoseArray()
-            pose_array_msg.header.stamp = rospy.Time.now()
-            pose_array_msg.header.frame_id = "camera_color_optical_frame"  # Use the appropriate frame_id
+        #     pose_array_msg = PoseArray()
+        #     pose_array_msg.header.stamp = rospy.Time.now()
+        #     pose_array_msg.header.frame_id = "camera_color_optical_frame"  # Use the appropriate frame_id
 
-            # Add poses to PoseArray
-            pose_array_msg.poses = poses
+        #     # Add poses to PoseArray
+        #     pose_array_msg.poses = poses
 
-            # Publish the PoseArray
-            pose_array_pub.publish(pose_array_msg)
+        #     # Publish the PoseArray
+        #     pose_array_pub.publish(pose_array_msg)
 
-            ### OTHER ATTEMPTS FOR REGISTRATION
-            # result_ransac = execute_global_registration(rp_d, rs_d,
-            #                                 rp_f, rs_f,
-            #                                 voxel_size)
+        #     ### OTHER ATTEMPTS FOR REGISTRATION
+        #     # result_ransac = execute_global_registration(rp_d, rs_d,
+        #     #                                 rp_f, rs_f,
+        #     #                                 voxel_size)
 
-            # # reg_p2p = o3d.pipelines.registration.registration_icp(
-            # #     vedo_pcl_o3d, realsense_pcl_o3d, 15, np.eye(4),
-            # #     o3d.pipelines.registration.TransformationEstimationPointToPoint())
-            #     # realsense_pcl_o3d = vedo.utils.vedo2open3d(realsense_pcl)
+        #     # # reg_p2p = o3d.pipelines.registration.registration_icp(
+        #     # #     vedo_pcl_o3d, realsense_pcl_o3d, 15, np.eye(4),
+        #     # #     o3d.pipelines.registration.TransformationEstimationPointToPoint())
+        #     #     # realsense_pcl_o3d = vedo.utils.vedo2open3d(realsense_pcl)
 
-            # refined_result = refine_registration(rp_d, rs_d, result_ransac, voxel_size)
+        #     # refined_result = refine_registration(rp_d, rs_d, result_ransac, voxel_size)
 
     def recognize_and_publish(self, pose_array_pub, verbosity=1, debug=False):
         """
         The main loop with the 2D color recognition, reprojection and registration 
         """
         # main loop
-        
+        counter = 0
         while not rospy.is_shutdown():
             points3d_rs = get_points_from_ros()
             
             det_res = self.recognition_model(self.rgb_image)
             print(det_res)
             points_in_3d_space = []
+            #cv2.imwrite(f'rgb_{counter}.png', self.rgb_image)
+            counter += 1
             if debug ==True:
                 vedo_spheres = []
                 img2draw = self.rgb_image.copy()
@@ -359,8 +384,9 @@ class SandRecognition():
             pose_array_msg = PoseArray()
             pose_array_msg.header.stamp = rospy.Time.now()
             pose_array_msg.header.frame_id = "camera_color_optical_frame"  # Use the appropriate frame_id
-            # Add poses to PoseArray
+            # # Add poses to PoseArray
             pose_array_msg.poses = poses
+            #pose_array_msg = self.transform_pose_array_to_world(poses)
             # Publish the PoseArray
             pose_array_pub.publish(pose_array_msg)
 
@@ -372,7 +398,7 @@ def pt3d_to_pose(pt3d, rotation=0):
     pose.position.x = pt3d[0]/1000 
     pose.position.y = pt3d[1]/1000 
     pose.position.z = pt3d[2]/1000 #* 1.5
-    quat = quaternion_from_euler(0, 0, rotation) #0.52, 0, 1.5707963267948966)
+    quat = quaternion_from_euler(1.1836725, 0, 0) #0.52, 0, 1.5707963267948966)
     pose.orientation.x = quat[0]
     pose.orientation.y = quat[1]
     pose.orientation.z = quat[2]
