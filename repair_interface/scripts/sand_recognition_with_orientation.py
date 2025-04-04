@@ -14,6 +14,7 @@ from ultralytics import YOLO
 import vedo 
 import tf2_ros
 import tf2_geometry_msgs
+from std_msgs.msg import Int32MultiArray, Float32MultiArray
 from tf.transformations import quaternion_from_euler
 from sensor_msgs.msg import PointCloud2
 import copy
@@ -285,7 +286,7 @@ class SandRecognition():
 
         #     # refined_result = refine_registration(rp_d, rs_d, result_ransac, voxel_size)
 
-    def recognize_and_publish(self, pose_array_pub, verbosity=1, debug=False, show_image_feed=False, use_hardcore=True):
+    def recognize_and_publish(self, pose_array_pub, id_array_pub, rotation_array_pub, verbosity=1, debug=False, show_image_feed=False, use_hardcore=True):
         """
         The main loop with the 2D color recognition, reprojection and registration 
         """
@@ -296,7 +297,12 @@ class SandRecognition():
             
             det_res = self.recognition_model(self.rgb_image, conf=0.5, iou=0.2)
             print(det_res)
+
+            # We collect information which will be published
             points_in_3d_space = []
+            fragments_ids = []
+            fragments_rotation = []
+
             #cv2.imwrite(f'rgb_{counter}.png', self.rgb_image)
             counter += 1
             
@@ -310,12 +316,18 @@ class SandRecognition():
                 fragment_id = int(obb.cls.item())
                 rotation = xywhr[4].item()
                 print("rotation", rotation)
+                
 
                 # name and group to fetch the assembly position
                 name = det_res[0].names[fragment_id]
                 group = name[name.index('G')+1:]
                 fragment_name = name[:name.index('G')-1]
+                fragment_id = int(fragment_name[-5:])
                 fragment_name = fragment_name.split('_')[0] + '_' + fragment_name.split('_')[1]
+                
+                # rotations and ids for publishing
+                fragments_rotation.append(rotation)
+                fragments_ids.append(fragment_id)
 
                 # we fetch here the final position where it should be placed
                 assembly_position = self.placements_dict[f'group_{group}'][f'{fragment_name}_intact_mesh']
@@ -420,6 +432,16 @@ class SandRecognition():
             # Publish the PoseArray
             pose_array_pub.publish(pose_array_msg)
 
+            # we publish now also the ids
+            id_array_msg = Int32MultiArray()
+            id_array_msg.data = fragments_ids
+            id_array_pub.publish(id_array_msg)
+
+            # and the rotation alone for now
+            rotation_array_msg = Float32MultiArray()
+            rotation_array_msg.data = fragments_rotation
+            rotation_array_pub.publish(rotation_array_msg)
+
 def pt3d_to_pose(pt3d, rotation=0):
     """
     Creates a Pose object and fills it (checking sizes, conversion m to mm, and rotation if there is)
@@ -487,10 +509,14 @@ if __name__ == '__main__':
 
     # Initialize the publisher for PoseArray
     pose_array_pub = rospy.Publisher('/recognition/points', PoseArray, queue_size=10)
+    id_array_pub = rospy.Publisher('/recognition/ids', Int32MultiArray, queue_size=10)
+    rotation_array_pub = rospy.Publisher('/recognition/rotations', Float32MultiArray, queue_size=10)
 
     recognition = SandRecognition(data_folder="/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix", 
                                   model_name="best.pt",
                                   placement_file='int_week_placements.json')
-    recognition.recognize_and_publish(pose_array_pub, verbosity=verbosity_level, debug=False, show_image_feed=True, use_hardcore=True)
+    recognition.recognize_and_publish(pose_array_pub, id_array_pub, rotation_array_pub, \
+                                    verbosity=verbosity_level, debug=False, show_image_feed=True, \
+                                    use_hardcore=True)
 
     rospy.spin()

@@ -38,7 +38,7 @@ class ManipulationUtils:
         self.mp_klampt_topic = "/repair_motion_controller"
         self.klampt_mp_client = actionlib.SimpleActionClient(self.mp_klampt_topic, RepairMoveToAction)
 
-    def move_to_home(self):
+    def move_to_home(self, use_klampt=False):
         left_pose = PoseStamped()
         right_pose = PoseStamped()
 
@@ -110,6 +110,30 @@ class ManipulationUtils:
             print("[ManipulationUtils] Service call for move_arm_to_pose_dawnik failed: %s" % e)
             return False
         
+    def move_home_klampt(self, dummy_pose:PoseStamped):
+        try:
+            goal = RepairMoveToGoal()
+            goal.arm = 99
+            goal.target_pose_left = dummy_pose.pose
+            goal.target_time = 5 # sec
+
+            self.klampt_mp_client.send_goal(goal)
+            #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
+            rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+            self.klampt_mp_client.wait_for_result()
+
+            result = self.klampt_mp_client.get_result()
+            if result.success:
+                rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+                return True
+            else:
+                rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+                return False
+        except:
+            print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
+            return False
+
+        
     def move_arm_to_pose_klampt(self, arm:ARM_ENUM, pose:PoseStamped):
         try:
             #rospy.loginfo("[ManipulationUtils] Waiting for Klampt motion planner Action Service...")
@@ -136,7 +160,7 @@ class ManipulationUtils:
             
             self.klampt_mp_client.send_goal(goal)
             #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
-            #rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+            rospy.loginfo("[ManipulationUtils] Waiting for action result...")
             self.klampt_mp_client.wait_for_result()
 
             result = self.klampt_mp_client.get_result()
