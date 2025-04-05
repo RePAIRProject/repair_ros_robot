@@ -58,8 +58,9 @@ class ManipulationUtils:
         right_pose.pose.orientation.z = 0.0462163918152999
         right_pose.pose.orientation.w = 0.899338914052578
 
-        self.move_arm_to_pose_moveit(ARM_ENUM.ARM_1, left_pose)
-        self.move_arm_to_pose_moveit(ARM_ENUM.ARM_2, right_pose)
+        success_1 = self.move_arm_to_pose_moveit(ARM_ENUM.ARM_1, left_pose)
+        success_2 = self.move_arm_to_pose_moveit(ARM_ENUM.ARM_2, right_pose)
+        return success_1 and success_2
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
         #print("planing for arm ", arm)

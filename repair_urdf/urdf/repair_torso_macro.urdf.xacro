@@ -40,7 +40,7 @@
         <parent link="sliding_guide_link"/>
                 <child link="dummy_prismatic_link"/>
                 <axis xyz="0 0 1"/>
-        <limit effort="147" lower="-0.8" upper="0.8" velocity="0.35"/>
+        <limit effort="147" lower="-0.8" upper="0.8" velocity="0.25"/>
         </joint>
 
         <!-- torso -->

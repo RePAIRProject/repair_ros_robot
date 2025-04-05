@@ -626,6 +626,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <child link="torso_1"/>
     <!-- <axis xyz="0 0 1" /> -->
     <origin rpy="1.570796326795 0.0 1.570796326795" xyz="0.0 0.0 0.0"/>
+    <limit effort="147.0" lower="-2.6" upper="2.6" velocity="2.0"/>
     <!-- <limit lower="${j_torso_lower[0]}" upper="${j_torso_upper[0]}"
             effort="${j_torso_torque[0]}" velocity="${j_torso_velocity[0]}" /> -->
   </joint>

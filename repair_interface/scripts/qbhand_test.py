@@ -22,7 +22,7 @@ class QbHand:
             if side == "left":
                 self.gripperMsg = HandCmd()
                 self.open_value = 0.0
-                self.close_value =11000.0
+                self.close_value =14000.0
                 self.hand_status = None
             else:
                 self.gripperMsg = HandCmd()
@@ -88,7 +88,7 @@ class QbHand:
         # close
         print('Closing qb Soft Hand..')
         if used_hand == "left":
-            self.move_hand(9000)
+            self.move_hand(11500)
         else:
              self.move_hand(15500)
 

@@ -3,6 +3,29 @@
   
   <xacro:macro name="repair_cage" params="parent">
 
+
+  <link name="sand_bed_b1_link"> 
+    <visual>
+      <origin xyz="${Table_x} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="2.0 0.035  0.035" />
+      </geometry>
+      <material name="wood" />
+    </visual> 
+    <collision>
+      <origin xyz="${Table_x} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="2.0 0.035  0.035" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="sand_bed_b1_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <child link="sand_bed_b1_link" />
+  </joint>
+
+
   <link name="table_top_link"> 
     <visual>
       <origin xyz="${Table_x} ${Table_y} ${Table_z+table_height-table_top_thickness/2}" />
