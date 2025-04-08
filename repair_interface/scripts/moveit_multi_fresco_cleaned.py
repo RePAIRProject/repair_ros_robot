@@ -37,6 +37,10 @@ from scipy.spatial.transform import Rotation as R
 import angle_utils
 import copy
 
+import message_filters
+
+from repair_interface.msg import RecognitionData, PlacementData
+
 initial_pose_left = pytr.transform_from_pq([0.18584, 0.47267, 1.345, -0.15708, 0.97996, 0.12039, 0.022494])
 initial_pose_right = pytr.transform_from_pq([0.18584, -0.47267, 1.345, 0.158, 0.98476, -0.071265, 0.014615])
 
@@ -85,36 +89,47 @@ class PicpkNPlaceDemo:
             #self.moveit = MoveItTest()
             self.setup_hands()
 
-        self.fragment_pose_sub = rospy.Subscriber('/recognition/points', PoseArray, self.fragment_pose_callback)
-        self.fragment_id_sub = rospy.Subscriber('/recognition/ids', Int32MultiArray, self.fragment_ids_callback)
-        self.fragment_rotation_sub = rospy.Subscriber('/recognition/rotations', Float32MultiArray, self.fragment_rotations_callback)
-        self.placement_pose_array_sub = rospy.Subscriber('/placement/positions', PoseArray, self.placement_pose_array_callback)
-        self.placement_rotation_sub = rospy.Subscriber('/placement/rotations', Float32MultiArray, self.placement_rotation_list_callback)
-        self.placement_side_sub = rospy.Subscriber('/placement/side', Int32MultiArray, self.placement_side_list_callback)
-        self.use_wide_hand_grasping_sub = rospy.Subscriber('/grasping/use_wide_hand', Int32MultiArray, self.use_wide_hand_callback)
+        self.recognition_data_sub = rospy.Subscriber('/recognition/recognition_data', RecognitionData, self.recognition_data_callback)
+        self.placement_data_sub = rospy.Subscriber('/recognition/placement_data', PlacementData, self.placement_data_callback)
+
+        #self.recognition_data_sub = rospy.Subscriber('/recognition/recognition_data', RecognitionData)
+        #self.placement_data_sub = rospy.Subscriber('/recognition/placement_data', PlacementData)
+
+        # Synchronize the two subscribers with an ApproximateTimeSynchronizer
+        #self.ts = message_filters.ApproximateTimeSynchronizer([self.recognition_data_sub, self.placement_data_sub], 10, 0.1)  # 0.1 is the tolerance (in seconds)
+        #self.ts.registerCallback(self.joint_fresco_callback)
+
+        #self.fragment_pose_sub = rospy.Subscriber('/recognition/points', PoseArray, self.fragment_pose_callback)
+        #self.fragment_id_sub = rospy.Subscriber('/recognition/ids', Int32MultiArray, self.fragment_ids_callback)
+        ##self.fragment_rotation_sub = rospy.Subscriber('/recognition/rotations', Float32MultiArray, self.fragment_rotations_callback)
+        #self.placement_pose_array_sub = rospy.Subscriber('/placement/positions', PoseArray, self.placement_pose_array_callback)
+        #self.placement_rotation_sub = rospy.Subscriber('/placement/rotations', Float32MultiArray, self.placement_rotation_list_callback)
+        #self.placement_side_sub = rospy.Subscriber('/placement/side', Int32MultiArray, self.placement_side_list_callback)
+        #self.use_wide_hand_grasping_sub = rospy.Subscriber('/grasping/use_wide_hand', Int32MultiArray, self.use_wide_hand_callback)
 
     def reset_manipulation_utils(self):
         del self.mu
         self.mu = ManipulationUtils()
 
-    def fragment_ids_callback(self, fragment_ids):
+    #### 
+    # Joint Callback
+    ####    
+
+    def recognition_data_callback(self, recognition_data, placement_data):
+        # stores the received 'ids' data into self.fragment_ids_list
         self.fragment_ids_list = []
-        # This callback stores the received 'ids' data into self.fragment_ids_list
-        self.fragment_ids_list = list(fragment_ids.data)
-
-
-    def fragment_rotations_callback(self, fragment_rotations):
+        self.fragment_ids_list = list(recognition_data.id_array.data)
+        
+        # stores the received 'rotations' data into self.fragment_rotations_list
         self.fragment_rotations_list = []
-        # This callback stores the received 'rotations' data into self.fragment_rotations_list
         if self.grasp_without_rotation == True:
-            self.fragment_rotations_list = [0] * len(fragment_rotations.data)
+            self.fragment_rotations_list = [0] * len(recognition_data.rotation_array.data)
         else:
-            self.fragment_rotations_list = list(fragment_rotations.data)
+            self.fragment_rotations_list = list(recognition_data.rotation_array.data)
 
-
-    def fragment_pose_callback(self, pose_array):
+        # stores the received 'poses' data into self.fragment_pose_list
         self.fragment_pose_list = []
-        for pose in pose_array.poses:
+        for pose in recognition_data.pose_array.poses:
             position = pose.position
             orientation = pose.orientation
             numpy_pose = np.array([
@@ -123,12 +138,13 @@ class PicpkNPlaceDemo:
             ])
             self.fragment_pose_list.append(numpy_pose)
 
-    #### 
-    # PLACEMENT
-    ####
-    def placement_pose_array_callback(self, pose_array):
+        # stores the received 'rotations' data into self.fragment_rotations_list
+        self.use_wide_hand_grasping_list = []
+        self.use_wide_hand_grasping_list = list(recognition_data.use_wide_hand.data)   
+
+        # stores the received 'poses' data into self.placement_pose_array_list
         self.placement_pose_array_list = []
-        for pose in pose_array.poses:
+        for pose in placement_data.placement_pose_array.poses:
             position = pose.position
             orientation = pose.orientation
             numpy_pose = np.array([
@@ -137,23 +153,130 @@ class PicpkNPlaceDemo:
             ])
             self.placement_pose_array_list.append(numpy_pose)
 
-    def placement_rotation_list_callback(self, placement_rotation):
+        # This callback stores the received 'rotations' data into self.fragment_rotations_list
         self.placement_rotation_list = []
-        # This callback stores the received 'rotations' data into self.fragment_rotations_list
-        self.placement_rotation_list = list(placement_rotation.data)
+        self.placement_rotation_list = list(placement_data.placement_rotation.data)
 
-    def placement_side_list_callback(self, placement_side):
+        # This callback stores the received 'side' data into self.placement_side_list
         self.placement_side_list = []
+        self.placement_side_list = list(placement_data.placement_side.data) 
+
+
+
+    #### 
+    # Recognition
+    ####
+
+    def recognition_data_callback(self, recognition_data):
+        # stores the received 'ids' data into self.fragment_ids_list
+        self.fragment_ids_list = []
+        self.fragment_ids_list = list(recognition_data.id_array.data)
+        
+        # stores the received 'rotations' data into self.fragment_rotations_list
+        self.fragment_rotations_list = []
+        if self.grasp_without_rotation == True:
+            self.fragment_rotations_list = [0] * len(recognition_data.rotation_array.data)
+        else:
+            self.fragment_rotations_list = list(recognition_data.rotation_array.data)
+
+        # stores the received 'poses' data into self.fragment_pose_list
+        self.fragment_pose_list = []
+        for pose in recognition_data.pose_array.poses:
+            position = pose.position
+            orientation = pose.orientation
+            numpy_pose = np.array([
+                position.x, position.y, position.z,
+                orientation.x, orientation.y, orientation.z, orientation.w
+            ])
+            self.fragment_pose_list.append(numpy_pose)
+
+        # stores the received 'rotations' data into self.fragment_rotations_list
+        self.use_wide_hand_grasping_list = []
+        self.use_wide_hand_grasping_list = list(recognition_data.use_wide_hand.data)   
+
+
+    #### 
+    # PLACEMENT
+    ####   
+
+    def placement_data_callback(self, placement_data):
+        # stores the received 'poses' data into self.placement_pose_array_list
+        self.placement_pose_array_list = []
+        for pose in placement_data.placement_pose_array.poses:
+            position = pose.position
+            orientation = pose.orientation
+            numpy_pose = np.array([
+                position.x, position.y, position.z,
+                orientation.x, orientation.y, orientation.z, orientation.w
+            ])
+            self.placement_pose_array_list.append(numpy_pose)
+
         # This callback stores the received 'rotations' data into self.fragment_rotations_list
-        self.placement_side_list = list(placement_side.data)   
+        self.placement_rotation_list = []
+        self.placement_rotation_list = list(placement_data.placement_rotation.data)
+
+        # This callback stores the received 'side' data into self.placement_side_list
+        self.placement_side_list = []
+        self.placement_side_list = list(placement_data.placement_side.data) 
+
+
+    # def fragment_ids_callback(self, fragment_ids):
+    #     self.fragment_ids_list = []
+    #     # This callback stores the received 'ids' data into self.fragment_ids_list
+    #     self.fragment_ids_list = list(fragment_ids.data)
+
+
+    # def fragment_rotations_callback(self, fragment_rotations):
+    #     self.fragment_rotations_list = []
+    #     # This callback stores the received 'rotations' data into self.fragment_rotations_list
+    #     if self.grasp_without_rotation == True:
+    #         self.fragment_rotations_list = [0] * len(fragment_rotations.data)
+    #     else:
+    #         self.fragment_rotations_list = list(fragment_rotations.data)
+
+
+    # def fragment_pose_callback(self, pose_array):
+    #     self.fragment_pose_list = []
+    #     for pose in pose_array.poses:
+    #         position = pose.position
+    #         orientation = pose.orientation
+    #         numpy_pose = np.array([
+    #             position.x, position.y, position.z,
+    #             orientation.x, orientation.y, orientation.z, orientation.w
+    #         ])
+    #         self.fragment_pose_list.append(numpy_pose)
+
+    #### 
+    # PLACEMENT
+    ####
+    # def placement_pose_array_callback(self, pose_array):
+    #     self.placement_pose_array_list = []
+    #     for pose in pose_array.poses:
+    #         position = pose.position
+    #         orientation = pose.orientation
+    #         numpy_pose = np.array([
+    #             position.x, position.y, position.z,
+    #             orientation.x, orientation.y, orientation.z, orientation.w
+    #         ])
+    #         self.placement_pose_array_list.append(numpy_pose)
+
+    # def placement_rotation_list_callback(self, placement_rotation):
+    #     self.placement_rotation_list = []
+    #     # This callback stores the received 'rotations' data into self.fragment_rotations_list
+    #     self.placement_rotation_list = list(placement_rotation.data)
+
+    # def placement_side_list_callback(self, placement_side):
+    #     self.placement_side_list = []
+    #     # This callback stores the received 'rotations' data into self.fragment_rotations_list
+    #     self.placement_side_list = list(placement_side.data)   
 
     #########
     # USE WIDE HAND
     #########
-    def use_wide_hand_callback(self, use_wide_hand):
-        self.use_wide_hand_grasping_list = []
-        # This callback stores the received 'rotations' data into self.fragment_rotations_list
-        self.use_wide_hand_grasping_list = list(use_wide_hand.data)   
+    # def use_wide_hand_callback(self, use_wide_hand):
+    #     self.use_wide_hand_grasping_list = []
+    #     # This callback stores the received 'rotations' data into self.fragment_rotations_list
+    #     self.use_wide_hand_grasping_list = list(use_wide_hand.data)   
 
 
     def setup_hands(self, open_hands=True):
@@ -569,7 +692,7 @@ class PicpkNPlaceDemo:
         print('Is the fresco present?')
         grasp_count = 1
         orig_arm_target_pose_np = arm_target_pose_np.copy()
-        while (not (int(qbhand_curr.m1_curr) > 100 and int(qbhand_curr.m2_curr) > 100)) and grasp_count<4:
+        while (not (int(qbhand_curr.m1_curr) > 100 and int(qbhand_curr.m2_curr) > 100)) and grasp_count<400:
 
             self.hand_api.open_hand()
             rospy.sleep(1)

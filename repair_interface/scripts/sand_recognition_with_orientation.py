@@ -22,6 +22,8 @@ import open3d as o3d
 from align_utils import get_points_from_ros, align_with_icp
 import json 
 
+from repair_interface.msg import RecognitionData, PlacementData
+
 """
 This script is used to detect fragments in the sand in the color image!
 Once we have them we use the depth to reproject the detected objects in 3D. 
@@ -286,21 +288,21 @@ class SandRecognition():
 
         #     # refined_result = refine_registration(rp_d, rs_d, result_ransac, voxel_size)
 
-    def recognize_and_publish(self, pose_array_pub, id_array_pub, rotation_array_pub, \
-                            placement_pose_array_pub, placement_rotation_pub, \
-                            placement_side_pub, use_wide_hand_pub, \
-                            verbosity=1, debug=False, show_image_feed=False, use_hardcore=True, \
-                            only_g15=False):
+    def recognize_and_publish(self, recognition_pub, placement_pub,
+                               verbosity=1, debug=False, show_image_feed=False, 
+                               use_hardcore=True, only_g15=False):
         """
         The main loop with the 2D color recognition, reprojection and registration 
         """
         # main loop
         counter = 0
+        conf_debug = 0.4
         while not rospy.is_shutdown():
             points3d_rs = get_points_from_ros()
             
             print('-' * 40)
-            det_res = self.recognition_model(self.rgb_image, conf=0.6, iou=0.3, verbose=False)
+            print(f'Using confidence: {conf_debug}')
+            det_res = self.recognition_model(self.rgb_image, conf=conf_debug, iou=0.1, verbose=False)
             # print(det_res)
 
             # We collect information which will be published
@@ -311,7 +313,7 @@ class SandRecognition():
             fragments_placement_rotations = []
             fragments_placement_side = []
             grasping_use_wide_hand = []
-            detected = np.zeros((2,1)) #= 0
+            detected = np.zeros((3,1)) #= 0
 
             #cv2.imwrite(f'rgb_{counter}.png', self.rgb_image)
             counter += 1
@@ -336,6 +338,8 @@ class SandRecognition():
                         detected[0] += 1
                     elif group == '29':
                         detected[1] += 1
+                    elif group == '89':
+                        detected[2] += 1
                     fragment_name = name[:name.index('G')-1]
                     fragment_id = int(fragment_name[-5:])
                     fragment_name = fragment_name.split('_')[0] + '_' + fragment_name.split('_')[1]
@@ -388,12 +392,25 @@ class SandRecognition():
                         xywhr = obb.xywhr[0]
                         centerx = np.round(obb.xywhr[0][0].item()).astype(int)
                         centery = np.round(obb.xywhr[0][1].item()).astype(int)
-                        cv2.circle(img2draw, (centerx, centery), 2, (0, 0, 255), 3)
+                        fragment_class = int(obb.cls.item())
+                        det_name = det_res[0].names[fragment_class]
+                        det_fragment_name = det_name[:det_name.index('G')-1]
+                        group = det_name[det_name.index('G')+1:]
+                        if group == '15':
+                            color = (0,0,255)
+                        elif group == '29':
+                            color = (255, 0, 0)
+                        else:
+                            color = (0, 255, 0)
+                        cv2.circle(img2draw, (centerx, centery), 2, color, 3)
                         rectpts = obb.xyxyxyxy.cpu().numpy().reshape(4,2).astype(np.int32)
-                        img2draw = cv2.polylines(img2draw, [rectpts], isClosed=True, color=(0, 0, 255))
+                        img2draw = cv2.polylines(img2draw, [rectpts], isClosed=True, color=color, thickness=2)
+                        confidence = obb.conf.item()
+                        text_coords = obb.xyxy.cpu().numpy()[0][:2].astype(int)
+                        img2draw = cv2.putText(img2draw, f"{det_fragment_name} {confidence:.2f}", org=text_coords, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.4, color=color, thickness=1)
 
                 cv2.imshow(f'recognition', img2draw)
-                print(f'detected {len(det_res[0].obb)} objects:\n\t- {detected[0]} of group 15\n\t- {detected[1]} of group 29')
+                print(f'detected {len(det_res[0].obb)} objects:\n\t- {detected[0]} of group 15\n\t- {detected[1]} of group 29\n\t- {detected[2]} of group 89')
                 cv2.waitKey(1)
             # MISALIGNMENT CORRECTION
             # align reprojected pointcloud with realsense pointcloud
@@ -467,19 +484,31 @@ class SandRecognition():
             pose_array_msg.poses = poses
             #pose_array_msg = self.transform_pose_array_to_world(poses)
             # Publish the PoseArray
-            pose_array_pub.publish(pose_array_msg)
-
                         # and the rotation alone for now
             rotation_array_msg = Float32MultiArray()
             rotation_array_msg.data = fragments_rotation
-            rotation_array_pub.publish(rotation_array_msg)
 
             ################ 
             # ID
             # we publish now also the ids
             id_array_msg = Int32MultiArray()
             id_array_msg.data = fragments_ids
-            id_array_pub.publish(id_array_msg)
+
+            use_wide_hand_msg = Int32MultiArray()
+            use_wide_hand_msg.data = grasping_use_wide_hand
+
+            ####################
+            # Publish RECOGNITION
+            #####################
+
+            recognition_msg = RecognitionData()
+            recognition_msg.header.stamp = rospy.Time.now()
+            recognition_msg.pose_array = pose_array_msg  # Populate PoseArray
+            recognition_msg.id_array = id_array_msg  # Populate Int32MultiArray for ids
+            recognition_msg.rotation_array = rotation_array_msg  # Populate Float32MultiArray for rotations
+            recognition_msg.use_wide_hand = use_wide_hand_msg  # Populate Int32MultiArray for wide hand data
+
+            recognition_pub.publish(recognition_msg)
 
             ####################
             # PLACEMENT
@@ -487,7 +516,6 @@ class SandRecognition():
             # and the rotation alone for now
             fragments_placement_side_msg = Int32MultiArray()
             fragments_placement_side_msg.data = fragments_placement_side
-            placement_side_pub.publish(fragments_placement_side_msg)
             # This is the final position (without the Z value)
             placement_position_array_msg = PoseArray()
             placement_position_array_msg.header.stamp = rospy.Time.now()
@@ -495,25 +523,26 @@ class SandRecognition():
             # should we put a value for Z or 0?
             placement_pose = fragments_placement_positions
             placement_position_array_msg.poses = placement_pose
-            placement_pose_array_pub.publish(placement_position_array_msg)
 
             # Rotation for the final placement
             # TODO
-            rotation_array_msg = Float32MultiArray()
-            rotation_array_msg.data = fragments_placement_rotations
-            placement_rotation_pub.publish(rotation_array_msg)
+            placement_rotation_array_msg = Float32MultiArray()
+            placement_rotation_array_msg.data = fragments_placement_rotations
 
 
 
-            # and the rotation alone for now
-            use_wide_hand_msg = Int32MultiArray()
-            use_wide_hand_msg.data = grasping_use_wide_hand
-            use_wide_hand_pub.publish(use_wide_hand_msg)
+            ####################
+            # Publish RECOGNITION
+            #####################
 
+            placement_msg = PlacementData()
 
+            placement_msg.header.stamp = rospy.Time.now()
+            placement_msg.placement_pose_array = placement_position_array_msg  # Populate PoseArray for placements
+            placement_msg.placement_rotation = placement_rotation_array_msg  # Populate Float32MultiArray for placements
+            placement_msg.placement_side = fragments_placement_side_msg  # Populate Int32MultiArray for sid
 
-
-            
+            placement_pub.publish(placement_msg)     
             
 
 def pt3d_to_pose(pt3d, rotation=0):
@@ -582,22 +611,31 @@ if __name__ == '__main__':
     verbosity_level = 1 # increase value to print debug information in the recognition code
 
     # Initialize the publisher for PoseArray
-    pose_array_pub = rospy.Publisher('/recognition/points', PoseArray, queue_size=10)
-    id_array_pub = rospy.Publisher('/recognition/ids', Int32MultiArray, queue_size=10)
-    rotation_array_pub = rospy.Publisher('/recognition/rotations', Float32MultiArray, queue_size=10)
-    placement_pose_array_pub = rospy.Publisher('/placement/positions', PoseArray, queue_size=10)
-    placement_rotation_pub = rospy.Publisher('/placement/rotations', Float32MultiArray, queue_size=10)
-    placement_side_pub = rospy.Publisher('/placement/side', Int32MultiArray, queue_size=10)
-    use_wide_hand_pub = rospy.Publisher('/grasping/use_wide_hand', Int32MultiArray, queue_size=10)
+    recognition_pub = rospy.Publisher('/recognition/recognition_data', RecognitionData, queue_size=10)
+    placement_pub = rospy.Publisher('/recognition/placement_data', PlacementData, queue_size=10)
 
-    recognition = SandRecognition(data_folder="/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix", 
-                                  model_name="best_g89.pt",
-                                  placement_file='int_week_placements_demo.json')
+    ####################
+    #   YOLO MODEL     #
+    ####################
+    # model_name = "best_g89_15epochs_larger_batch.pt"
+    # print(f"\nUsing {model_name} for recognition!\n")
+    # recognition = SandRecognition(data_folder="/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix", 
+    #                               model_name="best_mix.pt",
+    #                               #model_name=model_name,
+    #                               placement_file='int_week_placements_demo.json')
     
-    recognition.recognize_and_publish(pose_array_pub, id_array_pub, rotation_array_pub, \
-                                    placement_pose_array_pub, placement_rotation_pub, \
-                                    placement_side_pub, use_wide_hand_pub, \
-                                    verbosity=verbosity_level, debug=False, show_image_feed=True, \
-                                    use_hardcore=True, only_g15=False)
+    # Get parameters from the ROS parameter server
+    data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
+    model_name = rospy.get_param('model_name', 'best_g89_15epochs_larger_batch.pt')  # Default model name
+    placement_file = rospy.get_param('placement_file', 'int_week_placements_demo.json')  # Default file
+
+    print(f"\nUsing {model_name} for recognition!\n")
+
+    # Instantiate SandRecognition with the parameters from the ROS parameter server
+    recognition = SandRecognition(data_folder=data_folder, model_name=model_name, placement_file=placement_file)
+
+    recognition.recognize_and_publish(recognition_pub, placement_pub, 
+                                      verbosity=verbosity_level, debug=False, show_image_feed=True,
+                                      use_hardcore=True, only_g15=False)
 
     rospy.spin()

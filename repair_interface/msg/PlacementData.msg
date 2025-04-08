@@ -1,0 +1,5 @@
+# CombinedRecognitionData.msg
+Header header
+geometry_msgs/PoseArray placement_pose_array
+std_msgs/Float32MultiArray placement_rotation
+std_msgs/Int32MultiArray placement_side
