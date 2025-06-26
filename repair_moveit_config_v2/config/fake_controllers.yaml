@@ -2,6 +2,7 @@ controller_list:
   - name: fake_arm_1_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_base
       - j_torso_1
       - j_arm_1_1
       - j_arm_1_2
@@ -13,6 +14,7 @@ controller_list:
   - name: fake_arm_2_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_base
       - j_torso_1
       - j_arm_2_1
       - j_arm_2_2
@@ -24,6 +26,7 @@ controller_list:
   - name: fake_both_arms_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_base
       - j_torso_1
       - j_arm_1_1
       - j_arm_1_2
@@ -42,6 +45,7 @@ controller_list:
   - name: fake_torso_controller
     type: $(arg fake_execution_type)
     joints:
+      - j_torso_base
       - j_torso_1
   - name: fake_sliding_guide_controller
     type: $(arg fake_execution_type)
