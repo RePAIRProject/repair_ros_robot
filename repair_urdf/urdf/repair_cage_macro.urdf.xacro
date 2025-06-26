@@ -3,29 +3,6 @@
   
   <xacro:macro name="repair_cage" params="parent">
 
-
-  <link name="sand_bed_b1_link"> 
-    <visual>
-      <origin xyz="${Table_x} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
-      <geometry>
-        <box size="2.0 0.035  0.035" />
-      </geometry>
-      <material name="wood" />
-    </visual> 
-    <collision>
-      <origin xyz="${Table_x} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
-      <geometry>
-        <box size="2.0 0.035  0.035" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="sand_bed_b1_joint" type="fixed" >
-    <parent link="table_top_link" />
-    <child link="sand_bed_b1_link" />
-  </joint>
-
-
   <link name="table_top_link"> 
     <visual>
       <origin xyz="${Table_x} ${Table_y} ${Table_z+table_height-table_top_thickness/2}" />
@@ -41,6 +18,9 @@
       </geometry>
     </collision>
   </link>
+  <gazebo reference="table_top_link">
+    <material>Gazebo/Wood</material>
+  </gazebo>
 
   <joint name="table_top_link_joint" type="fixed" >
     <parent link="${parent}" />
@@ -171,6 +151,103 @@
       </geometry>
     </collision>
   </link>
+
+  <!-- Adding wood boundary for Sand -->
+  <!-- small 1 -->
+  <link name="sand_bed_b1_link"> 
+    <visual>
+      <origin xyz="${Table_x} ${Table_y-Cage_y/2} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="${Cage_x} 0.035  0.035"/>
+      </geometry>
+      <material name="wood" />
+    </visual> 
+    <collision>
+      <origin xyz="${Table_x} ${Table_y-Cage_y/2} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="${Cage_x} 0.035  0.035" />
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="sand_bed_b1_link">
+    <material>Gazebo/Wood</material>
+  </gazebo>
+  <joint name="sand_bed_b1_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <child link="sand_bed_b1_link" />
+  </joint>
+  <!-- small 2 -->
+  <link name="sand_bed_b2_link"> 
+    <visual>
+      <origin xyz="${Table_x} ${Table_y+Cage_y/2} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="${Cage_x} 0.035  0.035"/>
+      </geometry>
+      <material name="wood" />
+    </visual> 
+    <collision>
+      <origin xyz="${Table_x} ${Table_y-Cage_y/2} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="${Cage_x} 0.035  0.035" />
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="sand_bed_b2_link">
+    <material>Gazebo/Wood</material>
+  </gazebo>
+  <joint name="sand_bed_b2_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <child link="sand_bed_b2_link" />
+  </joint>
+  <!-- long 1 -->
+  <link name="sand_bed_b3_link"> 
+    <visual>
+      <origin xyz="${Table_x+Cage_x/2} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="0.035 ${Cage_y} 0.035"/>
+      </geometry>
+      <material name="wood" />
+    </visual> 
+    <collision>
+      <origin xyz="${Table_x-Cage_x/2} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="0.035 ${Cage_y} 0.035" />
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="sand_bed_b3_link">
+    <material>Gazebo/Wood</material>
+  </gazebo>
+  <joint name="sand_bed_b3_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <child link="sand_bed_b3_link" />
+  </joint>
+  <!-- long 2 -->
+  <link name="sand_bed_b4_link"> 
+    <visual>
+      <origin xyz="${Table_x-Cage_x/2} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="0.035 ${Cage_y} 0.035"/>
+      </geometry>
+      <material name="wood" />
+    </visual> 
+    <collision>
+      <origin xyz="${Table_x-Cage_x/2} ${Table_y} ${Table_z+table_height+table_top_thickness/2}" />
+      <geometry>
+        <box size="0.035 ${Cage_y} 0.035" />
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="sand_bed_b4_link">
+    <material>Gazebo/Wood</material>
+  </gazebo>
+  <joint name="sand_bed_b4_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <child link="sand_bed_b4_link" />
+  </joint>
+
+
+
 
   <joint name="leg4_joint" type="fixed" >
     <parent link="table_top_link" />

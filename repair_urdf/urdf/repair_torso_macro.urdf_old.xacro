@@ -12,16 +12,16 @@
         </joint>-->
 
         <!-- <link name="dummy_prismatic_link"/> -->
-        <link name="dummy_prismatic_link">
+        <!-- <link name="dummy_prismatic_link">
             <inertial>
-                <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
-                <mass value="0.1"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <mass value="0.001"/>
                 <inertia 
-                ixx="0.0" ixy="0.0" ixz="0.0"
-                iyy="0.0" iyz="0.0"
-                izz="0.0"/>
+                ixx="1e-6" ixy="0.0" ixz="0.0"
+                iyy="1e-6" iyz="0.0"
+                izz="1e-6"/>
             </inertial>
-        </link>
+        </link> -->
 
         <link name="torso_1"> 
             <inertial>
@@ -45,32 +45,30 @@
         </link>
 
         <!-- <joint name="j_torso_base" type="prismatic"> -->
-        <!-- <limit effort="147.0" lower="-0.8" upper="0.8" velocity="0.25"/> -->
-        <joint name="j_torso_base" type="prismatic">
-        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+        <!-- <joint name="j_torso_base" type="fixed">
+        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.07"/>
         <parent link="${parent}"/>
                 <child link="dummy_prismatic_link"/>
                 <axis xyz="0 0 1"/>
-        <limit effort="147.0" lower="-0.8" upper="0.8" velocity="0.25"/>
-        </joint>
+        <limit effort="147" lower="-0.8" upper="0.8" velocity="0.25"/>
+        </joint> -->
 
         <!-- torso -->
-        <!-- revolute -->
-        <joint name="j_torso_1" type="revolute">
+        <!-- <joint name="j_torso_1" type="revolute">
             <parent link="dummy_prismatic_link"/>
             <child link="torso_1"/>
             <axis xyz="0 0 1"/>
             <origin rpy="1.570796326795 0.0 1.570796326795" xyz="0.0 0.0 0.0"/>
             <limit effort="147.0" lower="-2.6" upper="2.6" velocity="2.0"/>
-        </joint>
-        <!-- <joint name="j_torso_1" type="revolute">
+        </joint> -->
+        <joint name="j_torso_1" type="revolute">
             <parent link="${parent}"/>
             <child link="torso_1"/>
             <axis xyz="0 0 1"/>
             <origin rpy="1.570796326795 0.0 1.570796326795" xyz="0.0 0.0 0.0"/>
             <limit lower="${j_torso_lower[0]}" upper="${j_torso_upper[0]}"
             effort="${j_torso_torque[0]}" velocity="${j_torso_velocity[0]}" />
-        </joint> -->
+        </joint>
 
     </xacro:macro>
 
