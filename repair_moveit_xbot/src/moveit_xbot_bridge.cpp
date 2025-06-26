@@ -171,6 +171,7 @@ MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
 
     arm_1_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_1_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
     arm_2_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, arm_2_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
+    both_arms_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, both_arms_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
     // torso_trajectory_executor_ = std::make_shared<JointTrajectoryExecutor>(nh_, torso_controller_name_, goal_execution_timeout_, joint_angle_tolerance_, current_joint_state_ptr_);
 
     ROS_INFO("MoveIt! Xbot Bridge started!");

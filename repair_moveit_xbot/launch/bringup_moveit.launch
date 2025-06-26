@@ -10,6 +10,8 @@
     <arg name="simple_moveit_controllers_yaml" default="$(find repair_moveit_xbot)/config/simple_moveit_controllers.yaml" />
     <arg name="ros_controllers_yaml" default="$(find repair_moveit_xbot)/config/controllers.yaml" />
 
+    <arg name="use_rviz" default="true" />
+
     <!-- Run the main MoveIt executable with trajectory execution -->
     <include file="$(find repair_moveit_config_v3)/launch/move_group.launch">
         <arg name="allow_trajectory_execution" value="true" />
@@ -26,8 +28,11 @@
     <!-- Given the published joint states, publish tf for the robot links
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />-->
 
-    <!-- Start moveit_rviz with the motion planning plugin
-    <include file="$(find repair_moveit_config_v3)/launch/moveit_rviz.launch">
+    <!-- Start moveit_rviz with the motion planning plugin-->
+    <include if="$(arg use_rviz)" file="$(find repair_moveit_config_v3)/launch/moveit_rviz.launch">
+        <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
+    </include>
+    <!-- <include file="$(find repair_moveit_config_v3)/launch/moveit_rviz.launch">
         <arg name="rviz_config" value="$(find repair_moveit_config_v2)/launch/moveit_xbot.rviz" />
     </include> -->
     
