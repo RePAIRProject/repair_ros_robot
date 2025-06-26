@@ -1,27 +1,22 @@
 <?xml version="1.0"?>
-<robot name="frag2">
+<robot name="RPf_00204">
   <material name="Blanc">
     <color rgba="1.0 1.0 1.0 1.0"/>
   </material>
-  <link name="fragment_base_link">
+  <link name="RPf_00204_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://repair_urdf/meshes/base_meshes/frag2_small.stl" scale="2 2 2"/>
+        <mesh filename="package://repair_urdf/sdf/RPf_00205/RPf_00205.dae" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="Blanc"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-	 	     <mesh filename="package://repair_urdf/meshes/base_meshes/frag2_small.stl" scale="2 2 2"/>
+	 	     <mesh filename="package://repair_urdf/sdf/RPf_00205/RPf_00205.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
-    <contact>
-      <lateral_friction value="2.0"/>
-      <rolling_friction value="0.0001"/>
-      <inertia_scaling value="3.0"/>
-    </contact>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
        <mass value="0.5"/>
