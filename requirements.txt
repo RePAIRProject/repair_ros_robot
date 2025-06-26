@@ -1,7 +1,21 @@
-numpy==1.21.4
+# numpy==1.21.4
+# open3d
+# pytransform3d==3.4.0
+# pyrealsense2==2.54.2.5684
+# scipy==1.10.1
+# typing_extensions==4.0.1
+# toppra
+
+numpy==1.24.4 #1.21.4
 open3d
 pytransform3d==3.4.0
 pyrealsense2==2.54.2.5684
 scipy==1.10.1
 typing_extensions==4.0.1
 toppra
+klampt
+pymodbus==2.5.3
+pybind11
+defusedxml
+rospkg
+#python3-tk

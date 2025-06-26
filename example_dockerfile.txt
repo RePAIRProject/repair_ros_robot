@@ -1,0 +1,60 @@
+ARG DOCKER_REPO
+ARG ROS_DISTRO
+ARG IMAGE_SUFFIX
+FROM $DOCKER_REPO:$ROS_DISTRO$IMAGE_SUFFIX
+ARG USERNAME
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# Create the user
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+# Install additonal packages - add any that you need
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y python3-pip python-is-python3 python3-catkin-tools jq ssh neovim git python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+ENV SHELL /bin/bash
+
+RUN apt update
+RUN apt install -y ros-noetic-moveit
+RUN apt-get install -y ros-noetic-realsense2-camera
+RUN apt install -y libcgal-dev
+RUN apt install -y libxrender-dev
+RUN apt install -y x11-apps
+RUN apt install -y usbutils
+RUN apt install -y udev
+RUN apt install -y meshlab
+
+RUN apt install -y ros-noetic-universal-robots
+RUN apt install -y ros-noetic-ur-robot-driver
+
+RUN apt install -y ros-noetic-moveit-planners
+RUN apt install -y ros-noetic-socketcan-interface
+RUN apt install -y ros-noetic-gazebo-plugins
+RUN apt install -y ros-noetic-moveit-visual-tools
+RUN apt install -y ros-noetic-soem
+RUN apt install -y python3-pip
+RUN apt install -y ros-noetic-tf2-sensor-msgs
+RUN apt install -y ros-noetic-moveit-commander
+
+RUN apt-get install ros-noetic-rviz-visual-tools
+RUN apt-get install ros-noetic-moveit-visual-tools
+
+
+
+COPY requirements.txt /opt/app/requirements.txt
+WORKDIR /opt/app
+RUN pip install -r requirements.txt
+COPY . /opt/app
+
+
+# Source ROS environment automatically
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /home/$USERNAME/.bashrc
+RUN echo "source /home/ws/devel_release/setup.bash" >> /home/$USERNAME/.bashrc
+
+# Set the default user
+# USER $USERNAME
+CMD ["/bin/bash"]
