@@ -1,0 +1,17 @@
+<launch>
+  <!-- Launch Gazebo simulation -->
+  <include file="$(find repair_gazebo)/launch/repair_gazebo.launch" />
+
+  <!-- Launch control utilities -->
+  <include file="$(find repair_gazebo)/launch/control_utils.launch" />
+
+  <!-- Run xbot_to_gazebo.py -->
+  <node name="xbot_to_gazebo" pkg="repair_gazebo" type="xbot_to_gazebo.py" output="screen">
+    <param name="use_sim_time" value="true"/>
+  </node>
+
+  <!-- Run republisher_xbot_to_hand.py -->
+  <node name="republisher_xbot_to_hand" pkg="repair_gazebo" type="republisher_xbot_to_hand.py" output="screen">
+    <param name="use_sim_time" value="true"/>
+  </node>
+</launch>
