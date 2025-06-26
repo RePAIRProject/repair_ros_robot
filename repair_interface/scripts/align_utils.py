@@ -487,8 +487,10 @@ def align_with_icp(source, target, voxel_size=0.001, fast=False):
     else: # fast == True
         initial_global_transf = execute_fast_global_registration(source_down, target_down, source_fpfh,
                                 target_fpfh, voxel_size)
-    result_icp = refine_registration(source, target, source_fpfh, target_fpfh,
+    result_icp = refine_registration(source_down, target_down, source_fpfh, target_fpfh,
                                  voxel_size, init_tf=initial_global_transf.transformation)
+    # result_icp = refine_registration(source, target, source_fpfh, target_fpfh,
+    #                             voxel_size, init_tf=initial_global_transf.transformation)
     return result_icp
 
     

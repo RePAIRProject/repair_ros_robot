@@ -15,9 +15,11 @@ class QbHand:
         self.side = side
         self.gazebo = gazebo
         if gazebo:
-            self.gripperMsg = Float64()
+            # self.gripperMsg = Float64()
+            self.gripperMsg = HandCmd()
             self.open_value = 0.0
             self.close_value = 0.9
+            self.hand_status = None
         else:
             if side == "left":
                 self.gripperMsg = HandCmd()
@@ -30,8 +32,8 @@ class QbHand:
                 self.close_value =18000.0
                 self.hand_status = None
 
-        if gazebo:
-            self.init_ros()
+        #if gazebo:
+        #    self.init_ros()
         self.init_params()
 
         # if self.side == "right":
@@ -40,9 +42,11 @@ class QbHand:
         #     self.qb_hand_pub = rospy.Publisher(topic, JointTrajectory, queue_size=10)
         # elif self.side == "left":
         topic = "/xbotcore/"+self.side+"_hand/command"
+        #topic = f"/{self.side}_hand_v1_wide/synergy_command"
         self.GripperPub = rospy.Publisher(topic, HandCmd, queue_size=3)
 
-        topic = "/xbotcore/"+self.side+"_hand/status"    
+        topic = "/xbotcore/"+self.side+"_hand/status"
+        #topic = f"/{self.side}_hand_v1_wide/motor_state"
         rospy.Subscriber(topic, HandStatus, self.hand_current_callback)
 
         rospy.sleep(2)
@@ -63,7 +67,8 @@ class QbHand:
         # moving
         #print('Moving qb Soft Hand..')
         if self.gazebo:
-            self.gripperMsg.data = aperture
+            # self.gripperMsg.data = aperture
+            self.gripperMsg.pos_ref = aperture
             self.GripperPub.publish(self.gripperMsg)
 
         elif self.gazebo == False and self.side == "right":
@@ -84,13 +89,15 @@ class QbHand:
         print('Closing qb Soft Hand..')
         self.move_hand(self.close_value)
 
-    def close_hand_2(self, used_hand):
+    def close_hand_2(self, used_hand, gazebo_flag=False):
         # close
         print('Closing qb Soft Hand..')
         if used_hand == "left":
-            self.move_hand(11500)
+            if(gazebo_flag == True):self.move_hand(0.9)
+            else:self.move_hand(11500)
         else:
-             self.move_hand(15500)
+            if(gazebo_flag == True):self.move_hand(0.9)
+            else:self.move_hand(15500)
 
 
     def open_hand(self, secs=0.5):
