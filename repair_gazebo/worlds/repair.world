@@ -5,6 +5,7 @@
   <world name="default">
   
     <plugin name="xbot2_clock" filename="libxbot2_gz_clock.so"/>
+    <plugin name="gazebo_ros_link_attacher" filename="libgazebo_ros_link_attacher.so"/>
 
     <gravity>0 0 -9.81</gravity>
 
@@ -74,7 +75,8 @@
             <ode>
                 <solver>
                     <type>quick</type>
-                    <precon>jacobi</precon>
+                    <!-- Remove or comment out the precon line -->
+                    <!--<precon>jacobi</precon>-->
                     <iters>25</iters>
                     <sor>1</sor>
                 </solver>
