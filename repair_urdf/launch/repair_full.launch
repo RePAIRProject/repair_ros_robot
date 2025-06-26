@@ -12,6 +12,7 @@
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
         <param name="publish_default_efforts" value="True" />
         <rosparam param="zeros">
+            j_torso_base: 0.0
             j_torso_1: 0.0
             j_arm_2_1: 0.0
             j_arm_2_2: 0.57

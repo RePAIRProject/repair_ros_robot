@@ -12,6 +12,7 @@
             <gain name="small_mot"  p="1000"  d="10"/>
             <gain name="medium_mot" p="2000" d="20"/>
 
+            <pid name="j_torso_base" profile="medium_mot"/>
             <pid name="j_torso_1" profile="medium_mot"/>
 
             <pid name="j_arm_1_1" profile="medium_mot"/>
