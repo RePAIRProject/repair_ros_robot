@@ -157,6 +157,37 @@ roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1
 - You can ignore the warning messages about unknown links in URDF (e.g. `[ WARN] [1706696422.918657977, 1.124000000]: Link 'right_hand_v1_2_research_thumb_proximal_link' is not known to URDF. Cannot disable/enable collisons.`), they doesn't affect the run of the simulation, you won't only be able to see the hand opening/closing in Rviz
 
 
+## Gazebo with XBot2
+#### 1 Terminal 4 Splits
+```
+roscore
+xbot2-core --hw dummy
+roslaunch repair_motion_controller bringup_motion_controller.launch
+xbot2-gui
+```
+#### 2 Terminal 4 nodes
+```
+roslaunch repair_gazebo repair_gazebo_gazebo.launch
+```
+or
+```
+roslaunch repair_gazebo repair_gazebo.launch
+roslaunch repair_gazebo control_utils.launch
+/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/xbot_to_gazebo.py
+/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/republisher_xbot_to_hand.py
+```
+### Run once to launch fresco after loading fresco from nextcloud - maybe change path etc.
+```
+/home/ws/src/repair_ros_robot/repair_interface/scripts/launch_fresco.py
+```
+### Experiments 2 Terminals
+```
+/bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/sand_recognition_gazebo.py
+```
+```
+/bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco_cleaned_gazebo.py
+```
+
 ## XBot2
 XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
 
