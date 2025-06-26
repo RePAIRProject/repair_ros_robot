@@ -71,6 +71,11 @@ j_arm_2_7:
     motor_has_brake: false
     pid: {}
 
+j_torso_base:
+    control_mode: idle
+    motor_has_brake: false
+    pid: {}
+
 j_torso_1:
     control_mode: idle
     motor_has_brake: false
