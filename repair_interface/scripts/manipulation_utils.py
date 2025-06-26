@@ -130,7 +130,7 @@ class ManipulationUtils:
             else:
                 rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
                 return False
-        except:
+        except Exception as e:
             print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
             return False
 
@@ -159,6 +159,8 @@ class ManipulationUtils:
                 goal.target_time = 5 # sec
             
             
+            print("Sending goal: ",goal)
+            print("Self current state klampter: ",self.klampt_mp_client.get_state())
             self.klampt_mp_client.send_goal(goal)
             #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
             rospy.loginfo("[ManipulationUtils] Waiting for action result...")
@@ -172,7 +174,7 @@ class ManipulationUtils:
                 rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
                 return False
 
-        except:
+        except Exception as e:
             print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
             return False
         
