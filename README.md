@@ -165,6 +165,7 @@ xbot2-core --hw dummy
 roslaunch repair_motion_controller bringup_motion_controller.launch
 xbot2-gui
 ```
+Swap "real" to "dummy" in motion_controller_launch
 #### 2 Terminal 4 nodes
 ```
 roslaunch repair_gazebo repair_gazebo_gazebo.launch
