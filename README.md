@@ -188,6 +188,20 @@ roslaunch repair_gazebo control_utils.launch
 /bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco_cleaned_gazebo.py
 ```
 
+#### Only arm movements no grasping
+One can disable the attachment of the links by removing functions attach_links/detach_links in moveit_multi_fresco_cleaned_gazebo
+The result of the grasping part could for example then just be set to True.
+
+Arm movement can be done by:
+```
+publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+self.move_arm(self.arm, arm_target_pose_np)
+```
+One can call the following to reset the robot to home pose:
+```
+self.go_home_pose()
+```
+
 ## XBot2
 XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
 
