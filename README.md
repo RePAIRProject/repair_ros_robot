@@ -24,7 +24,14 @@ This repository contains the software to control the simulated and real RePAIR r
 # 2) Installation
 
 ## Docker
+0. Open a Terminal on your Device and run ```xhost +local:docker```
 1. Make a Docker container or take the ros1 Docker container for example from: [ros1_docker](https://github.com/Eruvae/ROS-devcontainer/tree/main/ros1).
+	Also add the nvidia-container-toolkit as described there as, if not done before:
+	```
+	sudo apt-get install -y nvidia-container-toolkit
+	sudo nvidia-ctk runtime configure --runtime=docker
+	sudo systemctl restart docker
+	```
 2. Add/Change the following files to the example files provided in .devcontainer folder:
 	```
 	example_dockerfile.txt -> Dockerfile
