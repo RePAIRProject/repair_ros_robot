@@ -23,6 +23,32 @@ This repository contains the software to control the simulated and real RePAIR r
 
 # 2) Installation
 
+## Docker
+1. Make a Docker container or take the ros1 Docker container for example from: [ros1_docker](https://github.com/Eruvae/ROS-devcontainer/tree/main/ros1).
+2. Add/Change the following files to the example files provided in .devcontainer folder:
+	```
+	example_dockerfile.txt -> Dockerfile
+	example_postcreate.sh -> postCreate.sh
+	example_devcontainer.json -> devcontainer.json
+	Add requirements.txt
+	```
+3. VsCode Extension "Dev Containers" needs to be installed.
+4. Clone Files you need as repair_ros_robot or repair_motion_controller under /home/ws/src, files are shown below.
+5. catkin build in /home/ws
+
+#### Export IP in Docker
+```
+export ROS_IP=$(hostname -I | awk '{print $1}')
+export ROS_MASTER_URI=http://$ROS_IP:11311
+```
+#### Due to being a root Docker to access for example USB ports you might need to add color back to your Terminal with:
+```
+sudo nano /root/.bashrc
+export PS1="\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w\[\e[0m\]\$ "
+```
+
+## Normal Installation
+
 - Clone the repository along with the submodules
 	```bash
 	mkdir -p ~/repair_robot_ws/src && cd ~/repair_robot_ws/src
