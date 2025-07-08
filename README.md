@@ -36,6 +36,7 @@ This repository contains the software to control the simulated and real RePAIR r
 4. Clone Files you need as repair_ros_robot or repair_motion_controller under /home/ws/src, files are shown below.
 5. ```source /opt/ros/noetic/setup.bash```
 6. ```catkin build``` in /home/ws
+7. You still need to install the xbot as specified below.
 
 #### Export IP in Docker
 ```
@@ -205,6 +206,8 @@ roslaunch repair_gazebo control_utils.launch
 /bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/republisher_xbot_to_hand.py
 ```
 ### Run once to launch fresco after loading fresco from nextcloud - maybe change path etc.
+Download frescos from [Nextcloud](https://cloud.vi.cs.uni-bonn.de/index.php/s/eJYLfLs43Xm5BrZ) to /src/repair_ros_robot/repair_urdf/sdf
+As of now some Frescos might need their own urdf which should just be copy paste of names
 ```
 /home/ws/src/repair_ros_robot/repair_interface/scripts/launch_fresco.py
 ```
