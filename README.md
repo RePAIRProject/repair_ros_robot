@@ -34,7 +34,8 @@ This repository contains the software to control the simulated and real RePAIR r
 	```
 3. VsCode Extension "Dev Containers" needs to be installed.
 4. Clone Files you need as repair_ros_robot or repair_motion_controller under /home/ws/src, files are shown below.
-5. catkin build in /home/ws
+5. ```source /opt/ros/noetic/setup.bash```
+6. ```catkin build``` in /home/ws
 
 #### Export IP in Docker
 ```
