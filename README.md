@@ -82,11 +82,18 @@ catkin build
 ```
 
 ### 6. Configure XBot2
-> 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script.
-To set the XBot2 configuration:
+> 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script. However, please add the following commands in order to: 1. source the ROS workspace and 2. source XBot2 in the .bashrc to be able to run ROS and XBot2 commands later in every terminal.
+```bash
+echo "source /home/ws/devel/setup.bash" >> ~/.bashrc
+echo ". /opt/xbot/setup.sh" >> ~/.bashrc
+source ~/.bashrc
+```
+
+To set the XBot2 configuration use:
 ```bash
 set_xbot2_config /home/ws/src/repair_ros_robot/repair_cntrl/config/repair_basic.yaml
 ```
+
 
 #### 💥 In case your memory gets filled up by VsCode when starting it leading to a PcCrash:
 - Try to close the Ports in VsCode and or Rebuild your container without cache.
