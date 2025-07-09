@@ -22,3 +22,6 @@
 	url = https://github.com/IntelRealSense/realsense-ros
 	branch = ros1-legacy
 
+[submodule "gazebo_ros_link_attacher"]
+	path = gazebo_ros_link_attacher
+	url = https://github.com/pal-robotics/gazebo_ros_link_attacher
