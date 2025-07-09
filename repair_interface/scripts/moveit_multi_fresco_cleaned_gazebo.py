@@ -60,6 +60,7 @@ class PicpkNPlaceDemo:
         self.mu = ManipulationUtils()
         self.debug = debug
         self.use_gazebo = True
+        self.use_both_hands = False
         self.gazebo_attached = False
         self.use_pyrealsense = False
         self.use_hands = True
@@ -353,16 +354,22 @@ class PicpkNPlaceDemo:
         return fresco_center, self.fragment_rotations_list[0], num_frescos, o3d.geometry.PointCloud(), self.fragment_ids_list[0]
 
     def set_active_arm(self):
-        if self.use_wide_hand:
-            self.arm = ARM_ENUM.ARM_1
+        if self.use_both_hands == True:
+            self.arm = ARM_ENUM.BOTH
             self.hand_api = self.hand_api_left
-            self.used_hand = "left"
-            print("=== Using Wide Hand")
+            self.used_hand = "both"
+            print("=== Using Both Hands")
         else:
-            self.arm = ARM_ENUM.ARM_2
-            self.hand_api = self.hand_api_right
-            self.used_hand = "right"
-            print("=== Using QB Hand")
+            if self.use_wide_hand:
+                self.arm = ARM_ENUM.ARM_1
+                self.hand_api = self.hand_api_left
+                self.used_hand = "left"
+                print("=== Using Wide Hand")
+            else:
+                self.arm = ARM_ENUM.ARM_2
+                self.hand_api = self.hand_api_right
+                self.used_hand = "right"
+                print("=== Using QB Hand")
             
         print("self.hand_api left after: ",self.hand_api)
         #self.mu.move_out_of_path(self.arm)

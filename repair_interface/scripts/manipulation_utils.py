@@ -21,6 +21,7 @@ from typing import Union, List
 class ARM_ENUM(Enum):
     ARM_1 = 0
     ARM_2 = 1
+    BOTH = 2
 
 class HAND_ENUM(Enum):
     HAND_1 = 0
@@ -135,7 +136,7 @@ class ManipulationUtils:
             return False
 
         
-    def move_arm_to_pose_klampt(self, arm:ARM_ENUM, pose:PoseStamped):
+    def move_arm_to_pose_klampt(self, arm:ARM_ENUM, pose:PoseStamped, pose_right:PoseStamped=None):
         try:
             #rospy.loginfo("[ManipulationUtils] Waiting for Klampt motion planner Action Service...")
             self.klampt_mp_client.wait_for_server()
@@ -144,7 +145,10 @@ class ManipulationUtils:
             goal = RepairMoveToGoal()
             
             if arm.value == 2: #
-                rospy.loginfo(f"[ManipulationUtils] arm ENUM 2: NOT IMPLEMENTED")
+                goal.arm = 2
+                goal.target_pose_left = pose.pose
+                goal.target_pose_right = pose_right.pose
+                goal.target_time = 5
 
             if arm.value == 0: # Left Arm
                 goal.arm = 0
