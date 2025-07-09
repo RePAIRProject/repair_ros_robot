@@ -22,225 +22,468 @@ This repository contains the software to control the simulated and real RePAIR r
 - [realsense_gazebo_plugin](https://github.com/issaiass/realsense_gazebo_plugin/tree/master)
 
 # 2) Installation
+## 🛠 General Installation
 
-## Docker
-0. Open a Terminal on your Device and run ```xhost +local:docker```
-1. Make a Docker container or take the ros1 Docker container for example from: [ros1_docker](https://github.com/Eruvae/ROS-devcontainer/tree/main/ros1).
-	Also add the nvidia-container-toolkit as described there as, if not done before:
-	```
-	sudo apt-get install -y nvidia-container-toolkit
-	sudo nvidia-ctk runtime configure --runtime=docker
-	sudo systemctl restart docker
-	```
-2. Add/Change the following files to the example files provided in .devcontainer folder:
-	```
-	example_dockerfile.txt -> Dockerfile
-	example_postcreate.sh -> postCreate.sh
-	example_devcontainer.json -> devcontainer.json
-	Add requirements.txt
-	```
-3. VsCode Extension "Dev Containers" needs to be installed.
-4. Clone Files you need as repair_ros_robot or repair_motion_controller under /home/ws/src, files are shown below.
-5. ```source /opt/ros/noetic/setup.bash```
-6. ```catkin build``` in /home/ws
-7. You still need to install the xbot as specified below.
+1. First, clone the repository and its submodules:
 
-#### Export IP in Docker
-```
-export ROS_IP=$(hostname -I | awk '{print $1}')
-export ROS_MASTER_URI=http://$ROS_IP:11311
-```
-#### Due to being a root Docker to access for example USB ports you might need to add color back to your Terminal with:
-```
-sudo nano /root/.bashrc
-export PS1="\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w\[\e[0m\]\$ "
-```
-
-## Normal Installation
-
-- Clone the repository along with the submodules
 	```bash
 	mkdir -p ~/repair_robot_ws/src && cd ~/repair_robot_ws/src
 
 	git clone --recurse-submodules -j8 https://github.com/RePAIRProject/repair_ros_robot.git
+	git clone https://github.com/RePAIRProject/repair_motion_controller
 	```
-- Install required Python packages
-	```bash
-	cd ~/repair_robot_ws/src/repair_ros_robot
-	pip3 install -r requirements.txt
-	```
-- Build the workspace
-	- source ROS (`source /opt/ros/noetic/setup.bash`) in all terminals
-	```bash
-	cd ~/repair_robot_ws
+2. Download fresco 3D models from [Nextcloud](https://cloud.vi.cs.uni-bonn.de/index.php/s/MsAF7bEkNmRZ2jB) to `src/repair_ros_robot/repair_urdf/sdf`. As of now some Frescos might need their own urdf which should just be copy paste of names. 
+3. Download fresco recognition models and placing sequence from [Nextcloud](https://cloud.vi.cs.uni-bonn.de/index.php/s/5AW56qWi5EbY4g8) to `src/repair_ros_robot/repair_interface/sand_detection_models`.
 
-	catkin build
-	```
-	
-	<summary>Troubleshooting
-	<details>
-	If you get errors during build similar to (where package name is some name):
 
-	```bash
-	CMake Error at /opt/ros/noetic/share/catkin/cmake/catkinConfig.cmake:83 (find_package):
-	Could not find a package configuration file provided by
-	"package_name" with any of the following names:
+## 🐳 Docker Setup (VS Code)
+We provide Docker-based installation instructions compatible with [Visual Studio Code's Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers). However, these steps mostly also apply to standard Docker usage.
 
-		package_nameConfig.cmake
-		package_name-config.cmake
+> **Prerequisite:** Complete the general installation above before proceeding.
 
-	Add the installation prefix of "package_name" to CMAKE_PREFIX_PATH
-	or set "package_name" to a directory containing one of the
-	above files.  If "package_name" provides a separate development
-	package or SDK, be sure it has been installed.
-	```
+### 1. Enable Docker Display Access
 
-	Check the list below:
-	<h3>Failure for realsense2 (missing "ddynamic_reconfigure")</h3>
-	
-	From [this issue](https://github.com/IntelRealSense/realsense-ros/issues/812) it looks like it should be installed by running:
-	```bash
-	sudo apt-get install ros-noetic-ddynamic-reconfigure 
-	```
+In a terminal, run: ``` xhost +local:docker```
 
-	<h3>Failure for repair_moveit_xbot (missing "moveit_ros_planning")</h3>
-	
-	Install moveit by
-	```
-	sudo apt-get install ros-noetic-moveit
-	```
-	<h3>Failure for repair_moveit_xbot (missing "rviz_visual_tools")</h3>
-	
-	Install it by
-	```
-	sudo apt-get install ros-noetic-rviz-visual-tools
-	```
-	<h3>Failure for repair_moveit_xbot (missing "moveit_visual_tools")</h3>
-	
-	Install it by
-	```
-	sudo apt-get install ros-noetic-moveit-visual-tools 
-	```
-	</details>
-	</summary>
-	
+### 2. Install GPU Support
 
-	- After successful build, source the workspace in all the terminals
-	```
-	cd ~/repair_robot_ws
+To enable visual outputs via GPU, install the following (if not already present):
 
-	source devel/setup.bash
-	```
-- For Gazebo:
-	- Copy the fragment model folder from ```repair_urdf/sdf/frag3``` to ```~/.gazebo/models/frag3```.
-	- Change the path in file `pysdf/src/pysdf/parser.py` line `26` to your `catkin_ws` src path.
+```bash
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
 
-- Install XBot2 to use the real robot drivers ([Source](https://advrhumanoids.github.io/xbot2/master/index.html))
-	```bash
-	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+### 3. Prepare the `.devcontainer` Folder
+Our work is based on this [ROS1 Docker Container](https://github.com/Eruvae/ROS-devcontainer/tree/main/ros1). Either create a new `.devcontainer` folder or copy the one from the before mentioned ROS1 Docker setup into `~/repair_robot_ws`. Then, replace or add the following example files (provided in this repo) inside `.devcontainer`:
 
-   sudo apt install curl 
-   curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+```
+example_dockerfile.txt      → Dockerfile  
+example_postcreate.sh       → postCreate.sh  
+example_devcontainer.json   → devcontainer.json  
+requirements.txt
+```
 
-   sudo apt update && sudo apt install -y \
-   ros-noetic-ros-base \
-   libgazebo11-dev
+### 4. Launch the Container in VS Code
 
-   echo ". /opt/ros/noetic/setup.bash" >> ~/.bashrc
+1. Install the **Dev Containers** extension in VS Code.
+2. Press `Ctrl + Shift + P` and select ``` Dev Containers: Open Folder in Container```
+3. Choose the `~/repair_robot_ws` folder.
+4. VS Code will now build the container. To rebuild it later, repeat the same command and select: ```Dev Containers: Rebuild Container```
 
-   source $HOME/.bashrc
-   sudo apt install -y \
-   ros-$ROS_DISTRO-urdf ros-$ROS_DISTRO-kdl-parser \
-   ros-$ROS_DISTRO-eigen-conversions ros-$ROS_DISTRO-robot-state-publisher ros-$ROS_DISTRO-moveit-core \
-   ros-$ROS_DISTRO-rviz ros-$ROS_DISTRO-interactive-markers ros-$ROS_DISTRO-tf-conversions ros-$ROS_DISTRO-tf2-eigen \
-   qttools5-dev libqt5charts5-dev qtdeclarative5-dev
+### 5. Build the ROS Workspace
 
-   sudo sh -c 'echo "deb http://xbot.cloud/xbot2/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list'
-   wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -  
-   sudo apt update
-   sudo apt install xbot2_desktop_full
+Once inside the container, build your workspace:
 
-   echo ". /opt/xbot/setup.sh" >> ~/.bashrc
-	```
+```bash
+cd /home/ws
+catkin build
+```
 
-- Setup XBot2 to use the real robot drivers ``` set_xbot2_config ~/repair_robot_ws/src/repair_ros_robot/repair_cntrl/config/repair_basic.yaml```
+> 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script.
 
-> For docs on `repair_interface`, go to the [repair_interface](https://github.com/RePAIRProject/repair_ros_robot/tree/main/repair_interface).
+### ✅ Optional: Restore Terminal Colors in Docker
 
-# 3) Usage
-## Gazebo simulation
-### View the robot in Gazebo
+If your Docker terminal lacks color, fix it by adding the following to `/root/.bashrc`:
+
+```bash
+sudo nano /root/.bashrc
+# Add the following line
+export PS1="\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w\[\e[0m\]\$ "
+```
+
+
+## 🖥️ Local Installation (Without Docker)
+
+If you prefer to run the project natively without Docker, follow these steps **after** completing the [General Installation](#-general-installation).
+
+---
+
+### 1. Install Python Dependencies
+
+```bash
+cd ~/repair_robot_ws/src/repair_ros_robot
+pip3 install -r requirements.txt
+```
+
+### 2. Build the ROS Workspace
+
+Ensure you have sourced your ROS environment in every terminal:
+
+```bash
+source /opt/ros/noetic/setup.bash
+cd ~/repair_robot_ws
+catkin build
+```
+
+---
+
+### ⚠️ Troubleshooting Build Errors
+
+If you encounter errors like:
+
+```bash
+CMake Error at /opt/ros/noetic/share/catkin/cmake/catkinConfig.cmake:83 (find_package):
+Could not find a package configuration file provided by "package_name" ...
+```
+
+Check the solutions below:
+
+#### 🔧 Missing: `ddynamic_reconfigure` (used by `realsense2`)
+
+```bash
+sudo apt-get install ros-noetic-ddynamic-reconfigure
+```
+
+#### 🔧 Missing: `moveit_ros_planning` (used by `repair_moveit_xbot`)
+
+```bash
+sudo apt-get install ros-noetic-moveit
+```
+
+#### 🔧 Missing: `rviz_visual_tools` (used by `repair_moveit_xbot`)
+
+```bash
+sudo apt-get install ros-noetic-rviz-visual-tools
+```
+
+#### 🔧 Missing: `moveit_visual_tools` (used by `repair_moveit_xbot`)
+
+```bash
+sudo apt-get install ros-noetic-moveit-visual-tools
+```
+
+---
+
+### 3. Source the Workspace
+
+After a successful build:
+
+```bash
+cd ~/repair_robot_ws
+source devel/setup.bash
+```
+
+### 4. Install XBot2 (Real Robot Driver Support)
+
+Follow the [official XBot2 installation guide](https://advrhumanoids.github.io/xbot2/master/index.html), or run:
+
+```bash
+# ROS setup
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt install curl 
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+sudo apt update && sudo apt install -y ros-noetic-ros-base libgazebo11-dev
+
+echo ". /opt/ros/noetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+# Additional ROS and GUI tools
+sudo apt install -y \
+ros-$ROS_DISTRO-urdf ros-$ROS_DISTRO-kdl-parser \
+ros-$ROS_DISTRO-eigen-conversions ros-$ROS_DISTRO-robot-state-publisher ros-$ROS_DISTRO-moveit-core \
+ros-$ROS_DISTRO-rviz ros-$ROS_DISTRO-interactive-markers ros-$ROS_DISTRO-tf-conversions ros-$ROS_DISTRO-tf2-eigen \
+qttools5-dev libqt5charts5-dev qtdeclarative5-dev
+
+# XBot2 repository setup
+sudo sh -c 'echo "deb http://xbot.cloud/xbot2/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list'
+wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
+sudo apt update
+sudo apt install xbot2_desktop_full
+
+echo ". /opt/xbot/setup.sh" >> ~/.bashrc
+```
+
+### 6. Configure XBot2
+
+To set the XBot2 configuration:
+
+```bash
+set_xbot2_config ~/repair_robot_ws/src/repair_ros_robot/repair_cntrl/config/repair_basic.yaml
+```
+
+ More Information
+For additional details on the interface, refer to the [repair_interface documentation](https://github.com/RePAIRProject/repair_ros_robot/tree/main/repair_interface).
+---
+
+
+
+
+# 3.) Usage Guide
+
+## Simple Gazebo Simulation
+
+### 🔍 Inspect the Robot in Gazebo
+
 ```bash
 roslaunch repair_gazebo repair_gazebo.launch
 ```
 
-- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers
-``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint``` 
+### ⚠️ Known Warnings
+- You can safely ignore the following error messages — they pertain to position controllers and missing `p` gains, which are only relevant for effort controllers:
+	```
+	[ERROR] No p gain specified for pid. Namespace: /gazebo_ros_control/pid_gains/x_joint
+	```
+- URDF warnings like:
+  ```
+  [ WARN] Link 'right_hand_v1_2_research_thumb_proximal_link' is not known to URDF.
+  ```
+  These do not impact functionality. You may not see hand animations in RViz but simulations work fine.
 
-### Motion planning and execution with Moveit and ros_control in Gazebo
-```bash
-roslaunch repair_gazebo bringup_moveit.launch launch_gazebo:=true sh_version:=v1_2_research fixed_hands:=false
-```
-
-- `launch_gazebo:=true/false` (default `false`): if `true` launches Gazebo for simulation, if `false` (default) real robot
-- `sh_version:=v1_2_research/v1_wide/mixed_hands` (default `v1_2_research`): to use standard (small) hand/wide hand/standard hand on right and wide hand on left
-- `fixed_hands:=true/false` (default `true`): `true` is needed for planning with real robot, but you cannot plan in simulation, set it to `false` to plan in Gazebo
-
-  
-#### Errors and warnings
-- You can ignore the following error messages, the model uses position controllers while p gains are only needed for effort controllers ``` [ERROR] [1675347973.116238028]: No p gain specified for pid.  Namespace: /gazebo_ros_control/pid_gains/x_joint```
-- You can ignore the warning messages about unknown links in URDF (e.g. `[ WARN] [1706696422.918657977, 1.124000000]: Link 'right_hand_v1_2_research_thumb_proximal_link' is not known to URDF. Cannot disable/enable collisons.`), they doesn't affect the run of the simulation, you won't only be able to see the hand opening/closing in Rviz
-
+---
 
 ## Gazebo with XBot2
-#### 1 Terminal 4 Splits
-```
+To run the overall fresco manipulation pipeline as devoloped on the real robot, simply follow the following steps.
+
+### Controller Based Commands: 1 Terminal, 4 Splits
+
+Run each command in its own split:
+
+```bash
 roscore
 xbot2-core --hw dummy
 roslaunch repair_motion_controller bringup_motion_controller.launch
 xbot2-gui
 ```
-Swap "real" to "dummy" in motion_controller_launch
-#### 2 Terminal 4 nodes
-```
-roslaunch repair_gazebo repair_gazebo_gazebo.launch
-```
-or
-```
-roslaunch repair_gazebo repair_gazebo.launch
-roslaunch repair_gazebo control_utils.launch
-/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/xbot_to_gazebo.py
-/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/republisher_xbot_to_hand.py
-```
-### Run once to launch fresco after loading fresco from nextcloud - maybe change path etc.
-Download frescos from [Nextcloud](https://cloud.vi.cs.uni-bonn.de/index.php/s/eJYLfLs43Xm5BrZ) to /src/repair_ros_robot/repair_urdf/sdf
-As of now some Frescos might need their own urdf which should just be copy paste of names
-```
+⚠️ after launching `xbot2-gui` start `homing` and `ros_control`! the simulation will not run properly otherwise.  
+> 🔧 Set the `motion_controller_launch` to use `"dummy"` instead of `"real"`.
+
+---
+
+### Run Simulation Commands:
+To run the simulation we offer two options, where option 1. is the prefered one:
+1. Single combined launch:
+
+	```bash
+	roslaunch repair_gazebo repair_gazebo_gazebo.launch
+	```
+
+2. Manual launch of each component:
+
+	```bash
+	roslaunch repair_gazebo repair_gazebo.launch
+	roslaunch repair_gazebo control_utils.launch
+	/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/xbot_to_gazebo.py
+	/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/republisher_xbot_to_hand.py
+	```
+
+### Run Pipeline Commands:
+### Load Frescos
+To spawn a Fresco piece inside the Gazebo simulation, run:
+```bash
 /home/ws/src/repair_ros_robot/repair_interface/scripts/launch_fresco.py
 ```
-### Experiments 2 Terminals
-```
+Everytime this command is repeated, the fresco will be respawned at the same position
+
+### Run Experiments 
+To run the experiment run the following commands in two seperate terminals:
+
+Terminal 1:
+
+```bash
 /bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/sand_recognition_gazebo.py
 ```
-```
+
+Terminal 2:
+
+```bash
 /bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco_cleaned_gazebo.py
 ```
 
-#### Only arm movements no grasping
-One can disable the attachment of the links by removing functions attach_links/detach_links in moveit_multi_fresco_cleaned_gazebo
-The result of the grasping part could for example then just be set to True.
+---
 
-Arm movement can be done by:
-```
+### ✋ Run Arm Movement Only (No Grasping)
+
+You can disable link attachment logic by removing the functions `attach_links` and `detach_links` in `moveit_multi_fresco_cleaned_gazebo.py`.  
+You can hardcode the result of grasping to `True` to bypass grasp simulation.
+
+Use the following code for arm motion:
+
+```python
 publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
 self.move_arm(self.arm, arm_target_pose_np)
 ```
-One can call the following to reset the robot to home pose:
-```
+
+Reset robot to home pose:
+
+```python
 self.go_home_pose()
 ```
+---
 
-## XBot2
+# 🤖 Real-World Robot Usage Guide
+
+Controlling the real robot requires **XBot2**. A **dummy mode** is also available to emulate the real robot interface — ideal for testing MoveIt and RViz without `ros_control`.  
+
+## 🦾 Real Robot Setup
+
+### 1. Configure `.bashrc`
+
+Set your environment to connect to the robot’s ROS master. Add this to your `.bashrc`:
+
+```bash
+export ROS_MASTER_URI=http://{robot_IP}:11311
+export ROS_IP={local_IP}
+```
+
+Then, source your `.bashrc`:
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+### 2. Remote Setup on Robot PC (via SSH)
+
+```bash
+ssh -X {username}@{robot_IP}
+```
+
+#### Terminal 1 – Check/Start roscore
+```bash
+rostopic list
+# If not running:
+systemctl --user restart roscore.service
+```
+
+#### Terminal 1 – Start EtherCAT Master
+```bash
+ecat_master
+```
+
+#### Terminal 2 – Start XBot2 with Position Control
+```bash
+xbot2-core --hw ec_pos
+# Or for idle mode:
+# xbot2-core --hw idle
+```
+
+#### Terminal 3 – Start GUI
+```bash
+xbot2-gui
+```
+
+---
+
+### 3. Local PC Setup (3 Terminals)
+
+#### Terminal 1 – Start Motion Controller (MoveIt + Klampt)
+```bash
+roslaunch repair_motion_controller bringup_motion_controller.launch
+```
+
+#### Terminal 2 – Only MoveIt
+```bash
+roslaunch repair_moveit_xbot bringup_moveit.launch
+rosrun repair_interface moveit_client.py
+```
+
+#### Terminal 3 – Start Chest-mounted Camera
+```bash
+roslaunch realsense2_camera demo_pointcloud_new.launch serial_no:=f1061874
+```
+
+---
+
+### 4. Fresco Recognition
+
+Download Fresco recognition models and run:
+
+```bash
+rosrun sand_recognition_with_orientation.py
+```
+
+**Available Models:**
+
+```bash
+model_name:="best_3pieces_15epochs_larger_batch.pt"  # Group 89 (robust, 3 classes)
+model_name:="best_mix.pt"                            # Group 15 and 29
+```
+
+> **Note:**  
+> - `best_3pieces_15epochs_larger_batch.pt` is robust but supports only 3 IDs.  
+> - `best_g89_15epochs_larger_batch.pt` detects more IDs but may be less reliable. Consider reducing the `conf_debug` threshold (line 299) to increase fragment detection.
+
+---
+
+## 🧩 Pick and Place Demo
+
+Run the multi-fragment pick & place pipeline:
+
+```bash
+rosrun repair_interface moveit_multi_fresco_cleaned.py
+```
+
+**Note:**  
+Use `sh_version` options: `v1_2_research`, `v1_wide`, `mixed_hands`.
+
+---
+
+## 📦 Required Files for Recognition
+
+Ask **Luca Palmieri** for the following resources:
+
+- Frescos `RPf_00123` to `RPf_001266` should be placed in:
+  - `repair_ros_robot/repair_urdf/sdf`
+  - `/home/.gazebo/models`
+- Fragment database directory `fragments_db` should be added to:
+  - `/home/.gazebo/`
+
+---
+
+## 📡 ROS Topics
+
+- List all topics:
+  ```bash
+  rostopic list
+  ```
+
+- Send joint commands (excluding SoftHand):
+  ```
+  /xbotcore/command
+  ```
+
+- Read joint states (excluding SoftHand):
+  ```
+  /xbotcore/joint_states
+  ```
+
+- SoftHand commands:
+  ```
+  /left_hand_v1s/synergy_command
+  /right_hand_v1s/synergy_command
+  ```
+
+- Finger states:
+  ```
+  /left_hand_v1s/{fingername}_state
+  /right_hand_v1s/{fingername}_state
+  ```
+
+## LEGACY MoveIt Configuration
+
+### ➕ Increase Path Resolution
+In `repair_moveit_config_v2/config/ompl_planning.yaml`:
+
+```yaml
+longest_valid_segment_fraction: 0.00005
+```
+
+### 🐢 Adjust Arm Speeds
+In `repair_moveit_config_v2/config/joint_limits.yaml`:
+
+```yaml
+default_velocity_scaling_factor: 0.1
+default_acceleration_scaling_factor: 0.1
+```
+
+Alternatively, use the **Motion Planning** tab in RViz.
+
+
+
+## 🤖 Real world Usage
 XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
 
 ### Dummy mode
@@ -369,7 +612,7 @@ To run recognition, a few files need to be added (ask Luca Palmieri for the file
 - Send commands to the SoftHans using ```/{left/right}_hand_v1s/synergy_command``` topic, or inspect the state of each finger looking at ```/{left/right}_hand_v1s/{fingername}_state``` topic
 
 # 4) Known Issues
-- Translation axis needs to be included
+-
 
 # 5) Relevant publications
 T.B.A.
