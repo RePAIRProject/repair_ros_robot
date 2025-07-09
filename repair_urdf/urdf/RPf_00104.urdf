@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot name="RPf_00104">
+  <material name="Blanc">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <link name="RPf_00104_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://repair_urdf/sdf/RPf_00104/RPf_00104.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	 	     <mesh filename="package://repair_urdf/sdf/RPf_00104/RPf_00104.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+       <mass value="0.5"/>
+       <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+    </inertial>
+  </link>
+ 
+</robot>
