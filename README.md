@@ -81,7 +81,12 @@ cd /home/ws
 catkin build
 ```
 
+### 6. Configure XBot2
 > 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script.
+To set the XBot2 configuration:
+```bash
+set_xbot2_config /home/ws/src/repair_ros_robot/repair_cntrl/config/repair_basic.yaml
+```
 
 #### 💥 In case your memory gets filled up by VsCode when starting it leading to a PcCrash:
 - Try to close the Ports in VsCode and or Rebuild your container without cache.
@@ -198,7 +203,7 @@ sudo apt install xbot2_desktop_full
 echo ". /opt/xbot/setup.sh" >> ~/.bashrc
 ```
 
-### 6. Configure XBot2
+### 5. Configure XBot2
 
 To set the XBot2 configuration:
 
