@@ -83,6 +83,9 @@ catkin build
 
 > 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script.
 
+#### 💥 In case your memory gets filled up by VsCode when starting it leading to a PcCrash:
+- Try to close the Ports in VsCode and or Rebuild your container without cache.
+
 ### ✅ Optional: Restore Terminal Colors in Docker
 
 If your Docker terminal lacks color, fix it by adding the following to `/root/.bashrc`:
@@ -613,7 +616,7 @@ To run recognition, a few files need to be added (ask Luca Palmieri for the file
 - Send commands to the SoftHans using ```/{left/right}_hand_v1s/synergy_command``` topic, or inspect the state of each finger looking at ```/{left/right}_hand_v1s/{fingername}_state``` topic
 
 # 4) Known Issues
-- In case VsCode runs into a memory overflow, try to close the Ports in VsCode and or Rebuild your container without cache.
+- 
 
 # 5) Relevant publications
 T.B.A.
