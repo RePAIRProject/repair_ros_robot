@@ -267,6 +267,7 @@ To run the simulation we offer two options, where option 1. is the prefered one:
 	/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/xbot_to_gazebo.py
 	/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/republisher_xbot_to_hand.py
 	```
+⚠️  After Launching Gazebo, make sure to enable the play button ▶️ inside Gazebo to run the simulation
 
 ### Run Pipeline Commands:
 ### Load Frescos
