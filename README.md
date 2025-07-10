@@ -305,7 +305,7 @@ Terminal 1:
 Terminal 2:
 
 ```bash
-/bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco_cleaned_gazebo.py
+/bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco.py --use_gazebo
 ```
 
 ---
@@ -434,7 +434,7 @@ model_name:="best_mix.pt"                            # Group 15 and 29
 Run the multi-fragment pick & place pipeline:
 
 ```bash
-rosrun repair_interface moveit_multi_fresco_cleaned.py
+rosrun repair_interface moveit_multi_fresco.py
 ```
 
 **Note:**  
