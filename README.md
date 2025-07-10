@@ -307,6 +307,7 @@ Terminal 2:
 ```bash
 /bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco.py --use_gazebo
 ```
+>Offset values and other parameters for the pipeline are specified in `repair_interface/scripts/configs/gazebo_pipeline_config.yaml`
 
 ---
 
@@ -436,6 +437,7 @@ Run the multi-fragment pick & place pipeline:
 ```bash
 rosrun repair_interface moveit_multi_fresco.py
 ```
+>Offset values and other parameters for the pipeline are specified in `repair_interface/scripts/configs/real_pipeline_config.yaml`
 
 **Note:**  
 Use `sh_version` options: `v1_2_research`, `v1_wide`, `mixed_hands`.
