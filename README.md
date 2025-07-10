@@ -38,8 +38,9 @@ This repository contains the software to control the simulated and real RePAIR r
 
 ## 🐳 Docker Setup (VS Code)
 We provide Docker-based installation instructions compatible with [Visual Studio Code's Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers). However, these steps mostly also apply to standard Docker usage.
-
-> **Prerequisite:** Complete the general installation above before proceeding.
+<details>
+ 
+> **Prerequisites:** Complete the general installation above before proceeding.
 
 ### 1. Enable Docker Display Access
 
@@ -81,7 +82,22 @@ cd /home/ws
 catkin build
 ```
 
-> 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script.
+### 6. Configure XBot2
+> 🛠 The **XBot** installation is handled automatically by the `postCreate.sh` script. However, please add the following commands in order to: 1. source the ROS workspace and 2. source XBot2 in the .bashrc to be able to run ROS and XBot2 commands later in every terminal.
+```bash
+echo "source /home/ws/devel/setup.bash" >> ~/.bashrc
+echo ". /opt/xbot/setup.sh" >> ~/.bashrc
+source ~/.bashrc
+```
+
+To set the XBot2 configuration use:
+```bash
+set_xbot2_config /home/ws/src/repair_ros_robot/repair_cntrl/config/repair_basic.yaml
+```
+
+
+#### 💥 In case your memory gets filled up by VsCode when starting it leading to a PcCrash:
+- Try to close the Ports in VsCode and or Rebuild your container without cache.
 
 ### ✅ Optional: Restore Terminal Colors in Docker
 
@@ -92,14 +108,13 @@ sudo nano /root/.bashrc
 # Add the following line
 export PS1="\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w\[\e[0m\]\$ "
 ```
-
+</details>
 
 ## 🖥️ Local Installation (Without Docker)
 
 If you prefer to run the project natively without Docker, follow these steps **after** completing the [General Installation](#-general-installation).
 
----
-
+<details>
 ### 1. Install Python Dependencies
 
 ```bash
@@ -195,7 +210,7 @@ sudo apt install xbot2_desktop_full
 echo ". /opt/xbot/setup.sh" >> ~/.bashrc
 ```
 
-### 6. Configure XBot2
+### 5. Configure XBot2
 
 To set the XBot2 configuration:
 
@@ -206,7 +221,7 @@ set_xbot2_config ~/repair_robot_ws/src/repair_ros_robot/repair_cntrl/config/repa
  More Information
 For additional details on the interface, refer to the [repair_interface documentation](https://github.com/RePAIRProject/repair_ros_robot/tree/main/repair_interface).
 ---
-
+</details>
 
 
 
@@ -236,6 +251,7 @@ roslaunch repair_gazebo repair_gazebo.launch
 ## Gazebo with XBot2
 To run the overall fresco manipulation pipeline as devoloped on the real robot, simply follow the following steps.
 
+<details>
 ### Controller Based Commands: 1 Terminal, 4 Splits
 
 Run each command in its own split:
@@ -267,6 +283,7 @@ To run the simulation we offer two options, where option 1. is the prefered one:
 	/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/xbot_to_gazebo.py
 	/bin/python /home/ws/src/repair_ros_robot/repair_gazebo/src/republisher_xbot_to_hand.py
 	```
+⚠️  After Launching Gazebo, make sure to enable the play button ▶️ inside Gazebo to run the simulation
 
 ### Run Pipeline Commands:
 ### Load Frescos
@@ -311,10 +328,14 @@ Reset robot to home pose:
 self.go_home_pose()
 ```
 ---
+</details>
+
 
 # 🤖 Real-World Robot Usage Guide
 
 Controlling the real robot requires **XBot2**. A **dummy mode** is also available to emulate the real robot interface — ideal for testing MoveIt and RViz without `ros_control`.  
+
+<details>
 
 ## 🦾 Real Robot Setup
 
@@ -432,8 +453,9 @@ Ask **Luca Palmieri** for the following resources:
   - `/home/.gazebo/`
 
 ---
+</details>
 
-## 📡 ROS Topics
+# 📡 Important ROS Topics
 
 - List all topics:
   ```bash
@@ -463,7 +485,7 @@ Ask **Luca Palmieri** for the following resources:
   ```
 
 ## LEGACY MoveIt Configuration
-
+<details>
 ### ➕ Increase Path Resolution
 In `repair_moveit_config_v2/config/ompl_planning.yaml`:
 
@@ -480,139 +502,10 @@ default_acceleration_scaling_factor: 0.1
 ```
 
 Alternatively, use the **Motion Planning** tab in RViz.
-
-
-
-## 🤖 Real world Usage
-XBot2 is required when you want to control the real robot. Furthermore, there is a dummy mode that can be used to emulate the real robot interface. Using the dummy mode allows to use RVIZ with Moveit with the real robot controls instead of ros_control. Currently, this repository does not support using the dummy mode with Gazebo.
-
-### Dummy mode
-- First, you have to configure your .bashrc so that the roscore is running on your local machine. For this purpose, add the following lines to your .bashrc.
-	```bash
-	export ROS_MASTER_URI=http://{local_IP}:11311
-	export ROS_IP={local_IP}
-	```
-
-- Then, source your .bashrc and start the roscore in window 1.
-	```bash
-	roscore
-	```
-
-- Start XBot2 in window 2.
-	```bash
-	xbot2-core --hw dummy
-	```
-
-- Now you you have to start the bridge between XBot2 and ROS in window 3.
-	```bash
-	rosrun repair_moveit_xbot moveit_xbot_bridge_node
-	```
-
-- Finally, in window 4 you can start RVIZ and Moveit to control the emulated robot.
-	```bash
-	roslaunch repair_moveit_xbot bringup_moveit.launch
-	```
-
-### Real robot
-- First, you have to configure your .bashrc so that the roscore is running on the robot PC. For this purpose, add the following lines to your .bashrc.
-	```bash
-	export ROS_MASTER_URI=http://{robot_IP}:11311
-	export ROS_IP={local_IP}
-	```
-
-- Then, source your .bashrc and connect via ssh to the real robot PC. You will need at least 3 remote command windows.
-	```bash
-	ssh -X {host_name}@{robot_IP}
-	```
-
-- Check in remote window 1 that the roscore is running. In case the roscore is not running you can restart it using the system command systemctl ```--user restart roscore.service```
-	```bash
-	rostopic list
-	```
-
-- Then used the same window to start the ecat_master.
-	```bash
-	ecat_master
-	```
-
-- Now start XBot in remote window 2:
-	```bash
-	xbot2-core --hw ec_pos
-	```
-	This starts the motors to be controllable with position control. Alternatively you can start them in idle mode using ```xbot2-core --hw idle```
-
-- Finally use the following to start the gui:
-	```bash
-	xbot2-gui
-	```
-- On your local PC you will need at least 3 command windows.
-
-- First, you can start Moveit and Klampt:
-	```bash
- 	## Moveit and klampt
-	roslaunch repair_motion_controller bringup_motion_controller.launch
-
- 	# only Moveit
-	roslaunch repair_moveit_xbot bringup_moveit.launch
- 	rosrun repair_interface moveit_client.py
-	```
- - In order to run the chest mounted camera, use:
-	```bash
-	roslaunch realsense2_camera demo_pointcloud_new.launch serial_no:=f1061874
-	```
-
- - Finally, In Order to use the Fresco recognition, run:
-
-	```bash
-	rosrun sand_recognition_with_orientation.py
-	```
- The following models can be currently used:
- 
-````bash
-	model_name:="best_3pieces_15epochs_larger_batch.pt" # for fresco group 89
- 	model_name:="best_mix.pt" # for fresco group 15 and 29
-````
-
-**Note:** `best_3pieces_15epochs_larger_batch` recognizes only 3 pieces (1, 17 and 20), but it is more robust (it is trained on 3 classes), while `best_g89_15epochs_larger_batch.pt` can recognize all the pieces in group 89, but it is less robust (so better to lower the confidence threshold (`conf_debug`, line 299) and hope for the best: you can grasp more fragments, but sometimes the id is wrong (which means also that the hand choice could be wrong).
- 
- Now the system is set-up, and other code can be started!
-
-### Moveit configuration
-
-- To increase/reduce the number of points for a trajectory, update the following parameter for `arm_1` and `arm_2` in [repair_moveit_config_v2/config/ompl_planning.yaml](repair_moveit_config_v2/config/ompl_planning.yaml)
-  
-	```yaml
-	longest_valid_segment_fraction: 0.00005
-	```
-- To increase/decrease the velocity of arm joints, update the following parameter in [repair_moveit_config_v2/config/joint_limits.yaml](repair_moveit_config_v2/config/joint_limits.yaml)
-	
-	```yaml
-	default_velocity_scaling_factor: 0.1
-	default_acceleration_scaling_factor: 0.1
-	```
-- Alternatively, velocity and acceleration scaling factors can be updated in the Rviz Motion Planning plugin before planning a path.
-
-### Run the pick and place demo
-The goal of the demo is to pick and place any number of fresco fragments. 
-```bash
-rosrun repair_interface moveit_multi_fresco_cleaned.py
-```
-Note: sh_version options are [v1_2_research, v1_wide, mixed_hands]
-
-
-To run recognition, a few files need to be added (ask Luca Palmieri for the files):
-- RPf_00123 to RPf_001266 should be added to ```repair_ros_robot/repair_urdf/sdf```
-- RPf_00123 to RPf_001266 should also be added to  ```/home/.gazebo/models```
-- The fragment database directory ```fragments_db``` should be added to ```/home/.gazebo```
-
-### Information about used topics
-- To inspect all the topics exposed by xbot2 run ``` rostopic list ```:
-- Send commands to the joints (SoftHand excluded) using ```/xbotcore/command``` topic
-- Read joint states (SoftHand excluded) using ```/xbotcore/joint_states``` topic
-- Send commands to the SoftHans using ```/{left/right}_hand_v1s/synergy_command``` topic, or inspect the state of each finger looking at ```/{left/right}_hand_v1s/{fingername}_state``` topic
+</details>
 
 # 4) Known Issues
--
+- 
 
 # 5) Relevant publications
 T.B.A.
