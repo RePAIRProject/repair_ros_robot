@@ -39,7 +39,8 @@ This repository contains the software to control the simulated and real RePAIR r
 ## 🐳 Docker Setup (VS Code)
 We provide Docker-based installation instructions compatible with [Visual Studio Code's Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers). However, these steps mostly also apply to standard Docker usage.
 <details>
-> **Prerequisite:** Complete the general installation above before proceeding.
+ 
+> **Prerequisites:** Complete the general installation above before proceeding.
 
 ### 1. Enable Docker Display Access
 
