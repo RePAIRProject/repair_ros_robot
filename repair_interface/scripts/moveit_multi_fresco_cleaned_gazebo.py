@@ -84,7 +84,7 @@ class PicpkNPlaceDemo:
         self.placement_rotation_list = []
         self.placement_side_list = []
         self.use_wide_hand_grasping_list = []
-        self.min_z_value_arm_1 = 1.137
+        self.min_z_value_arm_1 = 1.05
         self.min_z_value_arm_2 = 1.076
         self.use_klampt = True
         if self.use_hands:
@@ -415,12 +415,12 @@ class PicpkNPlaceDemo:
         print('Orig: ', fresco_pose_world_np_orig)
 
         #print("fresco_pose_world: ",fresco_pose_world)
-        # if self.use_wide_hand:
-        #     fresco_pose_world_np_orig[1] -= 0.1348
-        #     fresco_pose_world_np[1] -= 0.1348
-        # else:
-        #     fresco_pose_world_np_orig[1] += 0.1348
-        #     fresco_pose_world_np[1] += 0.1348
+        if self.use_wide_hand:
+            fresco_pose_world_np_orig[1] -= 0.1348
+            fresco_pose_world_np[1] -= 0.1348
+        else:
+            fresco_pose_world_np_orig[1] += 0.1348
+            fresco_pose_world_np[1] += 0.1348
 
         #input('Go To first pose')
 
