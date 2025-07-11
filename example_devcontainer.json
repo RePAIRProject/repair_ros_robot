@@ -46,6 +46,5 @@
         "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
         "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind"
     ],
-    "initializeCommand": "sh ./.devcontainer/initialize.sh",
     "postCreateCommand": "sh ./.devcontainer/postCreate.sh"
 }

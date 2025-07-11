@@ -299,7 +299,7 @@ To run the experiment run the following commands in two seperate terminals:
 Terminal 1:
 
 ```bash
-/bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/sand_recognition_gazebo.py
+/bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/sand_recognition.py --use_gazebo
 ```
 
 Terminal 2:
@@ -414,7 +414,7 @@ roslaunch realsense2_camera demo_pointcloud_new.launch serial_no:=f1061874
 Download Fresco recognition models and run:
 
 ```bash
-rosrun sand_recognition_with_orientation.py
+rosrun sand_recognition.py
 ```
 
 **Available Models:**
