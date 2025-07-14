@@ -307,7 +307,9 @@ Terminal 2:
 ```bash
 /bin/python /home/ws/src/repair_ros_robot/repair_interface/scripts/moveit_multi_fresco.py --use_gazebo
 ```
->Offset values and other parameters for the pipeline are specified in `repair_interface/scripts/configs/gazebo_pipeline_config.yaml`
+> Offset values and other parameters for the pipeline are specified in `repair_interface/scripts/configs/gazebo_pipeline_config.yaml`
+
+> 🔭 One can turn on/off the gazing of the inactive Hand towards the active Hand in the repair_motion_control_server.py 
 
 ---
 

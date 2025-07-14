@@ -447,7 +447,7 @@ class PicpkNPlaceDemo:
 
         q_orig = arm_target_pose_np[3:].copy()
 
-        
+        hand_rot_1, hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
             
         # grasp_yaw = np.clip(grasp_yaw, np.deg2rad(-90), np.deg2rad(90))
 
@@ -458,44 +458,75 @@ class PicpkNPlaceDemo:
         #     grasp_yaw += np.deg2rad(180)
         if self.grasp_without_rotation == True:
             grasp_yaw = 0
+            best_rotated_hand_tf = None
+        # else:
+            # #######################
+            # # BETTER SOLUTION WOULD BE:
+            # # use the position of the chest to limit the angle
+            # #
+            # # position of the chest we can find in
+            # # /xbotcore/joint_states
+            # # fancy is to limit the rotation based on the position of the chest
+            # # we should use 
+            # # - link_position (first value)
+            # # link position is between -0.8 and 0.8
+            # #######################
+            # grasp_yaw = angle_utils.normalize(fresco_rotation + np.deg2rad(180)+ np.deg2rad(45), -180, 180)
+            # print(f"Angle: {np.rad2deg(grasp_yaw)}")
+            # #######################
+            # # HOTFIX
+            # # # the robot seems to have trouble to reach the grasping position
+            # # if the angle is larger than 90 degrees (in any direction)
+            # #######################
+            # if grasp_yaw > np.deg2rad(90):
+            #     print("\n" * 3)
+            #     print(f"correcting the angle! it was {np.rad2deg(grasp_yaw)}")
+            #     grasp_yaw = np.deg2rad(-180) + grasp_yaw
+            #     print(f"now it is {np.rad2deg(grasp_yaw)}")
+            #     print("\n" * 3)
+            #     input('sure?')
+            # elif grasp_yaw < np.deg2rad(-90):
+            #     print("\n" * 3)
+            #     print(f"correcting the angle! it was {np.rad2deg(grasp_yaw)}")
+            #     grasp_yaw = np.deg2rad(180) + grasp_yaw
+            #     print(f"now it is {np.rad2deg(grasp_yaw)}")
+            #     print("\n" * 3)
+            #     input('sure?')          
         else:
-            #######################
-            # BETTER SOLUTION WOULD BE:
-            # use the position of the chest to limit the angle
-            #
-            # position of the chest we can find in
-            # /xbotcore/joint_states
-            # fancy is to limit the rotation based on the position of the chest
-            # we should use 
-            # - link_position (first value)
-            # link position is between -0.8 and 0.8
-            #######################
-            grasp_yaw = angle_utils.normalize(fresco_rotation + np.deg2rad(180)+ np.deg2rad(45), -180, 180)
-            print(f"Angle: {np.rad2deg(grasp_yaw)}")
-            #######################
-            # HOTFIX
-            # # the robot seems to have trouble to reach the grasping position
-            # if the angle is larger than 90 degrees (in any direction)
-            #######################
-            if grasp_yaw > np.deg2rad(90):
-                print("\n" * 3)
-                print(f"correcting the angle! it was {np.rad2deg(grasp_yaw)}")
-                grasp_yaw = np.deg2rad(-180) + grasp_yaw
-                print(f"now it is {np.rad2deg(grasp_yaw)}")
-                print("\n" * 3)
-                input('sure?')
-            elif grasp_yaw < np.deg2rad(-90):
-                print("\n" * 3)
-                print(f"correcting the angle! it was {np.rad2deg(grasp_yaw)}")
-                grasp_yaw = np.deg2rad(180) + grasp_yaw
-                print(f"now it is {np.rad2deg(grasp_yaw)}")
-                print("\n" * 3)
-                input('sure?')
+            # --- Apply the rotation from the second and third axes to hand_tf ---
+            rotated_hand_tfs = []
+            if hand_rot_1 is not None:
+                to_rotate_z1 = -1.57 - hand_rot_1
+                q_rot1 = quaternion_from_euler(0, 0, to_rotate_z1)
+                rotated1_hand_tf = quaternion_multiply(q_rot1, self.hand_tf)
+                rotated_hand_tfs.append(rotated1_hand_tf)
+            if hand_rot_2 is not None:
+                to_rotate_z2 = -1.57 - hand_rot_2
+                q_rot2 = quaternion_from_euler(0, 0, to_rotate_z2)
+                rotated2_hand_tf = quaternion_multiply(q_rot2, self.hand_tf)
+                rotated_hand_tfs.append(rotated2_hand_tf)
+                
+            # Compare z axes and select the best (against hand_tf)
+            orig_rot = R.from_quat(self.hand_tf)
+            orig_z = orig_rot.apply([0, 0, 1])
+            best_idx = 0
+            best_dot = -np.inf
+            for idx, rotated_hand_tf in enumerate(rotated_hand_tfs):
+                rot = R.from_quat(rotated_hand_tf)
+                z_axis = rot.apply([0, 0, 1])
+                dot = np.dot(z_axis, orig_z)
+                if dot > best_dot:
+                    best_dot = dot
+                    best_idx = idx
 
+            best_rotated_hand_tf = rotated_hand_tfs[best_idx]
 
-        q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), grasp_yaw)
-        q_new = quaternion_multiply(q_rot, q_orig)
-        arm_target_pose_np[3:] = q_new
+        if best_rotated_hand_tf is not None:
+            arm_target_pose_np[3:] = best_rotated_hand_tf
+        else:
+            q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), grasp_yaw)
+            q_new = quaternion_multiply(q_rot, q_orig)
+            arm_target_pose_np[3:] = q_new
 
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
 
@@ -647,6 +678,18 @@ class PicpkNPlaceDemo:
         ### Go Back To Home Position
         self.move_arm(self.arm, arm_target_pose_np)
         self.go_home_pose()
+
+
+    def calc_hand_rotation(self, angle):
+        # Second axis: 45 deg right
+        phi = np.deg2rad(45)
+        rotated_angle = angle + phi
+
+        # Third axis: opposite to second axis
+        phi2 = np.deg2rad(180)
+        rotated_angle_2 = rotated_angle + phi2
+
+        return rotated_angle, rotated_angle_2   
 
 
     def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):

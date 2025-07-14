@@ -1,6 +1,6 @@
 use_both_hands: False #Indicates if bimanula manipulation should be used
 use_hands: True #Indicates if QB hands should be used at all (Per default True)
-grasp_without_rotation: True # Indicates if we use oriented bounding box from recognition framework to align hand
+grasp_without_rotation: False # Indicates if we use oriented bounding box from recognition framework to align hand
 follow_the_hand: True # it will choose placement side based on the hand and not on the published data
 use_klampt: True #uses Klampt instead of Moveit
 
@@ -18,7 +18,7 @@ placement_center_table_y: 0.5 # Placing offset to not collide with other already
 
 lift_position_z_offset_after_grasp: 0.16 # intermediate position after grasping to go to, to test if grasp was succesfull
 
-dropping_position_z_arm_1: 1.15 # Z height at which the hand opens tro drop the fresco
+dropping_position_z_arm_1: 1.075 # Z height at which the hand opens tro drop the fresco
 dropping_position_z_arm_2: 1.1
 
 qbHand_current_thresh: 100 # current threshold to check if fresco was properly grasped
