@@ -626,7 +626,7 @@ if __name__ == '__main__':
     
     # Get parameters from the ROS parameter server
     data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
-    model_name = rospy.get_param('model_name', 'best_g89_15epochs_larger_batch.pt')  # Default model name
+    model_name = rospy.get_param('model_name', 'best_mix.pt')  # Default model name
     placement_file = rospy.get_param('placement_file', 'int_week_placements_demo.json')  # Default file
 
     print(f"\nUsing {model_name} for recognition!\n")
