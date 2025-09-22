@@ -221,24 +221,35 @@ XBot2 is required when you want to control the real robot. Furthermore, there is
 	```
 - On your local PC you will need at least 3 command windows.
 
-- First, you can start Moveit:
+- First, you can start Moveit and Klampt:
 	```bash
+ 	## Moveit and klampt
+	roslaunch repair_motion_controller bringup_motion_controller.launch
+
+ 	# only Moveit
 	roslaunch repair_moveit_xbot bringup_moveit.launch
+ 	rosrun repair_interface moveit_client.py
 	```
-- Furthermore, start the moveit server:
+ - In order to run the chest mounted camera, use:
 	```bash
-	rosrun repair_interface moveit_client.py
-	```
- - In order to run the camera, use:
-	```bash
-	roslaunch realsense2_camera demo_pointcloud_new.launch
+	roslaunch realsense2_camera demo_pointcloud_new.launch serial_no:=f1061874
 	```
 
  - Finally, In Order to use the Fresco recognition, run:
+
 	```bash
-	rosrun repair_interface sand_detection.py
+	rosrun sand_recognition_with_orientation.py
 	```
- Now the szstem is set-up, and other code can be started!
+ The following models can be currently used:
+ 
+````bash
+	model_name:="best_3pieces_15epochs_larger_batch.pt" # for fresco group 89
+ 	model_name:="best_mix.pt" # for fresco group 15 and 29
+````
+
+**Note:** `best_3pieces_15epochs_larger_batch` recognizes only 3 pieces (1, 17 and 20), but it is more robust (it is trained on 3 classes), while `best_g89_15epochs_larger_batch.pt` can recognize all the pieces in group 89, but it is less robust (so better to lower the confidence threshold (`conf_debug`, line 299) and hope for the best: you can grasp more fragments, but sometimes the id is wrong (which means also that the hand choice could be wrong).
+ 
+ Now the system is set-up, and other code can be started!
 
 ### Moveit configuration
 
