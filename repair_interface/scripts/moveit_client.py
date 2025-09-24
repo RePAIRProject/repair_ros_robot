@@ -50,8 +50,8 @@ class MoveitClient:
     def init_moveit_client(self):
         self.robot = RobotCommander()
         # Initialize MoveGroupCommander for each arm
-        self.move_group_arm_1 = MoveGroupCommander("arm_1", wait_for_servers=10)
-        self.move_group_arm_2 = MoveGroupCommander("arm_2", wait_for_servers=10)
+        self.move_group_arm_1 = MoveGroupCommander("arm_1", wait_for_servers=20)
+        self.move_group_arm_2 = MoveGroupCommander("arm_2", wait_for_servers=20)
 
         # create service server
         self.service_server = self.nh.Service(

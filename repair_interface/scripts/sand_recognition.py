@@ -37,6 +37,9 @@ class SandRecognition():
     def __init__(self, data_folder: str, model_name: str, placement_file: str, use_gazebo: bool):
         self.use_gazebo = use_gazebo
         print("USE_GAZEBO: ", self.use_gazebo)
+
+        # To hold the camera intrinsics and alignment
+        self.CameraIntrinsics = namedtuple("CameraIntrinsics", ["fx", "fy", "cx", "cy", "distortion_coeffs"])
     
         self.rgb_info_sub = rospy.Subscriber('/camera/color/camera_info', CameraInfo, self.camera_info_callback_rgb)
         #self.depth_info_sub = rospy.Subscriber('/camera/aligned_depth_to_color/camera_info', CameraInfo, self.camera_info_callback_depth)
@@ -52,9 +55,6 @@ class SandRecognition():
             self.depth_sub = rospy.Subscriber('/camera/depth/image_rect_raw', Image, self.depth_callback)       
         else:
             self.depth_sub = rospy.Subscriber('/camera/aligned_depth_to_color/image_raw', Image, self.depth_callback)       
-
-        # To hold the camera intrinsics and alignment
-        self.CameraIntrinsics = namedtuple("CameraIntrinsics", ["fx", "fy", "cx", "cy", "distortion_coeffs"])
 
         # Store intrinsics for RGB and Depth cameras
         self.rgb_intrinsics = None
@@ -336,14 +336,14 @@ class SandRecognition():
                 print('mean point vedo_pcl', np.mean(pts3d))
             
             # STEP 2:
+            #if self.use_gazebo == False:
             if use_hardcore == False:
                 # ICP Alignment (to the RealSense point cloud)
                 realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
                 vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
-                align_to_realsenseT = align_with_icp(realsense_pcl_o3d, vedo_pcl_o3d, voxel_size=self.voxel_size, fast=False)
-            else:
-                realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
-                vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
+                rs_d, rs_f = preprocess_point_cloud(realsense_pcl_o3d, self.voxel_size)
+                rp_d, rp_f = preprocess_point_cloud(vedo_pcl_o3d, self.voxel_size)
+                align_to_realsenseT = align_with_icp(rp_d, rs_d, voxel_size=self.voxel_size, fast=False)
 
             # STEP 3:
             # for each detected point in the scene, apply the transformation to get it to the correct location
@@ -538,9 +538,9 @@ if __name__ == '__main__':
     #                               placement_file='int_week_placements_demo.json')
     
     # Get parameters from the ROS parameter server
-    data_folder = rospy.get_param('data_folder', '/home/ws/src/repair_ros_robot/repair_interface/sand_detection_models')  # Default in case not set
-    model_name = rospy.get_param('model_name', 'best.pt')  # Default model name
-    placement_file = rospy.get_param('placement_file', 'int_week_placements.json')  # Default file
+    data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
+    model_name = rospy.get_param('model_name', 'best_g89_15epochs_larger_batch.pt')  # Default model name
+    placement_file = rospy.get_param('placement_file', 'int_week_placements_demo.json')  # Default file
 
     print(f"\nUsing {model_name} for recognition!\n")
 
@@ -548,7 +548,7 @@ if __name__ == '__main__':
     recognition = SandRecognition(data_folder=data_folder, model_name=model_name, placement_file=placement_file, use_gazebo=args.use_gazebo)
 
     recognition.recognize_and_publish(recognition_pub, placement_pub, 
-                                      verbosity=verbosity_level, debug=False, show_image_feed=False,
-                                      use_hardcore=False, only_g15=False)
+                                      verbosity=verbosity_level, debug=False, show_image_feed=True,
+                                      use_hardcore=True, only_g15=False)
 
     rospy.spin()

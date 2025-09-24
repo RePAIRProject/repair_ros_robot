@@ -88,6 +88,7 @@ class ManipulationUtils:
             print("[ManipulationUtils] Service call for move_arm_to_pose_moveit failed: %s" % e)
             return False
         
+
     def move_arm_to_pose_dawnik(self, arm: ARM_ENUM, pose: PoseStamped):
         rospy.loginfo("[ManipulationUtils] Waiting for dawnik motion planner service...")
         rospy.wait_for_service(self.mp_dawnik_topic)
@@ -135,6 +136,29 @@ class ManipulationUtils:
             print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
             return False
 
+
+    def move_sand(self, dummy_pose:PoseStamped):
+        try:
+            goal = RepairMoveToGoal()
+            goal.arm = 88
+            goal.target_pose_left = dummy_pose.pose
+            goal.target_time = 5 # sec
+
+            self.klampt_mp_client.send_goal(goal)
+            #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
+            rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+            self.klampt_mp_client.wait_for_result()
+
+            result = self.klampt_mp_client.get_result()
+            if result.success:
+                rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+                return True
+            else:
+                rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+                return False
+        except Exception as e:
+            print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
+            return False
         
     def move_arm_to_pose_klampt(self, arm:ARM_ENUM, pose:PoseStamped, pose_right:PoseStamped=None):
         try:

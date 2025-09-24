@@ -15,8 +15,6 @@ from enum import Enum
 
 from repair_interface.srv import *
 
-from attach_objects import attach_links, detach_links
-
 from typing import Union, List
 import numpy as np
 import open3d as o3d
@@ -74,6 +72,7 @@ class PicpkNPlaceDemo:
         # load config file
         this_dir = os.path.dirname(os.path.abspath(__file__))
         if self.use_gazebo:
+            from attach_objects import attach_links, detach_links
             self.config = load_config(os.path.join(this_dir, "configs", "gazebo_pipeline_config.yaml"))
         else:
             self.config = load_config(os.path.join(this_dir, "configs", "real_pipeline_config.yaml"))
@@ -117,9 +116,27 @@ class PicpkNPlaceDemo:
             print("self.hand_api left: ",self.hand_api_left)
             #self.moveit = MoveItTest()
             self.setup_hands()
+            
+        # self.use_wide_hand = False
+        # self.set_active_arm()
+        # #test = self.right_hand_arm_transform.copy()
+        # #test = pytr.pq_from_transform(test)
+        # #test[0]+= 0.05
+        # test = [0.215, -0.174, 1.524, -0.373, -0.211, 0.051, 0.902]
+        # test[1]+= 0.2
+        # print(self.left_hand_arm_transform)
+        # print(test)
+        # self.move_arm(self.arm, test)
+        # exit()
 
         self.recognition_data_sub = rospy.Subscriber('/recognition/recognition_data', RecognitionData, self.recognition_data_callback)
         self.placement_data_sub = rospy.Subscriber('/recognition/placement_data', PlacementData, self.placement_data_callback)
+
+        # self.reset_sand()
+        # rospy.sleep(5)
+        # self.reset_sand(True)
+        # exit()
+
         
         
     def reset_manipulation_utils(self):
@@ -303,6 +320,7 @@ class PicpkNPlaceDemo:
         self.tf_hand_left = get_transform(parent_frame="left_hand_v1_wide_grasp_link", child_frame="arm_1_angle_flange")
         self.tf_hand_right = get_transform(parent_frame="right_hand_v1_2_research_grasp_link",
                                            child_frame="arm_2_angle_flange")
+        
 
         self.left_hand_arm_transform = pytr.transform_from_pq([self.tf_hand_left.transform.translation.x,
                                                                self.tf_hand_left.transform.translation.y,
@@ -337,10 +355,6 @@ class PicpkNPlaceDemo:
         """ Get the final position and orientation for placing from  the publisher """
         while len(self.placement_pose_array_list) < 1 or len(self.placement_rotation_list) < 1 or \
             len(self.placement_side_list) < 1 or len(self.use_wide_hand_grasping_list) < 1:
-            # print('side')
-            # print(self.placement_side_list)
-            # print('use_wide')
-            # print(self.use_wide_hand_grasping_list)
             pass
     
         print("found the following final placements: ", self.placement_pose_array_list)
@@ -383,12 +397,9 @@ class PicpkNPlaceDemo:
     def get_fresco_world_pose(self, fresco_position, z_offset=None):
         if z_offset is not None: 
             fresco_position[2] = z_offset
-        #print("fresco position: ", fresco_position)
-        #print("hand tf: ", self.hand_tf)
         initial_fresco_pose = np.concatenate((fresco_position, self.hand_tf))
 
         initial_fresco_pose_ros = get_pose_from_arr(initial_fresco_pose)
-        #print("fresco position: ", initial_fresco_pose_ros)
 
         ### Transform the pose of fragment from the camera frame to the base frame (world)
         fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_depth_optical_frame", "world")
@@ -421,17 +432,21 @@ class PicpkNPlaceDemo:
             fresco_pose_world_np_orig[1] += self.config["fresco_pose_world_y_offset"]
             fresco_pose_world_np[1] += self.config["fresco_pose_world_y_offset"]
 
-       
+        print("Fresco Pose First ORIG", fresco_pose_world_np_orig)
+        print("Fresco Pose First OFFSET", fresco_pose_world_np)
+
         #ToDo change 
         hand_pose_world_np = self.add_move_position(self.arm, fresco_pose_world_np.copy(),
                                                     [-0.0, -0.0, 0],
                                                     [0.0, 0.0, 0])
+        print("Hand Pose First", hand_pose_world_np)
         hand_pose_world_np[2] = self.config["fresco_pose_world_z"]
-
+        print("Hand Pose Second", hand_pose_world_np)
         if self.use_fragment_alignment:
             hand_pose_world_np[3:] = hand_tf_rotated
         else:
             hand_pose_world_np[3:] = self.hand_tf
+        print("Hand Pose Third", hand_pose_world_np)
         publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
 
         hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
@@ -439,11 +454,14 @@ class PicpkNPlaceDemo:
         T0 = pytr.transform_from_pq(hand_pose_world_np)
         T1_left = pytr.concat(self.left_hand_arm_transform, T0)
         T1_right = pytr.concat(self.right_hand_arm_transform, T0)
+        # arm_target_pose_np = get_pose_from_transform(T0)
 
         if self.use_wide_hand:
             arm_target_pose_np = get_pose_from_transform(T1_left)
         else:
             arm_target_pose_np = get_pose_from_transform(T1_right)
+
+        print("Arm Pose First", arm_target_pose_np)
 
         q_orig = arm_target_pose_np[3:].copy()
 
@@ -532,8 +550,8 @@ class PicpkNPlaceDemo:
 
         print("TARGET POSE", arm_target_pose_np)
         #input('Go To first pose')
-
         self.move_arm(self.arm, arm_target_pose_np)
+        input()
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -542,6 +560,8 @@ class PicpkNPlaceDemo:
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         self.move_arm(self.arm, arm_target_pose_np)
 
+        # Remove Sand zone from klampt
+        # self.reset_sand()
         # wait for user input DEBUG
         #input("Press Enter to continue...")
 
@@ -568,6 +588,8 @@ class PicpkNPlaceDemo:
         # wait for user input DEBUG
         #input("Press Enter to continue...")
 
+        # return Sand zone to klampt
+        # self.reset_sand(reset=True)
 
         ### 5. Go To Placing Area
         # final_placements_position
@@ -721,6 +743,15 @@ class PicpkNPlaceDemo:
             target_pose_np[2] = np.clip(target_pose_np[2], a_min=self.min_z_value_arm_2, a_max=2.0)
         publish_tf_np(target_pose_np, child_frame='arm_grasp_pose')
         return target_pose_np
+    
+    def reset_sand(self, reset=False):
+        pose = np.zeros(7)
+        if not reset:
+            pose[0] = 10
+
+        dummy_pose = get_pose_stamped_from_arr(pose)
+        if not self.mu.move_sand(dummy_pose=dummy_pose):
+            exit()
 
     def go_home_pose(self):
         dummy_pose = get_pose_stamped_from_arr(np.zeros(7))
@@ -735,12 +766,11 @@ class PicpkNPlaceDemo:
             if not self.mu.move_arm_to_pose_klampt(arm, arm_target_pose):
                 print("Klmapt failed, resetting manipulation utils")
                 # Idk if this is nessesary
-                # self.reset_manipulation_utils()
-                # if not self.mu.move_arm_to_pose_klampt(arm, arm_target_pose):
-                #     print("Klmapt failed, will try moveit")
-                #     if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
-                #         exit()
-                exit()
+                self.reset_manipulation_utils()
+                if not self.mu.move_arm_to_pose_klampt(arm, arm_target_pose):
+                    print("Klmapt failed, will try moveit")
+                    if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
+                        exit()
         else:
             if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
                 exit()
