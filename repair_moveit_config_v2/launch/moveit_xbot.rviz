@@ -4,12 +4,13 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
         - /TF1/Tree1
         - /PointCloud22
         - /PoseArray1
       Splitter Ratio: 0.7998605370521545
-    Tree Height: 801
+    Tree Height: 537
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -649,12 +650,282 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Filter (blacklist): ""
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        arm_1_1:
+          Value: false
+        arm_1_2:
+          Value: false
+        arm_1_3:
+          Value: false
+        arm_1_4:
+          Value: false
+        arm_1_5:
+          Value: false
+        arm_1_6:
+          Value: false
+        arm_1_7:
+          Value: false
+        arm_1_angle_flange:
+          Value: false
+        arm_1_camera_mount:
+          Value: false
+        arm_1_tcp:
+          Value: false
+        arm_2_1:
+          Value: false
+        arm_2_2:
+          Value: false
+        arm_2_3:
+          Value: false
+        arm_2_4:
+          Value: false
+        arm_2_5:
+          Value: false
+        arm_2_6:
+          Value: false
+        arm_2_7:
+          Value: false
+        arm_2_angle_flange:
+          Value: false
+        arm_2_camera_mount:
+          Value: false
+        arm_2_tcp:
+          Value: false
+        arm_grasp_pose:
+          Value: true
+        camera_accel_frame:
+          Value: false
+        camera_accel_optical_frame:
+          Value: false
+        camera_aligned_depth_to_color_frame:
+          Value: false
+        camera_bottom_screw_frame:
+          Value: false
+        camera_color_frame:
+          Value: false
+        camera_color_optical_frame:
+          Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
+          Value: false
+        camera_gyro_frame:
+          Value: false
+        camera_gyro_optical_frame:
+          Value: false
+        camera_infra_frame:
+          Value: false
+        camera_infra_optical_frame:
+          Value: false
+        camera_link:
+          Value: false
+        camera_lower_mount:
+          Value: false
+        camera_upper_mount:
+          Value: false
+        dummy_prismatic_link:
+          Value: false
+        goal_frame:
+          Value: false
+        hand_grasp_pose:
+          Value: false
+        last_milestone_klampt:
+          Value: true
+        left_hand_v1_wide_grasp_link:
+          Value: false
+        left_hand_v1_wide_index_distal_link:
+          Value: false
+        left_hand_v1_wide_index_distal_virtual_link:
+          Value: false
+        left_hand_v1_wide_index_knuckle_link:
+          Value: false
+        left_hand_v1_wide_index_middle_link:
+          Value: false
+        left_hand_v1_wide_index_middle_virtual_link:
+          Value: false
+        left_hand_v1_wide_index_proximal_link:
+          Value: false
+        left_hand_v1_wide_index_proximal_virtual_link:
+          Value: false
+        left_hand_v1_wide_little_distal_link:
+          Value: false
+        left_hand_v1_wide_little_distal_virtual_link:
+          Value: false
+        left_hand_v1_wide_little_knuckle_link:
+          Value: false
+        left_hand_v1_wide_little_middle_link:
+          Value: false
+        left_hand_v1_wide_little_middle_virtual_link:
+          Value: false
+        left_hand_v1_wide_little_proximal_link:
+          Value: false
+        left_hand_v1_wide_little_proximal_virtual_link:
+          Value: false
+        left_hand_v1_wide_middle_distal_link:
+          Value: false
+        left_hand_v1_wide_middle_distal_virtual_link:
+          Value: false
+        left_hand_v1_wide_middle_knuckle_link:
+          Value: false
+        left_hand_v1_wide_middle_middle_link:
+          Value: false
+        left_hand_v1_wide_middle_middle_virtual_link:
+          Value: false
+        left_hand_v1_wide_middle_proximal_link:
+          Value: false
+        left_hand_v1_wide_middle_proximal_virtual_link:
+          Value: false
+        left_hand_v1_wide_palm_central_link:
+          Value: false
+        left_hand_v1_wide_palm_central_little_link:
+          Value: false
+        left_hand_v1_wide_palm_central_thumb_link:
+          Value: false
+        left_hand_v1_wide_palm_little_link:
+          Value: false
+        left_hand_v1_wide_palm_thumb_link:
+          Value: false
+        left_hand_v1_wide_palm_thumb_support_link:
+          Value: false
+        left_hand_v1_wide_ring_distal_link:
+          Value: false
+        left_hand_v1_wide_ring_distal_virtual_link:
+          Value: false
+        left_hand_v1_wide_ring_knuckle_link:
+          Value: false
+        left_hand_v1_wide_ring_middle_link:
+          Value: false
+        left_hand_v1_wide_ring_middle_virtual_link:
+          Value: false
+        left_hand_v1_wide_ring_proximal_link:
+          Value: false
+        left_hand_v1_wide_ring_proximal_virtual_link:
+          Value: false
+        left_hand_v1_wide_thumb_distal_link:
+          Value: false
+        left_hand_v1_wide_thumb_distal_virtual_link:
+          Value: false
+        left_hand_v1_wide_thumb_knuckle_link:
+          Value: false
+        left_hand_v1_wide_thumb_proximal_link:
+          Value: false
+        left_hand_v1_wide_thumb_proximal_virtual_link:
+          Value: false
+        left_initial_pose:
+          Value: false
+        leg1_link:
+          Value: false
+        leg2_link:
+          Value: false
+        leg3_link:
+          Value: false
+        leg4_link:
+          Value: false
+        obar1_link:
+          Value: false
+        obar2_link:
+          Value: false
+        obar3_link:
+          Value: false
+        obar4_link:
+          Value: false
+        right_hand_v1_2_research_grasp_link:
+          Value: false
+        right_hand_v1_2_research_index_distal_link:
+          Value: false
+        right_hand_v1_2_research_index_distal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_index_knuckle_link:
+          Value: false
+        right_hand_v1_2_research_index_middle_link:
+          Value: false
+        right_hand_v1_2_research_index_middle_virtual_link:
+          Value: false
+        right_hand_v1_2_research_index_proximal_link:
+          Value: false
+        right_hand_v1_2_research_index_proximal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_iso_link:
+          Value: false
+        right_hand_v1_2_research_little_distal_link:
+          Value: false
+        right_hand_v1_2_research_little_distal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_little_knuckle_link:
+          Value: false
+        right_hand_v1_2_research_little_middle_link:
+          Value: false
+        right_hand_v1_2_research_little_middle_virtual_link:
+          Value: false
+        right_hand_v1_2_research_little_proximal_link:
+          Value: false
+        right_hand_v1_2_research_little_proximal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_middle_distal_link:
+          Value: false
+        right_hand_v1_2_research_middle_distal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_middle_knuckle_link:
+          Value: false
+        right_hand_v1_2_research_middle_middle_link:
+          Value: false
+        right_hand_v1_2_research_middle_middle_virtual_link:
+          Value: false
+        right_hand_v1_2_research_middle_proximal_link:
+          Value: false
+        right_hand_v1_2_research_middle_proximal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_palm_link:
+          Value: false
+        right_hand_v1_2_research_ring_distal_link:
+          Value: false
+        right_hand_v1_2_research_ring_distal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_ring_knuckle_link:
+          Value: false
+        right_hand_v1_2_research_ring_middle_link:
+          Value: false
+        right_hand_v1_2_research_ring_middle_virtual_link:
+          Value: false
+        right_hand_v1_2_research_ring_proximal_link:
+          Value: false
+        right_hand_v1_2_research_ring_proximal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_thumb_distal_link:
+          Value: false
+        right_hand_v1_2_research_thumb_distal_virtual_link:
+          Value: false
+        right_hand_v1_2_research_thumb_knuckle_link:
+          Value: false
+        right_hand_v1_2_research_thumb_proximal_link:
+          Value: false
+        right_hand_v1_2_research_thumb_proximal_virtual_link:
+          Value: false
+        right_initial_pose:
+          Value: false
+        sliding_guide_link:
+          Value: false
+        table_top_link:
+          Value: false
+        torso_1:
+          Value: false
+        vbar1_link:
+          Value: false
+        vbar2_link:
+          Value: false
+        vbar3_link:
+          Value: false
+        vbar4_link:
+          Value: false
+        working_surface_link:
+          Value: false
+        world:
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -662,9 +933,177 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        last_milestone_klampt:
+          goal_frame:
+            {}
+        world:
+          arm_grasp_pose:
+            {}
+          hand_grasp_pose:
+            {}
+          left_initial_pose:
+            {}
+          right_initial_pose:
+            {}
+          table_top_link:
+            leg1_link:
+              vbar1_link:
+                obar1_link:
+                  {}
+            leg2_link:
+              vbar2_link:
+                {}
+            leg3_link:
+              vbar3_link:
+                obar2_link:
+                  sliding_guide_link:
+                    dummy_prismatic_link:
+                      torso_1:
+                        arm_1_1:
+                          arm_1_2:
+                            arm_1_3:
+                              arm_1_4:
+                                arm_1_5:
+                                  arm_1_6:
+                                    arm_1_7:
+                                      arm_1_angle_flange:
+                                        left_hand_v1_wide_palm_central_link:
+                                          left_hand_v1_wide_grasp_link:
+                                            {}
+                                          left_hand_v1_wide_index_knuckle_link:
+                                            left_hand_v1_wide_index_proximal_virtual_link:
+                                              left_hand_v1_wide_index_proximal_link:
+                                                left_hand_v1_wide_index_middle_virtual_link:
+                                                  left_hand_v1_wide_index_middle_link:
+                                                    left_hand_v1_wide_index_distal_virtual_link:
+                                                      left_hand_v1_wide_index_distal_link:
+                                                        {}
+                                          left_hand_v1_wide_middle_knuckle_link:
+                                            left_hand_v1_wide_middle_proximal_virtual_link:
+                                              left_hand_v1_wide_middle_proximal_link:
+                                                left_hand_v1_wide_middle_middle_virtual_link:
+                                                  left_hand_v1_wide_middle_middle_link:
+                                                    left_hand_v1_wide_middle_distal_virtual_link:
+                                                      left_hand_v1_wide_middle_distal_link:
+                                                        {}
+                                          left_hand_v1_wide_palm_central_little_link:
+                                            left_hand_v1_wide_palm_little_link:
+                                              left_hand_v1_wide_little_knuckle_link:
+                                                left_hand_v1_wide_little_proximal_virtual_link:
+                                                  left_hand_v1_wide_little_proximal_link:
+                                                    left_hand_v1_wide_little_middle_virtual_link:
+                                                      left_hand_v1_wide_little_middle_link:
+                                                        left_hand_v1_wide_little_distal_virtual_link:
+                                                          left_hand_v1_wide_little_distal_link:
+                                                            {}
+                                              left_hand_v1_wide_ring_knuckle_link:
+                                                left_hand_v1_wide_ring_proximal_virtual_link:
+                                                  left_hand_v1_wide_ring_proximal_link:
+                                                    left_hand_v1_wide_ring_middle_virtual_link:
+                                                      left_hand_v1_wide_ring_middle_link:
+                                                        left_hand_v1_wide_ring_distal_virtual_link:
+                                                          left_hand_v1_wide_ring_distal_link:
+                                                            {}
+                                          left_hand_v1_wide_palm_central_thumb_link:
+                                            left_hand_v1_wide_palm_thumb_link:
+                                              left_hand_v1_wide_palm_thumb_support_link:
+                                                left_hand_v1_wide_thumb_knuckle_link:
+                                                  left_hand_v1_wide_thumb_proximal_virtual_link:
+                                                    left_hand_v1_wide_thumb_proximal_link:
+                                                      left_hand_v1_wide_thumb_distal_virtual_link:
+                                                        left_hand_v1_wide_thumb_distal_link:
+                                                          {}
+                                      arm_1_camera_mount:
+                                        {}
+                                      arm_1_tcp:
+                                        {}
+                        arm_2_1:
+                          arm_2_2:
+                            arm_2_3:
+                              arm_2_4:
+                                arm_2_5:
+                                  arm_2_6:
+                                    arm_2_7:
+                                      arm_2_angle_flange:
+                                        right_hand_v1_2_research_iso_link:
+                                          right_hand_v1_2_research_grasp_link:
+                                            {}
+                                          right_hand_v1_2_research_palm_link:
+                                            right_hand_v1_2_research_index_knuckle_link:
+                                              right_hand_v1_2_research_index_proximal_virtual_link:
+                                                right_hand_v1_2_research_index_proximal_link:
+                                                  right_hand_v1_2_research_index_middle_virtual_link:
+                                                    right_hand_v1_2_research_index_middle_link:
+                                                      right_hand_v1_2_research_index_distal_virtual_link:
+                                                        right_hand_v1_2_research_index_distal_link:
+                                                          {}
+                                            right_hand_v1_2_research_little_knuckle_link:
+                                              right_hand_v1_2_research_little_proximal_virtual_link:
+                                                right_hand_v1_2_research_little_proximal_link:
+                                                  right_hand_v1_2_research_little_middle_virtual_link:
+                                                    right_hand_v1_2_research_little_middle_link:
+                                                      right_hand_v1_2_research_little_distal_virtual_link:
+                                                        right_hand_v1_2_research_little_distal_link:
+                                                          {}
+                                            right_hand_v1_2_research_middle_knuckle_link:
+                                              right_hand_v1_2_research_middle_proximal_virtual_link:
+                                                right_hand_v1_2_research_middle_proximal_link:
+                                                  right_hand_v1_2_research_middle_middle_virtual_link:
+                                                    right_hand_v1_2_research_middle_middle_link:
+                                                      right_hand_v1_2_research_middle_distal_virtual_link:
+                                                        right_hand_v1_2_research_middle_distal_link:
+                                                          {}
+                                            right_hand_v1_2_research_ring_knuckle_link:
+                                              right_hand_v1_2_research_ring_proximal_virtual_link:
+                                                right_hand_v1_2_research_ring_proximal_link:
+                                                  right_hand_v1_2_research_ring_middle_virtual_link:
+                                                    right_hand_v1_2_research_ring_middle_link:
+                                                      right_hand_v1_2_research_ring_distal_virtual_link:
+                                                        right_hand_v1_2_research_ring_distal_link:
+                                                          {}
+                                            right_hand_v1_2_research_thumb_knuckle_link:
+                                              right_hand_v1_2_research_thumb_proximal_virtual_link:
+                                                right_hand_v1_2_research_thumb_proximal_link:
+                                                  right_hand_v1_2_research_thumb_distal_virtual_link:
+                                                    right_hand_v1_2_research_thumb_distal_link:
+                                                      {}
+                                      arm_2_camera_mount:
+                                        {}
+                                      arm_2_tcp:
+                                        {}
+                        camera_bottom_screw_frame:
+                          camera_link:
+                            camera_aligned_depth_to_color_frame:
+                              {}
+                            camera_color_frame:
+                              camera_accel_frame:
+                                camera_accel_optical_frame:
+                                  {}
+                              camera_color_optical_frame:
+                                {}
+                              camera_gyro_frame:
+                                camera_gyro_optical_frame:
+                                  {}
+                            camera_depth_frame:
+                              camera_depth_optical_frame:
+                                {}
+                            camera_infra_frame:
+                              camera_infra_optical_frame:
+                                {}
+                          camera_lower_mount:
+                            {}
+                          camera_upper_mount:
+                            {}
+                    working_surface_link:
+                      {}
+                obar3_link:
+                  {}
+            leg4_link:
+              vbar4_link:
+                obar4_link:
+                  {}
       Update Interval: 0
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -837,7 +1276,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.414316177368164
+      Distance: 3.4234871864318848
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -853,14 +1292,14 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4749998152256012
+      Pitch: 0.5849994421005249
       Target Frame: world
-      Yaw: 0.1817246973514557
+      Yaw: 0.13672688603401184
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1016
+  Height: 752
   Help:
     collapsed: false
   Hide Left Dock: false
@@ -869,9 +1308,9 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd000000010000000000000266000003a2fc020000000afb000000100044006900730070006c006100790073010000003b000003a2000000c700fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000001ed000001ee0000016900fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002e1000001740000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000000004cc000003a200000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000002660000029afc020000000afb000000100044006900730070006c006100790073010000003b0000029a000000c700fffffffb0000000800480065006c00700000000342000000bb0000006e00fffffffb0000000a00560069006500770073000000010c000000a4000000a000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000001ed000001ee0000016900fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002e1000001740000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000000002fe0000029a00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 1848
-  X: 72
+  Width: 1386
+  X: 163
   Y: 27

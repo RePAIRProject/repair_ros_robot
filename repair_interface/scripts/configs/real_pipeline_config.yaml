@@ -1,13 +1,15 @@
 use_both_hands: False #Indicates if bimanula manipulation should be used
 use_hands: True #Indicates if QB hands should be used at all (Per default True)
-grasp_without_rotation: True # Indicates if we use oriented bounding box from recognition framework to align hand
+grasp_without_rotation: False # Indicates if we use oriented bounding box from recognition framework to align hand
+place_without_rotation: False
 follow_the_hand: False # it will choose placement side based on the hand and not on the published data
 use_klampt: True #uses Klampt instead of Moveit
 
 min_z_value_arm_1: 1.137 # Minimum Z value the Left (big hand) arm is alowed to go down to
 min_z_value_arm_2: 1.076 # Minimum Z value the Right (small hand) arm is alowed to go down to
   
-fresco_pose_world_y_offset: 0.1348 # Offset in Y direction for correct Hand placement above Fresco fragment (we still don't know why we need it)
+fresco_pose_world_y_offset: 0.07 # Offset in Y direction for correct Hand placement above Fresco fragment (we still don't know why we need it)
+fresco_pose_world_x_offset: 0.02
 
 fresco_pose_world_z: 1.29 # Initial Z Heigt for placing Hand above Fresco Fragment
 

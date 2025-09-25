@@ -15,7 +15,7 @@ def spawn_urdf_model():
 
     # Read URDF file
     urdf_path = os.path.join(
-        os.getenv('HOME'), '/home/ws/src/repair_ros_robot/repair_urdf/urdf/RPf_00205.urdf'
+        os.getenv('HOME'), '/home/repair/repair_ws/src/repair_ros_robot/repair_urdf/urdf/RPf_00205.urdf'
     )
     with open(urdf_path, 'r') as file:
         urdf_xml = file.read()

@@ -84,6 +84,7 @@ class PicpkNPlaceDemo:
         self.use_fragment_alignment = self.config["use_fragment_alignment"]
         self.hardcoded_placement = self.config["hardcoded_placement"]
         self.grasp_without_rotation = self.config["grasp_without_rotation"]
+        self.place_without_rotation = self.config['place_without_rotation']
         self.follow_the_hand = self.config["follow_the_hand"] # it will choose placement side based on the hand and not on the published data
         self.use_klampt = self.config["use_klampt"]
 
@@ -310,6 +311,30 @@ class PicpkNPlaceDemo:
     #     # This callback stores the received 'rotations' data into self.fragment_rotations_list
     #     self.use_wide_hand_grasping_list = list(use_wide_hand.data)   
 
+    def transform_world_to_hand(self):
+        self.world_tf_hand_left = get_transform(parent_frame="world", child_frame="left_hand_v1_wide_grasp_link")
+        self.world_tf_hand_right = get_transform(parent_frame="world",
+                                           child_frame="right_hand_v1_2_research_grasp_link")
+
+        self.left_hand_world_transform = pytr.transform_from_pq([self.world_tf_hand_left.transform.translation.x,
+                                                               self.world_tf_hand_left.transform.translation.y,
+                                                               self.world_tf_hand_left.transform.translation.z,
+                                                               self.world_tf_hand_left.transform.rotation.w,
+                                                               self.world_tf_hand_left.transform.rotation.x,
+                                                               self.world_tf_hand_left.transform.rotation.y,
+                                                               self.world_tf_hand_left.transform.rotation.z
+                                                               ])
+
+        self.right_hand_world_transform = pytr.transform_from_pq([self.world_tf_hand_right.transform.translation.x,
+                                                                self.world_tf_hand_right.transform.translation.y,
+                                                                self.world_tf_hand_right.transform.translation.z,
+                                                                self.world_tf_hand_right.transform.rotation.w,
+                                                                self.world_tf_hand_right.transform.rotation.x,
+                                                                self.world_tf_hand_right.transform.rotation.y,
+                                                                self.world_tf_hand_right.transform.rotation.z
+                                                                ])
+
+
 
     def setup_hands(self, open_hands=True):
         if open_hands:
@@ -402,7 +427,7 @@ class PicpkNPlaceDemo:
         initial_fresco_pose_ros = get_pose_from_arr(initial_fresco_pose)
 
         ### Transform the pose of fragment from the camera frame to the base frame (world)
-        fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_depth_optical_frame", "world")
+        fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_color_optical_frame", "world")
         fresco_pose_world_np = get_arr_from_pose(fresco_pose_world)
         return fresco_pose_world, fresco_pose_world_np
 
@@ -424,13 +449,6 @@ class PicpkNPlaceDemo:
         fresco_pose_world_orig, fresco_pose_world_np_orig = self.get_fresco_world_pose(fresco_center.copy())
         self.fresco_world_z = fresco_pose_world_np_orig[2]
         fresco_pose_world, fresco_pose_world_np = self.get_fresco_world_pose(fresco_center.copy(), z_offset=1.21)
-
-        if self.use_wide_hand:
-            fresco_pose_world_np_orig[1] -= self.config["fresco_pose_world_y_offset"]
-            fresco_pose_world_np[1] -= self.config["fresco_pose_world_y_offset"]
-        else:
-            fresco_pose_world_np_orig[1] += self.config["fresco_pose_world_y_offset"]
-            fresco_pose_world_np[1] += self.config["fresco_pose_world_y_offset"]
 
         print("Fresco Pose First ORIG", fresco_pose_world_np_orig)
         print("Fresco Pose First OFFSET", fresco_pose_world_np)
@@ -454,7 +472,6 @@ class PicpkNPlaceDemo:
         T0 = pytr.transform_from_pq(hand_pose_world_np)
         T1_left = pytr.concat(self.left_hand_arm_transform, T0)
         T1_right = pytr.concat(self.right_hand_arm_transform, T0)
-        # arm_target_pose_np = get_pose_from_transform(T0)
 
         if self.use_wide_hand:
             arm_target_pose_np = get_pose_from_transform(T1_left)
@@ -546,28 +563,34 @@ class PicpkNPlaceDemo:
             q_new = quaternion_multiply(q_rot, q_orig)
             arm_target_pose_np[3:] = q_new
 
+        if self.use_wide_hand:
+            arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
+            arm_target_pose_np[1] -= self.config["fresco_pose_world_y_offset"]
+        else:
+            arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
+            arm_target_pose_np[1] += self.config["fresco_pose_world_y_offset"]
+
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
 
         print("TARGET POSE", arm_target_pose_np)
         #input('Go To first pose')
         self.move_arm(self.arm, arm_target_pose_np)
-        input()
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
         arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
-
+        input('wait before tilt')
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         self.move_arm(self.arm, arm_target_pose_np)
 
         # Remove Sand zone from klampt
-        # self.reset_sand()
+        self.reset_sand()
         # wait for user input DEBUG
         #input("Press Enter to continue...")
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
         fresco_down_pose = arm_target_pose_np.copy()
-        fresco_down_pose[1] = fresco_down_pose[1] - self.config["fresco_down_pose_y_offset"]
+        fresco_down_pose[1] = fresco_down_pose[1] #- self.config["fresco_down_pose_y_offset"]
         fresco_down_pose[2] = self.fresco_world_z
         arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
                                                     fresco_down_pose[:3],
@@ -589,7 +612,7 @@ class PicpkNPlaceDemo:
         #input("Press Enter to continue...")
 
         # return Sand zone to klampt
-        # self.reset_sand(reset=True)
+        self.reset_sand(reset=True)
 
         ### 5. Go To Placing Area
         # final_placements_position
@@ -622,6 +645,29 @@ class PicpkNPlaceDemo:
             print(f"going above the fragment at {x_placement}, {y_placement}")
 
         z = arm_target_pose_np[2]
+
+        # TODO possibly need to consider here how the fresco lays in hand already from grasp
+        if(self.place_without_rotation == True):
+            grasp_yaw = 0
+            best_rotated_hand_tf = None
+        else:
+            # --- Apply the rotation from the second and third axes to hand_tf ---
+            # rotated_hand_tfs = []
+            hand_rot = final_placements_position[2]
+            if hand_rot is not None:
+                q_rot1 = quaternion_from_euler(0, 0, hand_rot)
+                rotated1_hand_tf = quaternion_multiply(q_rot1, self.hand_tf)
+            else:
+                raise ValueError("hand_rot not specified")
+
+        if rotated1_hand_tf is not None:
+            arm_target_pose_np[3:] = rotated1_hand_tf
+        else:
+            q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), grasp_yaw)
+            q_new = quaternion_multiply(q_rot, q_orig)
+            arm_target_pose_np[3:] = q_new
+
+
         # When we use the wide hand, we need to turn it 90 degrees
         if self.use_wide_hand == True and self.follow_the_hand == False:
             # rotate
@@ -715,11 +761,37 @@ class PicpkNPlaceDemo:
 
 
     def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):
-        q_rot = quaternion_from_euler(r_ang, p_ang, y_ang)
-        q_orig = arm_target_pose[3:].copy()
-        q_new = quaternion_multiply(q_rot, q_orig)
-        arm_target_pose[3:] = q_new
-        return arm_target_pose
+            arm_pose = get_pose_from_arr(arm_target_pose)
+            if self.arm == ARM_ENUM.ARM_1:
+                hand_pose = transform_pose_vislab(arm_pose, "world", "left_hand_v1_wide_grasp_link")
+            elif self.arm == ARM_ENUM.ARM_2:
+                hand_pose = transform_pose_vislab(arm_pose, "world", "right_hand_v1_2_research_grasp_link")
+
+            
+            hand_pose_array = get_arr_from_pose(hand_pose)
+
+            q_rot = quaternion_from_euler(r_ang, p_ang, y_ang)
+            # q_orig = arm_target_pose[3:].copy()
+            q_orig = hand_pose_array[3:].copy()
+            q_new = quaternion_multiply(q_rot, q_orig)
+            # arm_target_pose[3:] = q_new
+            
+            hand_pose_array[3:] = q_new
+            hand_pose = get_pose_from_arr(hand_pose_array)
+            if self.arm == ARM_ENUM.ARM_1:
+                arm_target_pose = transform_pose_vislab(hand_pose, "left_hand_v1_wide_grasp_link", "world")
+            elif self.arm == ARM_ENUM.ARM_2:
+                arm_target_pose = transform_pose_vislab(hand_pose, "right_hand_v1_2_research_grasp_link", "world")
+            out = get_arr_from_pose(arm_target_pose)
+            publish_tf_np(out, child_frame='hand_pose_array')
+            return out
+    
+    # def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):
+    #     q_rot = quaternion_from_euler(r_ang, p_ang, y_ang)
+    #     q_orig = arm_target_pose[3:].copy()
+    #     q_new = quaternion_multiply(q_rot, q_orig)
+    #     arm_target_pose[3:] = q_new
+    #     return arm_target_pose
 
 
     def set_move_position(self, arm, arm_target_pose_np, position_l, position_r):
@@ -769,6 +841,7 @@ class PicpkNPlaceDemo:
                 self.reset_manipulation_utils()
                 if not self.mu.move_arm_to_pose_klampt(arm, arm_target_pose):
                     print("Klmapt failed, will try moveit")
+                    input("Execute Moveit")
                     if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
                         exit()
         else:
@@ -859,7 +932,7 @@ class PicpkNPlaceDemo:
         # Get fragment bounding box pose, transform to world frame & publish
         bbox_pose = get_pose_from_arr(
             np.concatenate((obj_bbox.get_center(), R.from_matrix(obj_bbox.R.tolist()).as_quat())))
-        bbox_pose_world = transform_pose_vislab(bbox_pose, "camera_depth_optical_frame", "world")
+        bbox_pose_world = transform_pose_vislab(bbox_pose, "camera_color_optical_frame", "world")
         publish_tf_np(get_arr_from_pose(bbox_pose_world), child_frame='obj_box_rot')
 
         # Get fragment bounding box rotation
