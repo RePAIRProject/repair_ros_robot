@@ -7,7 +7,8 @@ import rospy
 import tf
 import time
 from geometry_msgs.msg import PoseStamped, Quaternion
-
+import numpy as np
+from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 from repair_motion_controller.msg import RepairMoveToAction, RepairMoveToFeedback, RepairMoveToResult, RepairMoveToGoal
 import actionlib
 # from sensor_msgs.msg import JointState
@@ -197,15 +198,98 @@ class ManipulationUtils:
             result = self.klampt_mp_client.get_result()
             if result.success:
                 rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
-                return True
+                return True, self.multiarray_to_array(result.path)
             else:
                 rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
-                return False
+                return False, None
 
         except Exception as e:
             print("[ManipulationUtils] Action call for move_arm_to_pose_klampt failed: %s" % e)
-            return False
+            return False, None
         
+    def move_on_path(self, path):
+        goal = RepairMoveToGoal()
+        goal.arm = 103
+        goal.path = self.array_to_multiarray(path)
+        self.klampt_mp_client.send_goal(goal)
+        #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
+        rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+        self.klampt_mp_client.wait_for_result()
+
+        result = self.klampt_mp_client.get_result()
+        if result.success:
+            rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+            return True, self.multiarray_to_array(result.path)
+        else:
+            rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+            return False, None
+        
+    def array_to_multiarray(self, arr: np.ndarray) -> Float32MultiArray:
+        """
+        Convert a 2D numpy array into a ROS Float32MultiArray message.
+
+        Args:
+            arr (np.ndarray): Input array of shape (N, M)
+
+        Returns:
+            Float32MultiArray: ROS message with flattened data and layout
+        """
+        if arr.ndim != 2:
+            raise ValueError(f"Expected 2D array, got shape {arr.shape}")
+
+        msg = Float32MultiArray()
+        msg.data = arr.flatten().tolist()
+
+        # Define layout
+        msg.layout.dim.append(MultiArrayDimension(
+            label="rows",
+            size=arr.shape[0],
+            stride=arr.shape[0] * arr.shape[1]
+        ))
+        msg.layout.dim.append(MultiArrayDimension(
+            label="cols",
+            size=arr.shape[1],
+            stride=arr.shape[1]
+        ))
+
+        return msg
+        
+    def multiarray_to_array(self, msg: Float32MultiArray) -> np.ndarray:
+        """
+        Convert a ROS Float32MultiArray message back into a 2D numpy array.
+
+        Args:
+            msg (Float32MultiArray): ROS message containing flattened data and layout
+
+        Returns:
+            np.ndarray: Reconstructed 2D numpy array
+        """
+        if len(msg.layout.dim) != 2:
+            raise ValueError("Expected 2 dimensions in layout, got {}".format(len(msg.layout.dim)))
+
+        rows = msg.layout.dim[0].size
+        cols = msg.layout.dim[1].size
+
+        arr = np.array(msg.data, dtype=np.float32).reshape(rows, cols)
+        return arr
+
+    def move_to_joint_pose(self, joint_values):
+        goal = RepairMoveToGoal()
+        goal.arm = 100
+        goal.joint_values = joint_values
+
+        self.klampt_mp_client.send_goal(goal)
+        #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
+        rospy.loginfo("[ManipulationUtils] Waiting for action result...")
+        self.klampt_mp_client.wait_for_result()
+
+        result = self.klampt_mp_client.get_result()
+        if result.success:
+            rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+            return True, self.multiarray_to_array(result.path)
+        else:
+            rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+            return False, None
 
     def move_out_of_path(self, arm, use_klampt=True):
         pose = PoseStamped()
@@ -222,6 +306,14 @@ class ManipulationUtils:
             move_arm = ARM_ENUM.ARM_1
 
         else:
+            pose.pose.position.x = 0.21597898714022729
+            pose.pose.position.y = -0.24652714722018665
+            pose.pose.position.z = 1.5566318838742945
+            pose.pose.orientation.x = -0.37453463410597837
+            pose.pose.orientation.y = -0.22085599528517516
+            pose.pose.orientation.z = 0.0462163918152999
+            pose.pose.orientation.w = 0.899338914052578
+
             pose.pose.position.x = 0.21597898714022729
             pose.pose.position.y = -0.44652714722018665
             pose.pose.position.z = 1.5566318838742945
