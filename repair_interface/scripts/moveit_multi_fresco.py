@@ -22,6 +22,9 @@ import pytransform3d.transformations as pytr
 
 from tf.transformations import quaternion_from_euler, euler_from_quaternion, quaternion_multiply
 
+# comment out if not build and not using gazebo:
+from attach_objects import attach_links, detach_links
+
 from vision_utils import get_transform, get_hand_tf, publish_tf_np
 from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
 from vision_utils import get_arr_from_pose
@@ -407,8 +410,17 @@ class PicpkNPlaceDemo:
         print("found the following ids: ", self.fragment_ids_list)
         print("found the following rotations: ", self.fragment_rotations_list)
 
+        gazebo_fragment_dict = {
+            "104": ["RPf_00104", "RPf_00104_link"],
+            "204": ["RPf_00204", "RPf_00204_link"],
+            "205": ["RPf_00205", "RPf_00205_link"],
+            }
         fresco_center = copy.deepcopy(self.fragment_pose_list[0][:3])
         num_frescos = len(self.fragment_pose_list)
+        try:
+            self.fragment_id_gazebo = gazebo_fragment_dict[str(self.fragment_ids_list[0])]
+        except:
+            self.fragment_id_gazebo = ["", ""]
         return fresco_center, self.fragment_rotations_list[0], num_frescos, o3d.geometry.PointCloud(), self.fragment_ids_list[0]
 
     def set_active_arm(self):
@@ -433,6 +445,7 @@ class PicpkNPlaceDemo:
 
 
     def get_fresco_world_pose(self, fresco_position, z_offset=None):
+        # Benno: Why do we add the z_offset inside the camera_color_optical_frame and not after?
         if z_offset is not None: 
             fresco_position[2] = z_offset
         initial_fresco_pose = np.concatenate((fresco_position, self.hand_tf))
@@ -440,12 +453,16 @@ class PicpkNPlaceDemo:
         initial_fresco_pose_ros = get_pose_from_arr(initial_fresco_pose)
 
         ### Transform the pose of fragment from the camera frame to the base frame (world)
-        fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_color_optical_frame", "world")
+        if(self.use_gazebo): # I assume we need to take the depth frame here aswell in gazebo, similar to recognition
+            fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_depth_optical_frame", "world")
+        else:
+            fresco_pose_world = transform_pose_vislab(initial_fresco_pose_ros, "camera_color_optical_frame", "world")
         fresco_pose_world_np = get_arr_from_pose(fresco_pose_world)
         return fresco_pose_world, fresco_pose_world_np
 
 
     def run_demo(self, fresco_center, fresco_rotation, final_placements_position, final_rotations, placement_side, use_wide):
+        original_placement_side = placement_side
         fresco_release = 0
         # Select which hand should be used
         #obj_size = self.get_object_size(object_cloud)
@@ -600,6 +617,10 @@ class PicpkNPlaceDemo:
         # wait for user input DEBUG
         #input("Press Enter to continue...")
 
+        ############################################################################################################
+        ####################################### GRASPING LOOP ENDED ################################################
+        ############################################################################################################
+
         # return Sand zone to klampt
         #self.reset_sand(reset=True)
 
@@ -680,12 +701,22 @@ class PicpkNPlaceDemo:
                                                     # [0.20 + 0.10 * fresco_release, placement_side * 0.50, z],
                                                     # [0.20 + 0.10 * fresco_release, placement_side * 0.50, z])
 
-        if self.use_wide_hand:
+
+        # Move robots base to center and rotate 90° to placing direction.
+        print("original_placement_side: ",original_placement_side)
+        print("Placement on robots ","left" if(original_placement_side == -1) else "right", " side")
+        if self.use_wide_hand and original_placement_side == 1: # placement_side == right and big hand
             test_joints = self.current_joint_states
             test_joints[0] = 0
             test_joints[1] = -np.pi/2
             self.mu.move_to_joint_pose(test_joints)
             #self.mu.move_to_joint_pose(test_joints)
+            
+        elif not self.use_wide_hand and original_placement_side == -1: # placement_side == left and small hand
+            test_joints = self.current_joint_states
+            test_joints[0] = 0
+            test_joints[1] = np.pi/2
+            self.mu.move_to_joint_pose(test_joints)
 
         self.move_arm(self.arm, arm_target_pose_np)
 
@@ -727,9 +758,9 @@ class PicpkNPlaceDemo:
         
         if(self.use_gazebo):
             if(self.used_hand=="left"):
-                detach_links(model_1="repair", link_1="left_hand_v1_wide_palm_central_little_link", model_2="RPf_00205", link_2="RPf_00204_link")
+                detach_links(model_1="repair", link_1="left_hand_v1_wide_palm_central_little_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
             elif(self.used_hand=="right"):
-                detach_links(model_1="repair", link_1="right_hand_v1_2_research_palm_link", model_2="RPf_00205", link_2="RPf_00204_link")
+                detach_links(model_1="repair", link_1="right_hand_v1_2_research_palm_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
             else:
                 print("Validate names of used hands")
 
@@ -871,17 +902,18 @@ class PicpkNPlaceDemo:
             rospy.sleep(3.0)
             print(f"Attaching to {self.used_hand}")
             if(self.used_hand=="left"):
-                result = attach_links(model_1="repair", link_1="left_hand_v1_wide_palm_central_little_link", model_2="RPf_00205", link_2="RPf_00204_link")
+                result = attach_links(model_1="repair", link_1="left_hand_v1_wide_palm_central_little_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
             elif(self.used_hand=="right"):
-                result = attach_links(model_1="repair", link_1="right_hand_v1_2_research_palm_link", model_2="RPf_00205", link_2="RPf_00204_link")
+                result = attach_links(model_1="repair", link_1="right_hand_v1_2_research_palm_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
             else:
                 print("Validate names of used hands")
 
             if(result==True):self.gazebo_attached = True
             
         ### Attempt Grasping
-        self.hand_api.close_hand_2(self.used_hand, gazebo_flag=self.use_gazebo)
-        print('Closing!')
+        if not self.use_gazebo: # gazebo wide hand disintegrates in simulation here
+            self.hand_api.close_hand_2(self.used_hand, gazebo_flag=self.use_gazebo)
+            print('Closing!')
 
         arm_target_pose_np[2] += self.config["lift_position_z_offset_after_grasp"]
 
