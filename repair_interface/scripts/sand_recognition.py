@@ -22,6 +22,8 @@ import open3d as o3d
 from align_utils import get_points_from_ros, align_with_icp
 import json 
 import argparse
+from std_msgs.msg import Header
+
 
 from repair_interface.msg import RecognitionData, PlacementData
 
@@ -37,6 +39,14 @@ class SandRecognition():
     def __init__(self, data_folder: str, model_name: str, placement_file: str, use_gazebo: bool):
         self.use_gazebo = use_gazebo
         print("USE_GAZEBO: ", self.use_gazebo)
+        
+        # one-time setup (e.g., in __init__)
+        if(use_gazebo):
+            self.pose_array_pub = rospy.Publisher("debug/poses", PoseArray, queue_size=1, latch=True)
+            self.optical_frame = "camera_depth_optical_frame"
+        else:
+            self.optical_frame = "camera_color_optical_frame"
+            
 
         # To hold the camera intrinsics and alignment
         self.CameraIntrinsics = namedtuple("CameraIntrinsics", ["fx", "fy", "cx", "cy", "distortion_coeffs"])
@@ -95,6 +105,14 @@ class SandRecognition():
                                                     [0.00849713,-0.01765348,0.99980806,-6.69656267],
                                                     [0,0,0,1]])
 
+    def publish_pose_array(self, poses, frame_id="world"):
+        pa = PoseArray()
+        pa.header = Header()
+        pa.header.stamp = rospy.Time.now()
+        pa.header.frame_id = frame_id  # <- set this to your RViz fixed frame
+        pa.poses = poses               # your list of geometry_msgs/Pose
+        self.pose_array_pub.publish(pa)
+
     # Camera info callback
     def camera_info_callback_rgb(self, msg):
         global rgb_intrinsics
@@ -150,7 +168,7 @@ class SandRecognition():
             # Transform the poses into the world frame
             pose_stamped = tf2_geometry_msgs.PoseStamped()
             pose_stamped.pose = pose
-            pose_stamped.header.frame_id = "camera_color_optical_frame"
+            pose_stamped.header.frame_id = self.optical_frame
             # pose_stamped.header.stamp = rospy.Time.now()
             # rospy.sleep(1)
             try:
@@ -266,7 +284,10 @@ class SandRecognition():
                     fragments_placement_rotations.append(assembly_position['ori_yaw'])
 
                     # grasping
-                    use_wide_hand = int(assembly_position['use_wide'])
+                    try:
+                        use_wide_hand = int(assembly_position['use_wide'])
+                    except:
+                        use_wide_hand = True
                     grasping_use_wide_hand.append(use_wide_hand)
                     
                     # breakpoint()
@@ -361,6 +382,8 @@ class SandRecognition():
                 transformed_points_in_3d_space.append(vd_pt3d)
                 poses.append(pt3d_to_pose(vd_pt3d.vertices[0], rotation=rotation, use_gazebo=self.use_gazebo))
 
+            self.publish_pose_array(poses, frame_id=self.optical_frame)
+
             if verbosity > 0 and use_hardcore == False:
                 print("\n# ALIGNMENT TO REALSENSE")
                 print(align_to_realsenseT)
@@ -384,7 +407,7 @@ class SandRecognition():
             # Create the PoseArray and publish
             pose_array_msg = PoseArray()
             pose_array_msg.header.stamp = rospy.Time.now()
-            pose_array_msg.header.frame_id = "camera_color_optical_frame"  # Use the appropriate frame_id
+            pose_array_msg.header.frame_id = self.optical_frame  # Use the appropriate frame_id
             # # Add poses to PoseArray
             pose_array_msg.poses = poses
             #pose_array_msg = self.transform_pose_array_to_world(poses)
@@ -424,7 +447,7 @@ class SandRecognition():
             # This is the final position (without the Z value)
             placement_position_array_msg = PoseArray()
             placement_position_array_msg.header.stamp = rospy.Time.now()
-            placement_position_array_msg.header.frame_id = "camera_color_optical_frame"  # Use the appropriate frame_id
+            placement_position_array_msg.header.frame_id = self.optical_frame  # Use the appropriate frame_id
             # should we put a value for Z or 0?
             placement_pose = fragments_placement_positions
             placement_position_array_msg.poses = placement_pose
@@ -538,10 +561,12 @@ if __name__ == '__main__':
     #                               placement_file='int_week_placements_demo.json')
     
     # Get parameters from the ROS parameter server
-    data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
-    model_name = rospy.get_param('model_name', 'best_g29.pt')  # Default model name
+    #data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
+    data_folder = rospy.get_param('data_folder', '/home/ws/src/repair_ros_robot/repair_interface/sand_detection_models')  # Default in case not set
+    model_name = rospy.get_param('model_name', 'best.pt')  # Default model name
     # placement_file = rospy.get_param('placement_file', 'int_week_placements_demo.json')  # Default file
-    placement_file = rospy.get_param('placement_file', 'int_week_6_piece_center_placements_demo.json')  # Default file
+    #placement_file = rospy.get_param('placement_file', 'int_week_6_piece_center_placements_demo.json')  # Default file
+    placement_file = rospy.get_param('placement_file', 'int_week_placements.json')  # Default file
 
     print(f"\nUsing {model_name} for recognition!\n")
 
@@ -550,6 +575,6 @@ if __name__ == '__main__':
 
     recognition.recognize_and_publish(recognition_pub, placement_pub, 
                                       verbosity=verbosity_level, debug=False, show_image_feed=True,
-                                      use_hardcore=True, only_g15=False)
+                                      use_hardcore=False, only_g15=False)
 
     rospy.spin()
