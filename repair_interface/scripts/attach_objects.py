@@ -3,7 +3,7 @@
 import rospy
 from gazebo_ros_link_attacher.srv import Attach, AttachRequest, AttachResponse
 
-def attach_links(model_1="repair", link_1="arm_2_7", model_2="RPf_00205", link_2="RPf_00204_link"):
+def attach_links(model_1="repair", link_1="arm_2_7", model_2="RPf_00205", link_2="RPf_00205_link"):
     # Wait for the attach service to be available
     rospy.wait_for_service('/link_attacher_node/attach')
     try:
