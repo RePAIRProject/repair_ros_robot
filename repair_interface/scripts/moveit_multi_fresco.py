@@ -466,7 +466,7 @@ class PicpkNPlaceDemo:
         fresco_release = 0
         # Select which hand should be used
         #obj_size = self.get_object_size(object_cloud)
-        USE_WIDE_HAND_THRESHOLD = 0.13
+        #USE_WIDE_HAND_THRESHOLD = 0.13
         self.use_wide_hand = use_wide # True if obj_size.extent[1] > USE_WIDE_HAND_THRESHOLD else False
         self.set_active_arm()
 
@@ -487,28 +487,39 @@ class PicpkNPlaceDemo:
         hand_pose_world_np = self.add_move_position(self.arm, fresco_pose_world_np.copy(),
                                                     [-0.0, -0.0, 0],
                                                     [0.0, 0.0, 0])
+        # Benno, I just flipped the order of the next two to plot the fresco pose nicely
         print("Hand Pose First", hand_pose_world_np)
-        hand_pose_world_np[2] = self.config["fresco_pose_world_z"]
+        #hand_pose_world_np[2] = self.config["fresco_pose_world_z"]
+        hand_pose_world_np[3:] = self.hand_tf
+        publish_tf_np(hand_pose_world_np, child_frame='fresco_world_pose')
+        
+        
         print("Hand Pose Second", hand_pose_world_np)
-        if self.use_fragment_alignment:
-            hand_pose_world_np[3:] = hand_tf_rotated
-        else:
-            hand_pose_world_np[3:] = self.hand_tf
+        # hand_tf_rotated was commented out, to remove error message
+        #if self.use_fragment_alignment:
+        #    hand_pose_world_np[3:] = hand_tf_rotated
+        #else:
+        #hand_pose_world_np[3:] = self.hand_tf
+        hand_pose_world_np[2] = self.config["fresco_pose_world_z"]
         print("Hand Pose Third", hand_pose_world_np)
         publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
 
+        # Rolling, I assume because the planner uses wxyz instead of xyzw, otherwise, pose is wrong
         hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
 
-        T0 = pytr.transform_from_pq(hand_pose_world_np)
-        T1_left = pytr.concat(self.left_hand_arm_transform, T0)
-        T1_right = pytr.concat(self.right_hand_arm_transform, T0)
-
-        if self.use_wide_hand:
-            arm_target_pose_np = get_pose_from_transform(T1_left)
-        else:
-            arm_target_pose_np = get_pose_from_transform(T1_right)
-
-        print("Arm Pose First", arm_target_pose_np)
+        # FIXME Benno Removed, why do we plan with arm pose and not with the grasp link?
+        # T0 = pytr.transform_from_pq(hand_pose_world_np)
+        # T1_left = pytr.concat(self.left_hand_arm_transform, T0)
+        # T1_right = pytr.concat(self.right_hand_arm_transform, T0)
+        #
+        # if self.use_wide_hand:
+        #     arm_target_pose_np = get_pose_from_transform(T1_left)
+        # else:
+        #     arm_target_pose_np = get_pose_from_transform(T1_right)
+        #
+        # print("Arm Pose First", arm_target_pose_np)
+        
+        arm_target_pose_np = hand_pose_world_np.copy()
 
         q_orig = arm_target_pose_np[3:].copy()
 
@@ -516,12 +527,13 @@ class PicpkNPlaceDemo:
             
         # grasp_yaw = np.clip(grasp_yaw, np.deg2rad(-90), np.deg2rad(90))
 
-        if self.use_wide_hand:
-            arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
-            arm_target_pose_np[1] -= self.config["fresco_pose_world_y_offset"]
-        else:
-            arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
-            arm_target_pose_np[1] += self.config["fresco_pose_world_y_offset"]
+        # FIXME Benno Removed, why do we plan with arm pose and not with the grasp link?
+        # if self.use_wide_hand:
+        #     arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
+        #     arm_target_pose_np[1] -= self.config["fresco_pose_world_y_offset"]
+        # else:
+        #     arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
+        #     arm_target_pose_np[1] += self.config["fresco_pose_world_y_offset"]
 
         # if grasp_yaw < :
         #     print("correcting the angle so we use only positive")
@@ -539,6 +551,11 @@ class PicpkNPlaceDemo:
         self.move_arm(self.arm, arm_target_pose_np)
         rot_amount = 0
         #input("rotate pose")
+        ##
+        ##
+        # Only apply rotation if small hand currently
+        ##
+        ##
         if self.grasp_without_rotation == False and self.arm==ARM_ENUM.ARM_2:
             # --- Apply the rotation from the second and third axes to hand_tf ---
             rotated_hand_tfs = []
@@ -585,6 +602,8 @@ class PicpkNPlaceDemo:
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
         arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
+        # Concider using this, if pose changes before and after angling, which the code above does
+        #arm_target_pose_np[3:] = self.change_hand_angle(arm_target_pose_np)[3:]
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         self.move_arm(self.arm, arm_target_pose_np)
         q_orig = arm_target_pose_np[3:].copy()

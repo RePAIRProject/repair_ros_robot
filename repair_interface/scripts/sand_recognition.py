@@ -287,7 +287,7 @@ class SandRecognition():
                     try:
                         use_wide_hand = int(assembly_position['use_wide'])
                     except:
-                        use_wide_hand = True
+                        use_wide_hand = False
                     grasping_use_wide_hand.append(use_wide_hand)
                     
                     # breakpoint()

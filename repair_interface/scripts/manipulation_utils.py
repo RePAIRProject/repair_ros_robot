@@ -20,8 +20,8 @@ from repair_interface.srv import *
 from typing import Union, List
 
 class ARM_ENUM(Enum):
-    ARM_1 = 0
-    ARM_2 = 1
+    ARM_1 = 0 #left
+    ARM_2 = 1 #right from robot view
     BOTH = 2
 
 class HAND_ENUM(Enum):
