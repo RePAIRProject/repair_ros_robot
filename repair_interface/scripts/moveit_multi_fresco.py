@@ -22,9 +22,6 @@ import pytransform3d.transformations as pytr
 
 from tf.transformations import quaternion_from_euler, euler_from_quaternion, quaternion_multiply
 
-# comment out if not build and not using gazebo:
-from attach_objects import attach_links, detach_links
-
 from vision_utils import get_transform, get_hand_tf, publish_tf_np
 from vision_utils import get_pose_from_arr, get_pose_stamped_from_arr
 from vision_utils import get_arr_from_pose
@@ -70,7 +67,11 @@ class PicpkNPlaceDemo:
         
         # define gazebo parameter
         self.use_gazebo = use_gazebo
+        if self.use_gazebo:
+            from attach_objects import attach_links, detach_links
+
         self.gazebo_attached = False
+
         
         # load config file
         this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -446,9 +447,9 @@ class PicpkNPlaceDemo:
 
     def get_fresco_world_pose(self, fresco_position, z_offset=None):
         # Benno: Why do we add the z_offset inside the camera_color_optical_frame and not after?
-        if z_offset is not None: 
-            fresco_position[2] = z_offset
-        initial_fresco_pose = np.concatenate((fresco_position, self.hand_tf))
+        # if z_offset is not None: 
+        #     fresco_position[2] = z_offset
+        initial_fresco_pose = np.concatenate((fresco_position, np.array([0,0,0,1])))
 
         initial_fresco_pose_ros = get_pose_from_arr(initial_fresco_pose)
 
@@ -475,43 +476,24 @@ class PicpkNPlaceDemo:
         #     hand_tf_rotated = self.get_fresco_allignment(obj_size)
 
         # Get initial pose of fragment
-        #object_center = np.array([0, 0, 0.64495862])
-        fresco_pose_world_orig, fresco_pose_world_np_orig = self.get_fresco_world_pose(fresco_center.copy())
-        self.fresco_world_z = fresco_pose_world_np_orig[2]
-        fresco_pose_world, fresco_pose_world_np = self.get_fresco_world_pose(fresco_center.copy(), z_offset=1.21)
+        fresco_pose_world, fresco_pose_world_np = self.get_fresco_world_pose(fresco_center.copy())
+        self.fresco_world_z = fresco_pose_world_np[2]
+        print("Fresco Pose First", fresco_pose_world_np)
 
-        print("Fresco Pose First ORIG", fresco_pose_world_np_orig)
-        print("Fresco Pose First OFFSET", fresco_pose_world_np)
-
-        #ToDo change 
-        hand_pose_world_np = self.add_move_position(self.arm, fresco_pose_world_np.copy(),
-                                                    [-0.0, -0.0, 0],
-                                                    [0.0, 0.0, 0])
-        # Benno, I just flipped the order of the next two to plot the fresco pose nicely
-        print("Hand Pose First", hand_pose_world_np)
-        #hand_pose_world_np[2] = self.config["fresco_pose_world_z"]
+        # Get initial hand pose 
+        hand_pose_world_np = fresco_pose_world_np.copy()
         hand_pose_world_np[3:] = self.hand_tf
         publish_tf_np(hand_pose_world_np, child_frame='fresco_world_pose')
-        
-        
-        print("Hand Pose Second", hand_pose_world_np)
-        # hand_tf_rotated was commented out, to remove error message
-        #if self.use_fragment_alignment:
-        #    hand_pose_world_np[3:] = hand_tf_rotated
-        #else:
-        #hand_pose_world_np[3:] = self.hand_tf
         hand_pose_world_np[2] = self.config["fresco_pose_world_z"]
-        print("Hand Pose Third", hand_pose_world_np)
-        publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
-
-        # Rolling, I assume because the planner uses wxyz instead of xyzw, otherwise, pose is wrong
         hand_pose_world_np[3:] = np.roll(hand_pose_world_np[3:], 1)
-
+        publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
+        print("Hand Pose", hand_pose_world_np)
+       
         # FIXME Benno Removed, why do we plan with arm pose and not with the grasp link?
         # T0 = pytr.transform_from_pq(hand_pose_world_np)
         # T1_left = pytr.concat(self.left_hand_arm_transform, T0)
         # T1_right = pytr.concat(self.right_hand_arm_transform, T0)
-        #
+        
         # if self.use_wide_hand:
         #     arm_target_pose_np = get_pose_from_transform(T1_left)
         # else:
@@ -520,9 +502,7 @@ class PicpkNPlaceDemo:
         # print("Arm Pose First", arm_target_pose_np)
         
         arm_target_pose_np = hand_pose_world_np.copy()
-
         q_orig = arm_target_pose_np[3:].copy()
-
         hand_rot_1, hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
             
         # grasp_yaw = np.clip(grasp_yaw, np.deg2rad(-90), np.deg2rad(90))
@@ -546,7 +526,7 @@ class PicpkNPlaceDemo:
         arm_target_pose_np[3:] = q_new
         #input("fitst pose")
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        print("TARGET POSE", arm_target_pose_np)
+        print("TARGET POSE 1", arm_target_pose_np)
 
         self.move_arm(self.arm, arm_target_pose_np)
         rot_amount = 0
@@ -596,6 +576,8 @@ class PicpkNPlaceDemo:
                 arm_target_pose_np[3:] = q_new
 
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+            print("TARGET POSE 2", arm_target_pose_np)
+
             self.move_arm(self.arm, arm_target_pose_np)
 
         #input("tilt pose")
@@ -605,6 +587,8 @@ class PicpkNPlaceDemo:
         # Concider using this, if pose changes before and after angling, which the code above does
         #arm_target_pose_np[3:] = self.change_hand_angle(arm_target_pose_np)[3:]
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+        print("TARGET POSE 3", arm_target_pose_np)
+
         self.move_arm(self.arm, arm_target_pose_np)
         q_orig = arm_target_pose_np[3:].copy()
 
@@ -614,28 +598,19 @@ class PicpkNPlaceDemo:
         #input("Press Enter to continue...")
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
-        fresco_down_pose = arm_target_pose_np.copy()
-        fresco_down_pose[1] = fresco_down_pose[1] #- self.config["fresco_down_pose_y_offset"]
-        fresco_down_pose[2] = self.fresco_world_z
-        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                    fresco_down_pose[:3],
-                                                    fresco_down_pose[:3])
-        #print("go down", arm_target_pose_np)
-        #input('Go Down')
-        self.move_arm(self.arm, arm_target_pose_np)
+        arm_target_pose_np[2] = self.fresco_world_z
+        print("TARGET POSE 4", arm_target_pose_np)
 
+        self.move_arm(self.arm, arm_target_pose_np.copy())
 
         # 4. Grasp Object
-        arm_target_pose_np, grasp_success = self.grasping_loop(arm_target_pose_np)
+        arm_target_pose_np, grasp_success = self.grasping_loop(arm_target_pose_np.copy())
 
         if not grasp_success:
             self.go_home_pose()
             return
         else:
             print("Successfully grasped")
-        # wait for user input DEBUG
-        #input("Press Enter to continue...")
-
         ############################################################################################################
         ####################################### GRASPING LOOP ENDED ################################################
         ############################################################################################################
@@ -724,18 +699,21 @@ class PicpkNPlaceDemo:
         # Move robots base to center and rotate 90° to placing direction.
         print("original_placement_side: ",original_placement_side)
         print("Placement on robots ","left" if(original_placement_side == -1) else "right", " side")
-        if self.use_wide_hand and original_placement_side == 1: # placement_side == right and big hand
+        if original_placement_side == 1: # placement_side == right and big hand
             test_joints = self.current_joint_states
             test_joints[0] = 0
             test_joints[1] = -np.pi/2
             self.mu.move_to_joint_pose(test_joints)
             #self.mu.move_to_joint_pose(test_joints)
             
-        elif not self.use_wide_hand and original_placement_side == -1: # placement_side == left and small hand
+        elif original_placement_side == -1: # placement_side == left and small hand
             test_joints = self.current_joint_states
             test_joints[0] = 0
             test_joints[1] = np.pi/2
             self.mu.move_to_joint_pose(test_joints)
+        else:
+            print("we should not run into this case")
+            exit()
 
         self.move_arm(self.arm, arm_target_pose_np)
 
@@ -824,6 +802,7 @@ class PicpkNPlaceDemo:
 
             
             hand_pose_array = get_arr_from_pose(hand_pose)
+            positions = hand_pose_array[:3].copy()
 
             q_rot = quaternion_from_euler(r_ang, p_ang, y_ang)
             # q_orig = arm_target_pose[3:].copy()
@@ -832,6 +811,7 @@ class PicpkNPlaceDemo:
             # arm_target_pose[3:] = q_new
             
             hand_pose_array[3:] = q_new
+            hand_pose_array[:3] = positions
             hand_pose = get_pose_from_arr(hand_pose_array)
             if self.arm == ARM_ENUM.ARM_1:
                 arm_target_pose = transform_pose_vislab(hand_pose, "left_hand_v1_wide_grasp_link", "world")
@@ -916,8 +896,10 @@ class PicpkNPlaceDemo:
         return path[::-1]    
 
 
-    def grasping_loop(self, arm_target_pose_np):
+    def grasping_loop(self, hand_target_pose_np):
+        ### Attempt Grasping
         if self.use_gazebo:
+            # gazebo wide hand disintegrates in simulation here
             rospy.sleep(3.0)
             print(f"Attaching to {self.used_hand}")
             if(self.used_hand=="left"):
@@ -928,72 +910,63 @@ class PicpkNPlaceDemo:
                 print("Validate names of used hands")
 
             if(result==True):self.gazebo_attached = True
-            
-        ### Attempt Grasping
-        if not self.use_gazebo: # gazebo wide hand disintegrates in simulation here
+        else: 
+            ### close hand
             self.hand_api.close_hand_2(self.used_hand, gazebo_flag=self.use_gazebo)
             print('Closing!')
 
-        arm_target_pose_np[2] += self.config["lift_position_z_offset_after_grasp"]
-
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-
-        self.move_arm(self.arm, arm_target_pose_np)
-        
+        ### Store upper and lower hand position before and after grasping for later use in loop
+        upper_hand_target_pose_np, lower_hand_target_pose_np = hand_target_pose_np.copy(), hand_target_pose_np.copy()
+        upper_hand_target_pose_np[2] += self.config["lift_position_z_offset_after_grasp"]
+        ### Lift Hand Up
+        publish_tf_np(upper_hand_target_pose_np, child_frame='arm_grasp_pose')
+        self.move_arm(self.arm, upper_hand_target_pose_np)
         success = False
 
-        
         if not self.use_gazebo:
             qbhand_curr = self.hand_api.get_current()
             print('curre', qbhand_curr.m1_curr)
             print('curre2', qbhand_curr.m2_curr)
             print('Is the fresco present?')
             grasp_count = 1
-            orig_arm_target_pose_np = arm_target_pose_np.copy()
-            while (not (int(qbhand_curr.m1_curr) > 100 and int(qbhand_curr.m2_curr) > 100)) and grasp_count<400:
-
+            while (not (int(qbhand_curr.m1_curr) > self.config["qbHand_current_thresh"] and int(qbhand_curr.m2_curr) > self.config["qbHand_current_thresh"])) and grasp_count<400:
                 self.hand_api.open_hand()
                 rospy.sleep(1)
-
+                
+                ### change hangle for slight adjustment
                 if grasp_count > 1:
                     yaw_angle = np.random.uniform(-np.deg2rad(20), np.deg2rad(20))
-                    arm_target_pose_np = self.change_hand_angle(orig_arm_target_pose_np,  y_ang=yaw_angle, p_ang=0)
+                    arm_target_pose_np = self.change_hand_angle(lower_hand_target_pose_np,  y_ang=yaw_angle, p_ang=0)
 
                 ### Go down
-                arm_target_pose_np[2] -= self.config["lift_position_z_offset_after_grasp"]
-                publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-                self.move_arm(self.arm, arm_target_pose_np)
+                publish_tf_np(lower_hand_target_pose_np, child_frame='arm_grasp_pose')
+                self.move_arm(self.arm, lower_hand_target_pose_np)
 
-                
+                ### close hand
                 self.hand_api.close_hand_2(self.used_hand)      
-                    
                 rospy.sleep(1)
 
                 ### Lift up
-                arm_target_pose_np[2] += self.config["lift_position_z_offset_after_grasp"]
-                publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-                self.move_arm(self.arm, arm_target_pose_np)
+                publish_tf_np(upper_hand_target_pose_np, child_frame='arm_grasp_pose')
+                self.move_arm(self.arm, upper_hand_target_pose_np)
 
+                ### check current
                 qbhand_curr = self.hand_api.get_current()
-                
                 grasp_count += 1
         
-            if (int(qbhand_curr.m1_curr) > self.config["qbHand_current_thresh"] and int(qbhand_curr.m2_curr) > self.config["qbHand_current_thresh"]):
-                success = True
+            success = True
                 
         elif self.gazebo_attached:
             success = True
-        else: print("No success :(")
+        else: 
+            print("No success :(")
+            return upper_hand_target_pose_np, False
 
         print('Fresco is Grasped')
         self.hand_api.close_hand()
         print('Closing Hand Tight!')
 
-        ### 5. Lift up
-        #arm_target_pose_np[2] += 0.133
-        publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        self.move_arm(self.arm, arm_target_pose_np)
-        return arm_target_pose_np, success
+        return upper_hand_target_pose_np, success
 
 
     def get_fresco_allignment(self, obj_bbox):
