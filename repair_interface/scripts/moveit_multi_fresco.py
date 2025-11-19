@@ -63,6 +63,7 @@ class PicpkNPlaceDemo:
         #- Translation: [0.083, 0.518, 1.112]
         #- Rotation: in Quaternion [-0.064, 0.740, 0.276, 0.609]
         self.mu = ManipulationUtils()
+
         self.debug = debug
         
         # define gazebo parameter
@@ -149,6 +150,8 @@ class PicpkNPlaceDemo:
         # inv_path = self.inverse_path(path)
         # self.move_path(inv_path)
         # exit()
+        success = self.mu.reset_active_dof_klampt()
+
         
 
     def update_current_joint_config(self, joint_states:JointState):
@@ -360,8 +363,7 @@ class PicpkNPlaceDemo:
             print('Initialized Hands!')
 
         self.tf_hand_left = get_transform(parent_frame="left_hand_v1_wide_grasp_link", child_frame="arm_1_angle_flange")
-        self.tf_hand_right = get_transform(parent_frame="right_hand_v1_2_research_grasp_link",
-                                           child_frame="arm_2_angle_flange")
+        self.tf_hand_right = get_transform(parent_frame="right_hand_v1_2_research_grasp_link", child_frame="arm_2_angle_flange")
         
 
         self.left_hand_arm_transform = pytr.transform_from_pq([self.tf_hand_left.transform.translation.x,
@@ -381,6 +383,7 @@ class PicpkNPlaceDemo:
                                                                 self.tf_hand_right.transform.rotation.y,
                                                                 self.tf_hand_right.transform.rotation.z
                                                                 ])
+        
 
         self.left_hand_arm_transform_np = get_pose_from_transform(initial_pose_left)
         publish_tf_np(self.left_hand_arm_transform_np, child_frame='left_initial_pose')
@@ -465,15 +468,10 @@ class PicpkNPlaceDemo:
     def run_demo(self, fresco_center, fresco_rotation, final_placements_position, final_rotations, placement_side, use_wide):
         original_placement_side = placement_side
         fresco_release = 0
-        # Select which hand should be used
-        #obj_size = self.get_object_size(object_cloud)
-        #USE_WIDE_HAND_THRESHOLD = 0.13
-        self.use_wide_hand = use_wide # True if obj_size.extent[1] > USE_WIDE_HAND_THRESHOLD else False
-        self.set_active_arm()
 
-        # Get fragment allignment if needed
-        # if self.use_fragment_alignment:
-        #     hand_tf_rotated = self.get_fresco_allignment(obj_size)
+        # Select which hand should be used
+        self.use_wide_hand = use_wide
+        self.set_active_arm()
 
         # Get initial pose of fragment
         fresco_pose_world, fresco_pose_world_np = self.get_fresco_world_pose(fresco_center.copy())
@@ -489,121 +487,55 @@ class PicpkNPlaceDemo:
         publish_tf_np(hand_pose_world_np, child_frame='hand_grasp_pose')
         print("Hand Pose", hand_pose_world_np)
        
-        # FIXME Benno Removed, why do we plan with arm pose and not with the grasp link?
-        # T0 = pytr.transform_from_pq(hand_pose_world_np)
-        # T1_left = pytr.concat(self.left_hand_arm_transform, T0)
-        # T1_right = pytr.concat(self.right_hand_arm_transform, T0)
-        
-        # if self.use_wide_hand:
-        #     arm_target_pose_np = get_pose_from_transform(T1_left)
-        # else:
-        #     arm_target_pose_np = get_pose_from_transform(T1_right)
-        #
-        # print("Arm Pose First", arm_target_pose_np)
-        
+        ############################################################################################################
+        ####################################### GRASPING LOOP BEGIN ################################################
+        ############################################################################################################
+
+
         arm_target_pose_np = hand_pose_world_np.copy()
         q_orig = arm_target_pose_np[3:].copy()
-        hand_rot_1, hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
-            
-        # grasp_yaw = np.clip(grasp_yaw, np.deg2rad(-90), np.deg2rad(90))
-
-        # FIXME Benno Removed, why do we plan with arm pose and not with the grasp link?
-        # if self.use_wide_hand:
-        #     arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
-        #     arm_target_pose_np[1] -= self.config["fresco_pose_world_y_offset"]
-        # else:
-        #     arm_target_pose_np[0] += self.config["fresco_pose_world_x_offset"]
-        #     arm_target_pose_np[1] += self.config["fresco_pose_world_y_offset"]
-
-        # if grasp_yaw < :
-        #     print("correcting the angle so we use only positive")
-        #     grasp_yaw += np.deg2rad(180)
         
         grasp_yaw = 0
-        best_rotated_hand_tf = None
         q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), grasp_yaw)
         q_new = quaternion_multiply(q_rot, q_orig)
         arm_target_pose_np[3:] = q_new
-        #input("fitst pose")
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         print("TARGET POSE 1", arm_target_pose_np)
 
+        ### MOVE TO FIRST POSE ABOVE OBJECT
         self.move_arm(self.arm, arm_target_pose_np)
+
+
+        ### ROTATE HAND 
+        ### Only apply rotation if small hand currently
         rot_amount = 0
-        #input("rotate pose")
-        ##
-        ##
-        # Only apply rotation if small hand currently
-        ##
-        ##
         if self.grasp_without_rotation == False and self.arm==ARM_ENUM.ARM_2:
-            # --- Apply the rotation from the second and third axes to hand_tf ---
-            rotated_hand_tfs = []
-            if hand_rot_1 is not None:
-                to_rotate_z1 = -1.57 - hand_rot_1
-                q_rot1 = quaternion_from_euler(0, 0, to_rotate_z1)
-                rotated1_hand_tf = quaternion_multiply(q_rot1, self.hand_tf)
-                rotated_hand_tfs.append(rotated1_hand_tf)
-                rot_amount = to_rotate_z1
-            if hand_rot_2 is not None:
-                to_rotate_z2 = -1.57 - hand_rot_2
-                q_rot2 = quaternion_from_euler(0, 0, to_rotate_z2)
-                rotated2_hand_tf = quaternion_multiply(q_rot2, self.hand_tf)
-                rotated_hand_tfs.append(rotated2_hand_tf)
-                rot_amount = to_rotate_z2
-                
-            # Compare z axes and select the best (against hand_tf)
-            orig_rot = R.from_quat(self.hand_tf)
-            orig_z = orig_rot.apply([0, 0, 1])
-            best_idx = 0
-            best_dot = -np.inf
-            for idx, rotated_hand_tf in enumerate(rotated_hand_tfs):
-                rot = R.from_quat(rotated_hand_tf)
-                z_axis = rot.apply([0, 0, 1])
-                dot = np.dot(z_axis, orig_z)
-                if dot > best_dot:
-                    best_dot = dot
-                    best_idx = idx
-
-            best_rotated_hand_tf = rotated_hand_tfs[best_idx]
-
-            if best_rotated_hand_tf is not None:
-                #q_new = quaternion_multiply(best_rotated_hand_tf, q_orig)
-                arm_target_pose_np[3:] = best_rotated_hand_tf
-            else:
-                q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), grasp_yaw)
-                q_new = quaternion_multiply(q_rot, q_orig)
-                arm_target_pose_np[3:] = q_new
-
+            publish_tf_np(arm_target_pose_np, child_frame='BEFORE_arm_grasp_pose')
+            arm_target_pose_np, rot_amount = self.calculate_hand_rotation(arm_target_pose_np.copy(), fresco_rotation)
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
+            publish_tf_np(arm_target_pose_np, child_frame='AFTER_arm_grasp_pose')
             print("TARGET POSE 2", arm_target_pose_np)
 
+            ### ROTATE HAND TO ALIGN WITH FRESCO
             self.move_arm(self.arm, arm_target_pose_np)
 
-        #input("tilt pose")
-        ### 2. Tilt hand
-        ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
+        ### TILT HAND
         arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
-        # Concider using this, if pose changes before and after angling, which the code above does
-        #arm_target_pose_np[3:] = self.change_hand_angle(arm_target_pose_np)[3:]
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
         print("TARGET POSE 3", arm_target_pose_np)
-
+        
+        ### TILT HAND TO BETTER GRASP FRESCO 
         self.move_arm(self.arm, arm_target_pose_np)
         q_orig = arm_target_pose_np[3:].copy()
 
-        # Remove Sand zone from klampt
-        #self.reset_sand()
-        # wait for user input DEBUG
-        #input("Press Enter to continue...")
 
-        ### 3. Go down to grasp (return to parallel, go down, then rotate again)
+        ### 3. GO DOWN TO GRASP
         arm_target_pose_np[2] = self.fresco_world_z
         print("TARGET POSE 4", arm_target_pose_np)
-
         self.move_arm(self.arm, arm_target_pose_np.copy())
 
-        # 4. Grasp Object
+
+        ### 4. GRASP OBJECT
         arm_target_pose_np, grasp_success = self.grasping_loop(arm_target_pose_np.copy())
 
         if not grasp_success:
@@ -611,26 +543,18 @@ class PicpkNPlaceDemo:
             return
         else:
             print("Successfully grasped")
+
         ############################################################################################################
         ####################################### GRASPING LOOP ENDED ################################################
         ############################################################################################################
 
-        # return Sand zone to klampt
-        #self.reset_sand(reset=True)
-
-        ### 5. Go To Placing Area
-        # final_placements_position
-        # final_rotations
+        ### GO TO PLACING AREA
         print('-' * 50)
         print("FINAL PLACEMENT")
         print(final_placements_position)
         placement_center_table_x = self.config["placement_center_table_x"]
         placement_center_table_y = self.config["placement_center_table_y"]
-        # table_reference = [1.3, 1.6]
-        # x_placement = final_placements_position[0] - table_reference[0]
-        # y_placement = final_placements_position[1] - table_reference[1]
-        # breakpoint()
-        
+
         if self.follow_the_hand == True:
             print('following the hand')
             if self.use_wide_hand == True:
@@ -699,21 +623,24 @@ class PicpkNPlaceDemo:
         # Move robots base to center and rotate 90° to placing direction.
         print("original_placement_side: ",original_placement_side)
         print("Placement on robots ","left" if(original_placement_side == -1) else "right", " side")
-        if original_placement_side == 1: # placement_side == right and big hand
+        print("use wide hand: ", self.use_wide_hand)
+        if self.use_wide_hand != True and original_placement_side == 1: # placement_side == right and small hand
+            print("TURN BASE RIGHT")
             test_joints = self.current_joint_states
             test_joints[0] = 0
             test_joints[1] = -np.pi/2
             self.mu.move_to_joint_pose(test_joints)
             #self.mu.move_to_joint_pose(test_joints)
             
-        elif original_placement_side == -1: # placement_side == left and small hand
+        elif self.use_wide_hand == True and original_placement_side == -1: # placement_side == left and big hand
+            print("TURN BASE LEFT")
             test_joints = self.current_joint_states
             test_joints[0] = 0
             test_joints[1] = np.pi/2
             self.mu.move_to_joint_pose(test_joints)
-        else:
-            print("we should not run into this case")
-            exit()
+        # else:
+        #     print("we should not run into this case")
+        #     exit()
 
         self.move_arm(self.arm, arm_target_pose_np)
 
@@ -770,8 +697,12 @@ class PicpkNPlaceDemo:
         #     arm_target_pose_np[3:] = new_quat
 
         ### 8. Go up
-        place_up_path = self.inverse_path(place_down_path)
-        self.move_path(place_up_path)
+        if place_down_path is not None:
+            place_up_path = self.inverse_path(place_down_path)
+            self.move_path(place_up_path)
+        else:
+            arm_target_pose_np[2] += 0.15
+            place_up_path = self.move_arm(self.arm, arm_target_pose_np)
 
         arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
                                                     [0.20, 0.5, z],
@@ -779,6 +710,49 @@ class PicpkNPlaceDemo:
         ### Go Back To Home Position
         #self.move_arm(self.arm, arm_target_pose_np)
         self.go_home_pose()
+
+    def calculate_hand_rotation(self, arm_target_pose_np, fresco_rotation):
+        q_orig = arm_target_pose_np[3:].copy()
+        hand_rot_1, hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
+
+        rotated_hand_tfs = []
+        if hand_rot_1 is not None:
+            to_rotate_z1 = -1.57 - hand_rot_1
+            q_rot1 = quaternion_from_euler(0, 0, to_rotate_z1)
+            rotated1_hand_tf = quaternion_multiply(q_rot1, self.hand_tf)
+            rotated_hand_tfs.append(rotated1_hand_tf)
+            rot_amount = to_rotate_z1
+        if hand_rot_2 is not None:
+            to_rotate_z2 = -1.57 - hand_rot_2
+            q_rot2 = quaternion_from_euler(0, 0, to_rotate_z2)
+            rotated2_hand_tf = quaternion_multiply(q_rot2, self.hand_tf)
+            rotated_hand_tfs.append(rotated2_hand_tf)
+            rot_amount = to_rotate_z2
+            
+        # Compare z axes and select the best (against hand_tf)
+        orig_rot = R.from_quat(self.hand_tf)
+        orig_z = orig_rot.apply([0, 0, 1])
+        best_idx = 0
+        best_dot = -np.inf
+        for idx, rotated_hand_tf in enumerate(rotated_hand_tfs):
+            rot = R.from_quat(rotated_hand_tf)
+            z_axis = rot.apply([0, 0, 1])
+            dot = np.dot(z_axis, orig_z)
+            if dot > best_dot:
+                best_dot = dot
+                best_idx = idx
+
+        best_rotated_hand_tf = rotated_hand_tfs[best_idx]
+
+        if best_rotated_hand_tf is not None:
+            #q_new = quaternion_multiply(best_rotated_hand_tf, q_orig)
+            arm_target_pose_np[3:] = best_rotated_hand_tf
+        else:
+            q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), 0)
+            q_new = quaternion_multiply(q_rot, q_orig)
+            arm_target_pose_np[3:] = q_new
+
+        return arm_target_pose_np.copy(), rot_amount
 
 
     def calc_hand_rotation(self, angle):
@@ -794,6 +768,8 @@ class PicpkNPlaceDemo:
 
 
     def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):
+            positions = arm_target_pose[:3].copy()
+
             arm_pose = get_pose_from_arr(arm_target_pose)
             if self.arm == ARM_ENUM.ARM_1:
                 hand_pose = transform_pose_vislab(arm_pose, "world", "left_hand_v1_wide_grasp_link")
@@ -802,7 +778,6 @@ class PicpkNPlaceDemo:
 
             
             hand_pose_array = get_arr_from_pose(hand_pose)
-            positions = hand_pose_array[:3].copy()
 
             q_rot = quaternion_from_euler(r_ang, p_ang, y_ang)
             # q_orig = arm_target_pose[3:].copy()
@@ -811,14 +786,16 @@ class PicpkNPlaceDemo:
             # arm_target_pose[3:] = q_new
             
             hand_pose_array[3:] = q_new
-            hand_pose_array[:3] = positions
             hand_pose = get_pose_from_arr(hand_pose_array)
             if self.arm == ARM_ENUM.ARM_1:
                 arm_target_pose = transform_pose_vislab(hand_pose, "left_hand_v1_wide_grasp_link", "world")
             elif self.arm == ARM_ENUM.ARM_2:
                 arm_target_pose = transform_pose_vislab(hand_pose, "right_hand_v1_2_research_grasp_link", "world")
             out = get_arr_from_pose(arm_target_pose)
+            out[:3] = positions
+
             publish_tf_np(out, child_frame='hand_pose_array')
+
             return out
     
     # def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):
@@ -870,15 +847,16 @@ class PicpkNPlaceDemo:
         print("Planning trajectory")
         arm_target_pose = get_pose_stamped_from_arr(pose_np)
         if self.use_klampt:
+            success = self.mu.reset_active_dof_klampt()
             success, path = self.mu.move_arm_to_pose_klampt(arm, arm_target_pose)
             if not success:
-                print("Klmapt failed, resetting manipulation utils")
+                print("Klampt failed, resetting manipulation utils and setting new active DOFs without translation")
                 # Idk if this is nessesary
                 self.reset_manipulation_utils()
+                success = self.mu.switch_active_dof_klampt()
                 success, path = self.mu.move_arm_to_pose_klampt(arm, arm_target_pose)
-
                 if not success:
-                    print("Klmapt failed, will try moveit")
+                    print("Klampt failed, will try moveit")
                     input("Execute Moveit")
                     if not self.mu.move_arm_to_pose_moveit(arm, arm_target_pose):
                         exit()

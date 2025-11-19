@@ -10,6 +10,7 @@ from geometry_msgs.msg import PoseStamped, Quaternion
 import numpy as np
 from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 from repair_motion_controller.msg import RepairMoveToAction, RepairMoveToFeedback, RepairMoveToResult, RepairMoveToGoal
+from vision_utils import get_pose_stamped_from_arr
 import actionlib
 # from sensor_msgs.msg import JointState
 import math
@@ -114,6 +115,54 @@ class ManipulationUtils:
             print("[ManipulationUtils] Service call for move_arm_to_pose_dawnik failed: %s" % e)
             return False
         
+    def reset_active_dof_klampt(self):
+        dummy_pose = get_pose_stamped_from_arr(np.zeros(7))
+        try:
+            goal = RepairMoveToGoal()
+            goal.arm = 106
+            goal.target_pose_left = dummy_pose.pose
+            goal.target_time = 5 # sec
+
+            self.klampt_mp_client.send_goal(goal)
+            rospy.loginfo("[ManipulationUtils] Waiting for DOF resetting results result...")
+            self.klampt_mp_client.wait_for_result()
+
+            result = self.klampt_mp_client.get_result()
+            if result.success:
+                rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+                return True
+            else:
+                rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+                return False
+        except Exception as e:
+            print("[ManipulationUtils] Action call for reset_active_dof failed: %s" % e)
+            return False
+
+
+    def switch_active_dof_klampt(self):
+        dummy_pose = get_pose_stamped_from_arr(np.zeros(7))
+        try:
+            goal = RepairMoveToGoal()
+            goal.arm = 105
+            goal.target_pose_left = dummy_pose.pose
+            goal.target_time = 5 # sec
+
+            self.klampt_mp_client.send_goal(goal)
+            rospy.loginfo("[ManipulationUtils] Waiting for DOF switching results result...")
+            self.klampt_mp_client.wait_for_result()
+
+            result = self.klampt_mp_client.get_result()
+            if result.success:
+                rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+                return True
+            else:
+                rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+                return False
+        except Exception as e:
+            print("[ManipulationUtils] Action call for switch_active_dof failed: %s" % e)
+            return False
+
+
     def move_home_klampt(self, dummy_pose:PoseStamped):
         try:
             goal = RepairMoveToGoal()

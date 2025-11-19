@@ -696,8 +696,6 @@ Visualization Manager:
           Value: false
         arm_2_tcp:
           Value: false
-        arm_grasp_pose:
-          Value: true
         camera_accel_frame:
           Value: false
         camera_accel_optical_frame:
@@ -730,12 +728,6 @@ Visualization Manager:
           Value: false
         dummy_prismatic_link:
           Value: false
-        goal_frame:
-          Value: false
-        hand_grasp_pose:
-          Value: false
-        last_milestone_klampt:
-          Value: true
         left_hand_v1_wide_grasp_link:
           Value: false
         left_hand_v1_wide_index_distal_link:
@@ -835,7 +827,7 @@ Visualization Manager:
         obar4_link:
           Value: false
         right_hand_v1_2_research_grasp_link:
-          Value: false
+          Value: true
         right_hand_v1_2_research_index_distal_link:
           Value: false
         right_hand_v1_2_research_index_distal_virtual_link:
@@ -933,14 +925,7 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        last_milestone_klampt:
-          goal_frame:
-            {}
         world:
-          arm_grasp_pose:
-            {}
-          hand_grasp_pose:
-            {}
           left_initial_pose:
             {}
           right_initial_pose:

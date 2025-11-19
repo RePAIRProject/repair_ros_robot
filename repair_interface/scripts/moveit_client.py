@@ -43,7 +43,7 @@ class MoveitClient:
         #     "/xbotcore/joint_states", JointState, self.xbot_state_callback
         # )
 
-        self.state_pub = rospy.Publisher("/joint_states", JointStateMsg, queue_size=10)
+        # self.state_pub = rospy.Publisher("/joint_states", JointStateMsg, queue_size=10)
 
         self.nh.loginfo("[MoveitClient] Moveit client initialized")
 

@@ -164,7 +164,7 @@ MoveitXbotBridge::MoveitXbotBridge(ros::NodeHandle nh):
     xbot_joint_state_sub_ = nh_.subscribe("/xbotcore/joint_states", 1, &MoveitXbotBridge::xbotJointStateCB, this);
 
     // pubsliher for ros joint states
-    ros_joint_state_pub_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
+    // ros_joint_state_pub_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
 
     // create the pointer to the current joint state
     current_joint_state_ptr_ = std::make_shared<xbot_msgs::JointState>();
@@ -202,7 +202,7 @@ void MoveitXbotBridge::xbotJointStateCB(const xbot_msgs::JointState::ConstPtr& m
     joint_state.velocity = std::vector<double>(msg->motor_velocity.begin(), msg->motor_velocity.end());
 
     // publish joint state
-    ros_joint_state_pub_.publish(joint_state);
+    // ros_joint_state_pub_.publish(joint_state);
 }
 
 int main(int argc, char** argv)
