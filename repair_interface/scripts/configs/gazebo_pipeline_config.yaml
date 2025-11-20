@@ -15,6 +15,7 @@ fresco_pose_world_z: 1.29 # Initial Z Heigt for placing Hand above Fresco Fragme
 
 fresco_down_pose_y_offset: 0.04 # Hardcoded Y offset to better grasp fresco when going down to it
 
+
 placement_center_table_x: -0.1 # Placing offset to not collide with other already placed frescos
 placement_center_table_y: 0.5 # Placing offset to not collide with other already placed frescos
 

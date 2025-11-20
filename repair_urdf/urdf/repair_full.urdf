@@ -1449,7 +1449,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </link>
   <joint name="left_hand_v1_wide_grasp_joint" type="fixed">
     <!-- QUIRINO: modified grasp_link for wide_hand-->
-    <origin rpy="0 0 0" xyz="0.03 -0.10 0.15"/>
+    <origin rpy="0 0 0" xyz="0.05 0 0.12"/>
     <parent link="left_hand_v1_wide_palm_central_link"/>
     <child link="left_hand_v1_wide_grasp_link"/>
   </joint>
@@ -2712,7 +2712,7 @@ results of the optimization), otherwise we go with the old ones (generated for a
     <selfCollide>0</selfCollide>
   </gazebo>
   <joint name="right_hand_v1_2_research_grasp_joint" type="fixed">
-    <origin rpy="0 0 1.57" xyz="-0.06 0.03 0.16"/>
+    <origin rpy="0 0 1.57" xyz="-0.0 0.03 0.12"/>
     <parent link="right_hand_v1_2_research_iso_link"/>
     <child link="right_hand_v1_2_research_grasp_link"/>
   </joint>

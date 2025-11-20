@@ -29,7 +29,7 @@ class QbHand:
             else:
                 self.gripperMsg = HandCmd()
                 self.open_value = 0.0
-                self.close_value =18000.0
+                self.close_value =20000.0
                 self.hand_status = None
 
         #if gazebo:

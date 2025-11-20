@@ -115,11 +115,17 @@ class ManipulationUtils:
             print("[ManipulationUtils] Service call for move_arm_to_pose_dawnik failed: %s" % e)
             return False
         
-    def reset_active_dof_klampt(self):
+    def reset_active_dof_klampt(self, arm: ARM_ENUM):
         dummy_pose = get_pose_stamped_from_arr(np.zeros(7))
         try:
             goal = RepairMoveToGoal()
-            goal.arm = 106
+            if arm == ARM_ENUM.ARM_1:
+                goal.arm = 107
+            elif arm == ARM_ENUM.ARM_2:
+                goal.arm = 106
+            else:
+                print("NO VALID HAND SPECIFIED")
+                exit()
             goal.target_pose_left = dummy_pose.pose
             goal.target_time = 5 # sec
 
@@ -139,7 +145,7 @@ class ManipulationUtils:
             return False
 
 
-    def switch_active_dof_klampt(self):
+    def remove_translation_active_dof_klampt(self):
         dummy_pose = get_pose_stamped_from_arr(np.zeros(7))
         try:
             goal = RepairMoveToGoal()

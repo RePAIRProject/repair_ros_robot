@@ -45,6 +45,7 @@ class SandRecognition():
             self.pose_array_pub = rospy.Publisher("debug/poses", PoseArray, queue_size=1, latch=True)
             self.optical_frame = "camera_depth_optical_frame"
         else:
+            self.pose_array_pub = rospy.Publisher("debug/poses", PoseArray, queue_size=1, latch=True)
             self.optical_frame = "camera_color_optical_frame"
             
 
@@ -382,6 +383,8 @@ class SandRecognition():
                 transformed_points_in_3d_space.append(vd_pt3d)
                 poses.append(pt3d_to_pose(vd_pt3d.vertices[0], rotation=rotation, use_gazebo=self.use_gazebo))
 
+
+            # if self.use_gazebo:    
             self.publish_pose_array(poses, frame_id=self.optical_frame)
 
             if verbosity > 0 and use_hardcore == False:
@@ -561,12 +564,12 @@ if __name__ == '__main__':
     #                               placement_file='int_week_placements_demo.json')
     
     # Get parameters from the ROS parameter server
-    #data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
-    data_folder = rospy.get_param('data_folder', '/home/ws/src/repair_ros_robot/repair_interface/sand_detection_models')  # Default in case not set
-    model_name = rospy.get_param('model_name', 'best.pt')  # Default model name
+    data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
+    # data_folder = rospy.get_param('data_folder', '/home/ws/src/repair_ros_robot/repair_interface/sand_detection_models')  # Default in case not set
+    model_name = rospy.get_param('model_name', 'best_mix.pt')  # Default model name
     # placement_file = rospy.get_param('placement_file', 'int_week_placements_demo.json')  # Default file
-    #placement_file = rospy.get_param('placement_file', 'int_week_6_piece_center_placements_demo.json')  # Default file
-    placement_file = rospy.get_param('placement_file', 'int_week_placements.json')  # Default file
+    placement_file = rospy.get_param('placement_file', 'int_week_6_piece_center_placements_demo.json')  # Default file
+    # placement_file = rospy.get_param('placement_file', 'int_week_placements.json')  # Default file
 
     print(f"\nUsing {model_name} for recognition!\n")
 
@@ -575,6 +578,6 @@ if __name__ == '__main__':
 
     recognition.recognize_and_publish(recognition_pub, placement_pub, 
                                       verbosity=verbosity_level, debug=False, show_image_feed=True,
-                                      use_hardcore=False, only_g15=False)
+                                      use_hardcore=True, only_g15=False)
 
     rospy.spin()

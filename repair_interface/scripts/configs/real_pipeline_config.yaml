@@ -12,18 +12,18 @@ fresco_pose_world_y_offset: 0.1248 # Offset in Y direction for correct Hand plac
 fresco_pose_world_x_offset: 0.0
 
 fresco_pose_world_z: 1.29 # Initial Z Heigt for placing Hand above Fresco Fragment
-
 fresco_down_pose_y_offset: 0.04 # Hardcoded Y offset to better grasp fresco when going down to it
+grasp_z_above_fresco_in_meters: 0.03
 
 placement_center_table_x: 0.15 # Placing offset to not collide with other already placed frescos
 placement_center_table_y: 0.65 # Placing offset to not collide with other already placed frescos
 
 lift_position_z_offset_after_grasp: 0.16 # intermediate position after grasping to go to, to test if grasp was succesfull
 
-dropping_position_z_arm_1: 1.15 # Z height at which the hand opens tro drop the fresco
-dropping_position_z_arm_2: 1.1
+dropping_position_z_arm_1: 1.15 # Z height at which the hand opens to drop the fresco
+dropping_position_z_arm_2: 1.1  
 
-qbHand_current_thresh: 100 # current threshold to check if fresco was properly grasped
+qbHand_current_thresh: 150 # current threshold to check if fresco was properly grasped
 
 # LEGACY
 use_pyrealsense: False #Legacy, indicates if pyrealsense library should be used

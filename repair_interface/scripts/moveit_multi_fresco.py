@@ -8,6 +8,7 @@ import tf
 import time
 from geometry_msgs.msg import PoseStamped, Quaternion, PoseArray
 from std_msgs.msg import Int32MultiArray, Float32MultiArray
+from collections import deque
 
 # from sensor_msgs.msg import JointState
 import math
@@ -134,7 +135,9 @@ class PicpkNPlaceDemo:
         # print(test)
         # self.move_arm(self.arm, test)
         # exit()
+        self.joint_history = deque(maxlen=10)
         self.current_joint_states = None
+        self.is_robot_stable = True
 
         self.recognition_data_sub = rospy.Subscriber('/recognition/recognition_data', RecognitionData, self.recognition_data_callback)
         self.placement_data_sub = rospy.Subscriber('/recognition/placement_data', PlacementData, self.placement_data_callback)
@@ -150,14 +153,33 @@ class PicpkNPlaceDemo:
         # inv_path = self.inverse_path(path)
         # self.move_path(inv_path)
         # exit()
-        success = self.mu.reset_active_dof_klampt()
 
-        
+    def update_current_joint_config(self, joint_states: JointState, threshold: float = 1e-4):
+        """
+        Update robot joint configuration and check whether the joint values
+        have changed beyond a given threshold over the last `window_size` steps.
+        """
+        # Convert to numpy array
+        current = np.array(joint_states.position)
 
-    def update_current_joint_config(self, joint_states:JointState):
-        # get robot current joint configuration from robot_state publisher
-        # set motion_planners real_robot configuration to received robot state
-        self.current_joint_states = np.array(joint_states.position)
+        # Append current joint values
+        self.joint_history.append(current)
+
+        # Store the newest state
+        self.current_joint_states = current
+        # Only check if we have at least two states
+        if len(self.joint_history) > 1:
+            oldest = self.joint_history[0]
+            diff = np.linalg.norm(current - oldest)
+            self.is_robot_stable = not (diff > threshold)
+        else:
+            self.is_robot_stable = True
+
+
+    # def update_current_joint_config(self, joint_states:JointState):
+    #     # get robot current joint configuration from robot_state publisher
+    #     # set motion_planners real_robot configuration to received robot state
+    #     self.current_joint_states = np.array(joint_states.position)
         
         
     def reset_manipulation_utils(self):
@@ -464,6 +486,9 @@ class PicpkNPlaceDemo:
         fresco_pose_world_np = get_arr_from_pose(fresco_pose_world)
         return fresco_pose_world, fresco_pose_world_np
 
+    def wait_for_robot(self):
+     while not self.is_robot_stable:
+            rospy.sleep(0.1)
 
     def run_demo(self, fresco_center, fresco_rotation, final_placements_position, final_rotations, placement_side, use_wide):
         original_placement_side = placement_side
@@ -504,7 +529,7 @@ class PicpkNPlaceDemo:
 
         ### MOVE TO FIRST POSE ABOVE OBJECT
         self.move_arm(self.arm, arm_target_pose_np)
-
+        self.wait_for_robot()
 
         ### ROTATE HAND 
         ### Only apply rotation if small hand currently
@@ -518,6 +543,7 @@ class PicpkNPlaceDemo:
 
             ### ROTATE HAND TO ALIGN WITH FRESCO
             self.move_arm(self.arm, arm_target_pose_np)
+            self.wait_for_robot()
 
         ### TILT HAND
         arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
@@ -530,9 +556,10 @@ class PicpkNPlaceDemo:
 
 
         ### 3. GO DOWN TO GRASP
-        arm_target_pose_np[2] = self.fresco_world_z
+        arm_target_pose_np[2] = self.fresco_world_z + self.config["grasp_z_above_fresco_in_meters"]
         print("TARGET POSE 4", arm_target_pose_np)
         self.move_arm(self.arm, arm_target_pose_np.copy())
+        self.wait_for_robot()
 
 
         ### 4. GRASP OBJECT
@@ -550,31 +577,106 @@ class PicpkNPlaceDemo:
 
         ### GO TO PLACING AREA
         print('-' * 50)
-        print("FINAL PLACEMENT")
-        print(final_placements_position)
+        print("Saved Placement Position: ", final_placements_position)
         placement_center_table_x = self.config["placement_center_table_x"]
         placement_center_table_y = self.config["placement_center_table_y"]
 
-        if self.follow_the_hand == True:
-            print('following the hand')
-            if self.use_wide_hand == True:
-                placement_side = 1
-            else:
-                placement_side = -1
-        else:
-            print("not following the hand, following the published data for placement side")
+        ### Decide Placement Side
+        placement_side = self.choose_placement_side(placement_side)
 
+        ### Calculate Placement Position
+        before_placement_height = arm_target_pose_np[2]
         if self.hardcoded_placement == True:
-            x_placement = 0.20 + 0.10 * fresco_release
+            x_placement = 0.20 + (0.10 * fresco_release)
             y_placement = placement_side * 0.50
         else:
             x_placement = placement_center_table_x + final_placements_position[0]
             y_placement = placement_side * placement_center_table_y + final_placements_position[1]
-            print(f"going above the fragment at {x_placement}, {y_placement}")
+            print(f"Going Above the Fragment at {x_placement}, {y_placement}")
 
-        z = arm_target_pose_np[2]
+        arm_target_pose_np = self.calculate_placement_rotation(arm_target_pose_np.copy(), rot_amount,  q_orig)
 
+        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
+                                                    [x_placement, y_placement, before_placement_height],
+                                                    [x_placement, y_placement, before_placement_height])
+        
+        ### Turn Robot Base according to hand and side
+        needs_right_turn = (not self.use_wide_hand and original_placement_side == 1)
+        needs_left_turn  = (self.use_wide_hand and original_placement_side == -1)
+
+        if needs_right_turn or needs_left_turn:
+            rotation_joints = np.copy(self.current_joint_states)
+            rotation_joints[0] = 0
+            self.mu.move_to_joint_pose(rotation_joints)
+            rotation_joints[1] = np.pi/2 if needs_right_turn else -np.pi/2
+            print("TURN BASE RIGHT" if needs_right_turn else "TURN BASE LEFT")
+            self.mu.move_to_joint_pose(rotation_joints)
+
+        ### Move Robot To Place Position
+        self.move_arm(self.arm, arm_target_pose_np)
+        self.wait_for_robot()
+       
+        # 6. Go Down
+        if self.hardcoded_placement == True:
+            x_placement = 0.20
+            y_placement = placement_side * 0.50 - 0.10 * fresco_release
+            x_placement = 0.20
+            y_placement = placement_side * 0.50 + 0.10 * fresco_release
+
+        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
+                                                    [x_placement, y_placement, self.config["dropping_position_z_arm_1"]],
+                                                    [x_placement, y_placement, self.config["dropping_position_z_arm_2"]])
+
+        place_down_path = self.move_arm(self.arm, arm_target_pose_np)
+        print('-' * 50)
+
+
+        ### 7. Open Hand
+        if self.use_hands:
+            self.hand_api.open_hand()
+            print('Opened!')
+        
+        if(self.use_gazebo):
+            if(self.used_hand=="left"):
+                detach_links(model_1="repair", link_1="left_hand_v1_wide_palm_central_little_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
+            elif(self.used_hand=="right"):
+                detach_links(model_1="repair", link_1="right_hand_v1_2_research_palm_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
+            else:
+                print("Validate names of used hands")
+
+        ### 8. Go Up
+        if place_down_path is not None:
+            place_up_path = self.inverse_path(place_down_path)
+            self.move_path(place_up_path)
+        else:
+            arm_target_pose_np[2] += 0.15
+            place_up_path = self.move_arm(self.arm, arm_target_pose_np)
+
+        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
+                                                    [0.20, 0.5, before_placement_height],
+                                                    [0.20, -0.5, before_placement_height])
+        ### Go Back To Home Position
+        self.go_home_pose()
+
+
+
+    def choose_placement_side(self, placement_side):
+        if self.follow_the_hand == True:
+            print('USE SIDE ACCORDING TO CHOSEN HAND')
+            placement_side = 1 if self.use_wide_hand == True else -1 
+        else:
+            print("USE PLACEMENT SIDE OF PUBLISHED DATA")
+
+        print("Placement Side: ", placement_side)
+        print("Placement on Robots ","left" if(placement_side == -1) else "right", " side")
+        print("Use Wide Hand: ", self.use_wide_hand)
+
+        return placement_side
+
+
+    def calculate_placement_rotation(self, arm_target_pose_np, grasp_rotation, initial_rotation):
         # TODO possibly need to consider here how the fresco lays in hand already from grasp
+
         if(self.place_without_rotation == True):
             grasp_yaw = 0
             best_rotated_hand_tf = None
@@ -583,7 +685,7 @@ class PicpkNPlaceDemo:
             # rotated_hand_tfs = []
             hand_rot = final_placements_position[2]
             if hand_rot is not None:
-                q_rot1 = quaternion_from_euler(0, 0, hand_rot - rot_amount )
+                q_rot1 = quaternion_from_euler(0, 0, hand_rot - grasp_rotation)
                 q_curr = arm_target_pose_np[3:].copy()
                 # rotated1_hand_tf = quaternion_multiply(q_rot1, self.hand_tf)
                 rotated1_hand_tf = quaternion_multiply(q_rot1, q_curr)
@@ -597,7 +699,7 @@ class PicpkNPlaceDemo:
                 arm_target_pose_np[3:] = rotated1_hand_tf
             else:
                 q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), grasp_yaw)
-                q_new = quaternion_multiply(q_rot, q_orig)
+                q_new = quaternion_multiply(q_rot, initial_rotation)
                 arm_target_pose_np[3:] = q_new
 
 
@@ -609,107 +711,8 @@ class PicpkNPlaceDemo:
             new_euler = current_euler + np.array([0, 0, np.deg2rad(-90)])
             new_quat = quaternion_from_euler(new_euler[0], new_euler[1], new_euler[2] ) 
             arm_target_pose_np[3:] = new_quat
+        return arm_target_pose_np
 
-        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                    [x_placement, y_placement, z],
-                                                    [x_placement, y_placement, z])
-                                                    # [0.20 + x_placement, 0.50 + y_placement, z],
-                                                    # [0.20 + x_placement, 0.50 + y_placement, z])
-                                                    # OLD CODE HARD CODED
-                                                    # [0.20 + 0.10 * fresco_release, placement_side * 0.50, z],
-                                                    # [0.20 + 0.10 * fresco_release, placement_side * 0.50, z])
-
-
-        # Move robots base to center and rotate 90° to placing direction.
-        print("original_placement_side: ",original_placement_side)
-        print("Placement on robots ","left" if(original_placement_side == -1) else "right", " side")
-        print("use wide hand: ", self.use_wide_hand)
-        if self.use_wide_hand != True and original_placement_side == 1: # placement_side == right and small hand
-            print("TURN BASE RIGHT")
-            test_joints = self.current_joint_states
-            test_joints[0] = 0
-            test_joints[1] = -np.pi/2
-            self.mu.move_to_joint_pose(test_joints)
-            #self.mu.move_to_joint_pose(test_joints)
-            
-        elif self.use_wide_hand == True and original_placement_side == -1: # placement_side == left and big hand
-            print("TURN BASE LEFT")
-            test_joints = self.current_joint_states
-            test_joints[0] = 0
-            test_joints[1] = np.pi/2
-            self.mu.move_to_joint_pose(test_joints)
-        # else:
-        #     print("we should not run into this case")
-        #     exit()
-
-        self.move_arm(self.arm, arm_target_pose_np)
-
-        # 6. Go down
-        z_wide_hand = self.config["dropping_position_z_arm_1"]
-        z_small_hand = self.config["dropping_position_z_arm_2"]
-        if self.hardcoded_placement == True:
-            down_x_placement_wide_hand = 0.20 # why not anymore the 0.1 * fresco_release?
-            down_y_placement_wide_hand = placement_side * 0.50 - 0.10 * fresco_release
-            down_x_placement_small_hand = 0.20
-            down_y_placement_small_hand = placement_side * 0.50 + 0.10 * fresco_release
-        else:
-            # same as above, i changes only the Z value!
-            down_x_placement_wide_hand = placement_center_table_x + final_placements_position[0]
-            down_y_placement_wide_hand = placement_side * placement_center_table_y + final_placements_position[1]
-            down_x_placement_small_hand = placement_center_table_x + final_placements_position[0]
-            down_y_placement_small_hand = placement_side * placement_center_table_y + final_placements_position[1]
-            if use_wide == True:
-                print(f"going down (wide hand) at {down_x_placement_wide_hand}, {down_y_placement_wide_hand}")
-            else:
-                print(f"going down (small hand) at {down_x_placement_small_hand}, {down_y_placement_small_hand}")
-        
-        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                    [down_x_placement_wide_hand, down_y_placement_wide_hand, z_wide_hand],
-                                                    [down_x_placement_small_hand, down_y_placement_small_hand, z_small_hand])
-                                                    # [0.20 + x_placement, -1 * (-0.50 + y_placement), 1.15],
-                                                    # [0.20 + x_placement, -0.50 + y_placement, 1.1])
-                                                    # OLD CODE HARD CODED
-                                                    # [0.20, placement_side * 0.50 - 0.10 * fresco_release, 1.15],
-                                                    # [0.20, placement_side * 0.50 + 0.10 * fresco_release, 1.1])
-        place_down_path = self.move_arm(self.arm, arm_target_pose_np)
-        print('-' * 50)
-
-
-        ### 7. Open hand
-        if self.use_hands:
-            self.hand_api.open_hand()
-            print('Opened!')
-        
-        if(self.use_gazebo):
-            if(self.used_hand=="left"):
-                detach_links(model_1="repair", link_1="left_hand_v1_wide_palm_central_little_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
-            elif(self.used_hand=="right"):
-                detach_links(model_1="repair", link_1="right_hand_v1_2_research_palm_link", model_2=self.fragment_id_gazebo[0], link_2=self.fragment_id_gazebo[1])
-            else:
-                print("Validate names of used hands")
-
-        # if self.use_wide_hand == True and self.follow_the_hand == False:
-        #     # rotate
-        #     current_quat = arm_target_pose_np[3:]
-        #     current_euler = euler_from_quaternion(current_quat)
-        #     new_euler = current_euler + [0, 0, -np.deg2rad(90)]
-        #     new_quat = quaternion_from_euler(new_euler) 
-        #     arm_target_pose_np[3:] = new_quat
-
-        ### 8. Go up
-        if place_down_path is not None:
-            place_up_path = self.inverse_path(place_down_path)
-            self.move_path(place_up_path)
-        else:
-            arm_target_pose_np[2] += 0.15
-            place_up_path = self.move_arm(self.arm, arm_target_pose_np)
-
-        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                    [0.20, 0.5, z],
-                                                    [0.20, -0.5, z])
-        ### Go Back To Home Position
-        #self.move_arm(self.arm, arm_target_pose_np)
-        self.go_home_pose()
 
     def calculate_hand_rotation(self, arm_target_pose_np, fresco_rotation):
         q_orig = arm_target_pose_np[3:].copy()
@@ -847,13 +850,13 @@ class PicpkNPlaceDemo:
         print("Planning trajectory")
         arm_target_pose = get_pose_stamped_from_arr(pose_np)
         if self.use_klampt:
-            success = self.mu.reset_active_dof_klampt()
+            success = self.mu.reset_active_dof_klampt(arm=arm)
             success, path = self.mu.move_arm_to_pose_klampt(arm, arm_target_pose)
             if not success:
                 print("Klampt failed, resetting manipulation utils and setting new active DOFs without translation")
                 # Idk if this is nessesary
                 self.reset_manipulation_utils()
-                success = self.mu.switch_active_dof_klampt()
+                success = self.mu.remove_translation_active_dof_klampt()
                 success, path = self.mu.move_arm_to_pose_klampt(arm, arm_target_pose)
                 if not success:
                     print("Klampt failed, will try moveit")
@@ -960,23 +963,6 @@ class PicpkNPlaceDemo:
         # ==> Code for hand re-orientation
         fragment_2nd_principal_axis_angle = bbox_rot[2]
 
-        # === Manel: If 90deg hand mount is availble this block can PROBABLY be deleted
-        # ===>
-        # Convert angle to -90:90 range if necessary
-        # if fragment_2nd_principal_axis_angle > np.pi / 2:
-        #     fragment_2nd_principal_axis_angle -= np.pi
-        # elif fragment_2nd_principal_axis_angle < -np.pi / 2:
-        #     fragment_2nd_principal_axis_angle += np.pi
-
-        # # Apply rules using feasibility limits tested in gazebo with moveit (and without torso yaw and linear guide)
-        # principal_axis_delta = np.pi/6 # np.pi / 4
-        # if fragment_2nd_principal_axis_angle - principal_axis_delta > np.deg2rad(-75):
-        #     grasp_yaw = angle_utils.normalize(fragment_2nd_principal_axis_angle + principal_axis_delta + np.pi, -180, 180)
-        # # 2nd preference: point fingers away from the torso. For that, the hand should rotate outward relative to principal ais
-        # elif fragment_2nd_principal_axis_angle + principal_axis_delta < np.deg2rad(50):
-        #     grasp_yaw = fragment_2nd_principal_axis_angle - principal_axis_delta
-        # <===
-
         # If 90deg mount for the hand is available
         principal_axis_delta = np.pi / 4
         grasp_yaw = angle_utils.normalize(fragment_2nd_principal_axis_angle + principal_axis_delta, -180, 180)
@@ -1001,26 +987,12 @@ if __name__ == '__main__':
     rospy.init_node(node_name)
     demo = PicpkNPlaceDemo(use_gazebo=args.use_gazebo, debug=True)
 
-    #demo.hand_api_right.open_hand()
-    #exit()
     # wait for user input
     input("Press enter to start The Experiment")
     while True:
         demo.reset_manipulation_utils()
-        demo.setup_hands(open_hands=False)
-
-        print("Died 1")
-        #demo = PicpkNPlaceDemo(True)
         demo.go_home_pose()
-        print("Died 2")
-
-        #del demo
-        #demo = PicpkNPlaceDemo(True)
-        demo.reset_manipulation_utils()
         demo.setup_hands()
-        print("Died 3")
-
-
 
         # Get number of frescos from object data
         rerun_detection = True
@@ -1028,11 +1000,7 @@ if __name__ == '__main__':
             print("Try to detect Frescos")
             fresco_center, fresco_rotation, num_frescos, object_cloud, fragment_id = demo.get_fragment_position()
             final_placements_position, final_rotations, placement_side, use_wide = demo.get_final_placement()
-            print(f"placement: {final_placements_position}" )
-            print(f'Number of frescos detected: {num_frescos}')
-            #inp = input('detection good? Y/n:').strip() or "y"
-            inp = "y"
-            rerun_detection = False if inp=="y" else True
+            rerun_detection = False
 
         if num_frescos > 0:
             #input("Press Enter to Start Next Grasp...")
@@ -1049,4 +1017,3 @@ if __name__ == '__main__':
             print("-" * 40)
             demo.run_demo(fresco_center, fresco_rotation, final_placements_position, final_rotations, placement_side, use_wide)
         print("Finished pick and place, will try next fresco")
-        #del demo
