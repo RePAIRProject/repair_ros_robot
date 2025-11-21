@@ -190,51 +190,51 @@ class PicpkNPlaceDemo:
     # Joint Callback
     ####    
 
-    def recognition_data_callback(self, recognition_data, placement_data):
-        # stores the received 'ids' data into self.fragment_ids_list
-        self.fragment_ids_list = []
-        self.fragment_ids_list = list(recognition_data.id_array.data)
+    # def recognition_data_callback(self, recognition_data, placement_data):
+    #     # stores the received 'ids' data into self.fragment_ids_list
+    #     self.fragment_ids_list = []
+    #     self.fragment_ids_list = list(recognition_data.id_array.data)
         
-        # stores the received 'rotations' data into self.fragment_rotations_list
-        self.fragment_rotations_list = []
-        if self.grasp_without_rotation == True:
-            self.fragment_rotations_list = [0] * len(recognition_data.rotation_array.data)
-        else:
-            self.fragment_rotations_list = list(recognition_data.rotation_array.data)
+    #     # stores the received 'rotations' data into self.fragment_rotations_list
+    #     self.fragment_rotations_list = []
+    #     if self.grasp_without_rotation == True:
+    #         self.fragment_rotations_list = [0] * len(recognition_data.rotation_array.data)
+    #     else:
+    #         self.fragment_rotations_list = list(recognition_data.rotation_array.data)
 
-        # stores the received 'poses' data into self.fragment_pose_list
-        self.fragment_pose_list = []
-        for pose in recognition_data.pose_array.poses:
-            position = pose.position
-            orientation = pose.orientation
-            numpy_pose = np.array([
-                position.x, position.y, position.z,
-                orientation.x, orientation.y, orientation.z, orientation.w
-            ])
-            self.fragment_pose_list.append(numpy_pose)
+    #     # stores the received 'poses' data into self.fragment_pose_list
+    #     self.fragment_pose_list = []
+    #     for pose in recognition_data.pose_array.poses:
+    #         position = pose.position
+    #         orientation = pose.orientation
+    #         numpy_pose = np.array([
+    #             position.x, position.y, position.z,
+    #             orientation.x, orientation.y, orientation.z, orientation.w
+    #         ])
+    #         self.fragment_pose_list.append(numpy_pose)
 
-        # stores the received 'rotations' data into self.fragment_rotations_list
-        self.use_wide_hand_grasping_list = []
-        self.use_wide_hand_grasping_list = list(recognition_data.use_wide_hand.data)   
+    #     # stores the received 'rotations' data into self.fragment_rotations_list
+    #     self.use_wide_hand_grasping_list = []
+    #     self.use_wide_hand_grasping_list = list(recognition_data.use_wide_hand.data)   
 
-        # stores the received 'poses' data into self.placement_pose_array_list
-        self.placement_pose_array_list = []
-        for pose in placement_data.placement_pose_array.poses:
-            position = pose.position
-            orientation = pose.orientation
-            numpy_pose = np.array([
-                position.x, position.y, position.z,
-                orientation.x, orientation.y, orientation.z, orientation.w
-            ])
-            self.placement_pose_array_list.append(numpy_pose)
+    #     # stores the received 'poses' data into self.placement_pose_array_list
+    #     self.placement_pose_array_list = []
+    #     for pose in placement_data.placement_pose_array.poses:
+    #         position = pose.position
+    #         orientation = pose.orientation
+    #         numpy_pose = np.array([
+    #             position.x, position.y, position.z,
+    #             orientation.x, orientation.y, orientation.z, orientation.w
+    #         ])
+    #         self.placement_pose_array_list.append(numpy_pose)
 
-        # This callback stores the received 'rotations' data into self.fragment_rotations_list
-        self.placement_rotation_list = []
-        self.placement_rotation_list = list(placement_data.placement_rotation.data)
+    #     # This callback stores the received 'rotations' data into self.fragment_rotations_list
+    #     self.placement_rotation_list = []
+    #     self.placement_rotation_list = list(placement_data.placement_rotation.data)
 
-        # This callback stores the received 'side' data into self.placement_side_list
-        self.placement_side_list = []
-        self.placement_side_list = list(placement_data.placement_side.data) 
+    #     # This callback stores the received 'side' data into self.placement_side_list
+    #     self.placement_side_list = []
+    #     self.placement_side_list = list(placement_data.placement_side.data) 
 
 
 
@@ -500,8 +500,10 @@ class PicpkNPlaceDemo:
 
         # Get initial pose of fragment
         fresco_pose_world, fresco_pose_world_np = self.get_fresco_world_pose(fresco_center.copy())
+
         self.fresco_world_z = fresco_pose_world_np[2]
         print("Fresco Pose First", fresco_pose_world_np)
+        publish_tf_np(fresco_pose_world_np, child_frame='unchanged_fresco_world_pose')
 
         # Get initial hand pose 
         hand_pose_world_np = fresco_pose_world_np.copy()
@@ -528,6 +530,10 @@ class PicpkNPlaceDemo:
         print("TARGET POSE 1", arm_target_pose_np)
 
         ### MOVE TO FIRST POSE ABOVE OBJECT
+        # center the hand with fresco position + offset
+        # arm_target_pose_np[0] = fresco_pose_world_np[0]
+        # arm_target_pose_np[1] = fresco_pose_world_np[1]
+        print("HAND SHOULD GO TO POSITION: ", fresco_pose_world_np[:2])
         self.move_arm(self.arm, arm_target_pose_np)
         self.wait_for_robot()
 
@@ -536,7 +542,7 @@ class PicpkNPlaceDemo:
         rot_amount = 0
         if self.grasp_without_rotation == False and self.arm==ARM_ENUM.ARM_2:
             publish_tf_np(arm_target_pose_np, child_frame='BEFORE_arm_grasp_pose')
-            arm_target_pose_np, rot_amount = self.calculate_hand_rotation(arm_target_pose_np.copy(), fresco_rotation)
+            arm_target_pose_np, rot_amount = self.calculate_hand_rotation_in_hand_frame(arm_target_pose_np.copy(), fresco_rotation)
             publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
             publish_tf_np(arm_target_pose_np, child_frame='AFTER_arm_grasp_pose')
             print("TARGET POSE 2", arm_target_pose_np)
@@ -544,6 +550,12 @@ class PicpkNPlaceDemo:
             ### ROTATE HAND TO ALIGN WITH FRESCO
             self.move_arm(self.arm, arm_target_pose_np)
             self.wait_for_robot()
+
+        # Apply offset in x-y plane
+        # arm_target_pose_np = self.apply_offset(arm_target_pose_np, self.config["fresco_pose_world_x_offset"], self.config["fresco_pose_world_y_offset"])
+        
+        # self.move_arm(self.arm, arm_target_pose_np)
+        # self.wait_for_robot()
 
         ### TILT HAND
         arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
@@ -628,6 +640,8 @@ class PicpkNPlaceDemo:
                                                     [x_placement, y_placement, self.config["dropping_position_z_arm_2"]])
 
         place_down_path = self.move_arm(self.arm, arm_target_pose_np)
+        self.wait_for_robot()
+
         print('-' * 50)
 
 
@@ -655,6 +669,8 @@ class PicpkNPlaceDemo:
         arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
                                                     [0.20, 0.5, before_placement_height],
                                                     [0.20, -0.5, before_placement_height])
+        self.wait_for_robot()
+
         ### Go Back To Home Position
         self.go_home_pose()
 
@@ -715,18 +731,19 @@ class PicpkNPlaceDemo:
 
 
     def calculate_hand_rotation(self, arm_target_pose_np, fresco_rotation):
+        
         q_orig = arm_target_pose_np[3:].copy()
-        hand_rot_1, hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
+        target_hand_rot_1, target_hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
 
         rotated_hand_tfs = []
-        if hand_rot_1 is not None:
-            to_rotate_z1 = -1.57 - hand_rot_1
+        if target_hand_rot_1 is not None:
+            to_rotate_z1 = -1.57 - target_hand_rot_1
             q_rot1 = quaternion_from_euler(0, 0, to_rotate_z1)
             rotated1_hand_tf = quaternion_multiply(q_rot1, self.hand_tf)
             rotated_hand_tfs.append(rotated1_hand_tf)
             rot_amount = to_rotate_z1
-        if hand_rot_2 is not None:
-            to_rotate_z2 = -1.57 - hand_rot_2
+        if target_hand_rot_2 is not None:
+            to_rotate_z2 = -1.57 - target_hand_rot_2
             q_rot2 = quaternion_from_euler(0, 0, to_rotate_z2)
             rotated2_hand_tf = quaternion_multiply(q_rot2, self.hand_tf)
             rotated_hand_tfs.append(rotated2_hand_tf)
@@ -756,11 +773,78 @@ class PicpkNPlaceDemo:
             arm_target_pose_np[3:] = q_new
 
         return arm_target_pose_np.copy(), rot_amount
+    
+    def calculate_hand_rotation_in_hand_frame(self, arm_target_pose_np, fresco_rotation):
+        
+        # save original position to apply later (sanity check)
+        positions = arm_target_pose_np[:3].copy()
+
+        # transform pose to hand frame
+        arm_pose = get_pose_from_arr(arm_target_pose_np)
+        if self.arm == ARM_ENUM.ARM_1:
+            hand_pose = transform_pose_vislab(arm_pose, "world", "left_hand_v1_wide_grasp_link")
+        elif self.arm == ARM_ENUM.ARM_2:
+            hand_pose = transform_pose_vislab(arm_pose, "world", "right_hand_v1_2_research_grasp_link")
+        hand_pose_array = get_arr_from_pose(hand_pose)
+        
+        q_orig = hand_pose_array[3:].copy()
+        hand_rot_1, hand_rot_2 = self.calc_hand_rotation(fresco_rotation)
+
+        rotated_hand_tfs = []
+        if hand_rot_1 is not None:
+            to_rotate_z1 = -hand_rot_1
+            # to_rotate_z1 = -1.57 - hand_rot_1
+            q_rot1 = quaternion_from_euler(to_rotate_z1, 0, 0)
+            rotated1_hand_tf = quaternion_multiply(q_rot1, q_orig)
+            rotated_hand_tfs.append(rotated1_hand_tf)
+            rot_amount = to_rotate_z1
+        if hand_rot_2 is not None:
+            to_rotate_z2 = -hand_rot_2
+            # to_rotate_z2 = -1.57 - hand_rot_2
+            q_rot2 = quaternion_from_euler(to_rotate_z2, 0, 0)
+            rotated2_hand_tf = quaternion_multiply(q_rot2, q_orig)
+            rotated_hand_tfs.append(rotated2_hand_tf)
+            rot_amount = to_rotate_z2
+            
+        # Compare z axes and select the best (against hand_tf)
+        orig_rot = R.from_quat(q_orig)
+        orig_z = orig_rot.apply([1, 0, 0])
+        best_idx = 0
+        best_dot = -np.inf
+        for idx, rotated_hand_tf in enumerate(rotated_hand_tfs):
+            rot = R.from_quat(rotated_hand_tf)
+            z_axis = rot.apply([1, 0, 0])
+            dot = np.dot(z_axis, orig_z)
+            if dot > best_dot:
+                best_dot = dot
+                best_idx = idx
+
+        best_rotated_hand_tf = rotated_hand_tfs[best_idx]
+
+        if best_rotated_hand_tf is not None:
+            #q_new = quaternion_multiply(best_rotated_hand_tf, q_orig)
+            hand_pose_array[3:] = best_rotated_hand_tf
+        else:
+            q_rot = quaternion_from_euler(np.deg2rad(180), np.deg2rad(0), 0)
+            q_new = quaternion_multiply(q_rot, q_orig)
+            hand_pose_array[3:] = q_new
+
+        # Go back to world frame
+        hand_pose = get_pose_from_arr(hand_pose_array)
+        if self.arm == ARM_ENUM.ARM_1:
+            arm_target_pose = transform_pose_vislab(hand_pose, "left_hand_v1_wide_grasp_link", "world")
+        elif self.arm == ARM_ENUM.ARM_2:
+            arm_target_pose = transform_pose_vislab(hand_pose, "right_hand_v1_2_research_grasp_link", "world")
+        arm_target_pose_np = get_arr_from_pose(arm_target_pose)
+        arm_target_pose_np[:3] = positions
+
+        return arm_target_pose_np.copy(), rot_amount
 
 
     def calc_hand_rotation(self, angle):
         # Second axis: 45 deg right
         phi = np.deg2rad(45)
+        # rotated_angle = angle - phi
         rotated_angle = angle + phi
 
         # Third axis: opposite to second axis
@@ -769,6 +853,32 @@ class PicpkNPlaceDemo:
 
         return rotated_angle, rotated_angle_2   
 
+    def apply_offset(self, arm_target_pose, x_offset=0, y_offset=0):
+            orientation = arm_target_pose[3:].copy()
+
+            arm_pose = get_pose_from_arr(arm_target_pose)
+            if self.arm == ARM_ENUM.ARM_1:
+                hand_pose = transform_pose_vislab(arm_pose, "world", "left_hand_v1_wide_grasp_link")
+            elif self.arm == ARM_ENUM.ARM_2:
+                hand_pose = transform_pose_vislab(arm_pose, "world", "right_hand_v1_2_research_grasp_link")
+
+            
+            hand_pose_array = get_arr_from_pose(hand_pose)
+            
+            hand_pose_array[2] += x_offset  # for some reason axes are swaped
+            hand_pose_array[0] += y_offset
+
+            hand_pose = get_pose_from_arr(hand_pose_array)
+            if self.arm == ARM_ENUM.ARM_1:
+                arm_target_pose = transform_pose_vislab(hand_pose, "left_hand_v1_wide_grasp_link", "world")
+            elif self.arm == ARM_ENUM.ARM_2:
+                arm_target_pose = transform_pose_vislab(hand_pose, "right_hand_v1_2_research_grasp_link", "world")
+            out = get_arr_from_pose(arm_target_pose)
+            out[3:] = orientation
+
+            publish_tf_np(out, child_frame='hand_pose_array')
+
+            return out
 
     def change_hand_angle(self, arm_target_pose, y_ang=0, r_ang=0, p_ang=0.26):
             positions = arm_target_pose[:3].copy()

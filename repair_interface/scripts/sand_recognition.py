@@ -101,10 +101,16 @@ class SandRecognition():
 
         # i am not proud, but i need it to work
 
-        self.hardcoded_alignment_matrix = np.asarray([[0.99969224,0.02345452,-0.00808201, -93.17143693],
-                                                    [-0.02330734,0.99956903,0.01784734, 100.71646801],
-                                                    [0.00849713,-0.01765348,0.99980806,-6.69656267],
-                                                    [0,0,0,1]])
+        self.hardcoded_alignment_matrix = np.asarray([[    0.99935,    0.034149,    -0.01138,     -87.924],
+                                                      [  -0.033936,     0.99925,    0.018414,      94.239],
+                                                      [      0.012,   -0.018016,     0.99977,     -3.2148],
+                                                      [          0,           0,           0,           1]])
+
+
+        # self.hardcoded_alignment_matrix = np.asarray([[0.99969224,0.02345452,-0.00808201, -93.17143693],
+        #                                             [-0.02330734,0.99956903,0.01784734, 100.71646801],
+        #                                             [0.00849713,-0.01765348,0.99980806,-6.69656267],
+        #                                             [0,0,0,1]])
 
     def publish_pose_array(self, poses, frame_id="world"):
         pa = PoseArray()
@@ -360,6 +366,7 @@ class SandRecognition():
             # STEP 2:
             #if self.use_gazebo == False:
             if use_hardcore == False:
+                breakpoint()
                 # ICP Alignment (to the RealSense point cloud)
                 realsense_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(realsense_pcl))
                 vedo_pcl_o3d = self.mesh2pcl(vedo.utils.vedo2open3d(vedo_pcl))
