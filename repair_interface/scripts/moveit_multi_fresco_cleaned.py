@@ -483,9 +483,10 @@ class PicpkNPlaceDemo:
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
 
         print("TARGET POSE", arm_target_pose_np)
-        #input('Go To first pose')
-
+        input('Go To first pose')
+    
         self.move_arm(self.arm, arm_target_pose_np)
+        input('Went To first pose')
 
         ### 2. Tilt hand
         ### RPY to convert: 90deg (1.57), Pi/12, -90 (-1.57)
@@ -495,7 +496,7 @@ class PicpkNPlaceDemo:
         self.move_arm(self.arm, arm_target_pose_np)
 
         # wait for user input DEBUG
-        #input("Press Enter to continue...")
+        input("Press Enter to continue...")
 
         ### 3. Go down to grasp (return to parallel, go down, then rotate again)
         fresco_down_pose = arm_target_pose_np.copy()
