@@ -168,6 +168,29 @@ class ManipulationUtils:
             print("[ManipulationUtils] Action call for switch_active_dof failed: %s" % e)
             return False
 
+    def set_single_step_execution(self, enable: bool):
+        dummy_pose = PoseStamped()
+        try:
+            goal = RepairMoveToGoal()
+            goal.arm = 108
+            goal.target_pose_left = dummy_pose.pose
+            goal.target_time = 5 # sec
+            goal.single_step_execution = enable
+
+            self.klampt_mp_client.send_goal(goal)
+            rospy.loginfo("[ManipulationUtils] Waiting for single step execution setting result...")
+            self.klampt_mp_client.wait_for_result()
+
+            result = self.klampt_mp_client.get_result()
+            if result.success:
+                rospy.loginfo("[ManipulationUtils] Klampt motion planner action call successful!")
+                return True
+            else:
+                rospy.logerr("[ManipulationUtils] Klampt motion planner action call failed!")
+                return False
+        except Exception as e:
+            print("[ManipulationUtils] Action call for set_single_step_execution failed: %s" % e)
+            return False
 
     def move_home_klampt(self, dummy_pose:PoseStamped):
         try:

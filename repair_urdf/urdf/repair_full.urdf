@@ -1449,7 +1449,8 @@ results of the optimization), otherwise we go with the old ones (generated for a
   </link>
   <joint name="left_hand_v1_wide_grasp_joint" type="fixed">
     <!-- QUIRINO: modified grasp_link for wide_hand-->
-    <origin rpy="0 0 0" xyz="0.05 0 0.12"/>
+    <!-- <origin rpy="0 0 0" xyz="0.05 0 0.12"/> -->
+    <origin rpy="0 0 0" xyz="0.05 -0.06 0.12"/>
     <parent link="left_hand_v1_wide_palm_central_link"/>
     <child link="left_hand_v1_wide_grasp_link"/>
   </joint>

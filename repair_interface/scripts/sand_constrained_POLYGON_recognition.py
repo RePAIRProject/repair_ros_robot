@@ -104,6 +104,11 @@ class SandRecognition():
                                                     [-0.02330734,0.99956903,0.01784734, 100.71646801],
                                                     [0.00849713,-0.01765348,0.99980806,-6.69656267],
                                                     [0,0,0,1]])
+        
+        self.principal_axis_history = None
+        self.num_samples = 10
+        self.prev_axis = None        # np.array([ux, uy])
+        self.prev_angle = None
 
     def publish_pose_array(self, poses, frame_id="world"):
         pa = PoseArray()
@@ -220,6 +225,7 @@ class SandRecognition():
             The polygon can be accessed like this
                 `polygon = detection['mask'].xy[0]`
         """
+        conf_debug = 0.3 if verbose else 0.5
         detections = self.recognition_model(self.rgb_image, conf=conf_debug, iou=0.1, verbose=False)[0]
         final_detections = {}
 
@@ -249,16 +255,31 @@ class SandRecognition():
                 # Get the best detection
                 all_class_indices = class_mask.nonzero(as_tuple=True)[0]
                 global_idx = all_class_indices[best_idx]
-                
+                # breakpoint()
                 final_detections[class_id] = {
+                    'name': detections.names[class_id][:-4],
                     'box': detections.boxes.xyxy[global_idx],
                     'conf': detections.boxes.conf[global_idx],
                     'mask': detections.masks[global_idx] if detections.masks else None
                 }
 
         return final_detections
+    
+    
+    def calculate_area(self, polygon, box):
+        """Calculate area of the polygon"""
+        # ==
+        # area = cv2.contourArea(polygon)
+        # ==
+        x = polygon[:, 0]
+        y = polygon[:, 1]
+        area_polygon = 0.5 * np.abs(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))
+        box_area = (box[2]-box[0]) * (box[3]-box[1])
+        print("== Contour area:", area_polygon)
+        print("== Box Area:", box_area)
+        return area_polygon
 
-    def calculate_center_of_mass(self, polygon)
+    def calculate_center_of_mass(self, polygon):
         """Calculate center of mass of the polygon"""
         M = cv2.moments(polygon)
         if M['m00'] != 0:
@@ -268,7 +289,7 @@ class SandRecognition():
             cx, cy = int(center_x), int(center_y)
         return cx, cy
 
-    def calculate_rotation(self, polygon, method='PCA'):
+    def calculate_rotation(self, polygon, method='PCA', imgdraw=None, fragment_name=""):
         """
         Calculates rotation from teh detected polygon. 
         Method can be:
@@ -282,28 +303,104 @@ class SandRecognition():
             from sklearn.decomposition import PCA 
             pca = PCA(n_components=2)
             pca.fit(np.squeeze(polygon))
+
+            # First principal component
+            axis = pca.components_[0]  # (ux, uy)
+
+            # Normalize
+            axis = axis / np.linalg.norm(axis)
+
+            # Fix 180° ambiguity vs previous frame
+            axis = self._fix_axis_flip(self.prev_axis, axis)
+
+            axis_smoothed = self._update_axis_history(axis, fragment_name)
             
             # Get the angle from first principal component
-            angle_pca_rad = np.arctan2(pca.components_[0, 1], pca.components_[0, 0])
+            # angle_pca_rad = np.arctan2(pca.components_[0, 1], pca.components_[0, 0])
+            angle_pca_rad = np.arctan2(axis_smoothed[1], axis_smoothed[0])
             angle = np.rad2deg(angle_pca_rad)
+            
+            self.prev_axis = axis_smoothed
+            self.prev_angle = angle_pca_rad
+
+            if imgdraw is not None:
+                centerx, centery = self.calculate_center_of_mass(polygon)
+                length = 70
+                x2 = int(centerx + length * axis_smoothed[0])
+                y2 = int(centery + length * axis_smoothed[1])
+                x1 = int(centerx - length * axis_smoothed[0])
+                y1 = int(centery - length * axis_smoothed[1])
+                imgdraw = cv2.line(imgdraw, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
         elif method == 'OBB':
             rect = cv2.minAreaRect(polygon)
-            (center_x, center_y), (width, height), angle = rect
+            (centerx, centery), (width, height), angle = rect
             # angle is in deg, if you need to change, add
             # (and please comment or add a flag)
             # angle_rad = np.deg2rad(angle)
+            if imgdraw is not None:
+                length = 70
+                angle_rad = np.deg2rad(angle)
+                # Compute end point
+                x1 = int(centerx + length * np.cos(angle_rad))
+                y1 = int(centery + length * np.sin(angle_rad))
+                x2 = int(centerx - length * np.cos(angle_rad))
+                y2 = int(centery - length * np.sin(angle_rad))
+                imgdraw = cv2.line(imgdraw, (x1, y1), (x2, y2), (255, 255, 0), 2)
 
         else:
             print("\n\nNO METHOD KNOWN FOR COMPUTING THE ANGLE!\n")
             print("\nPlease use `OBB` or `PCA`\nreturning 0..\n\n")
             return 0
-
+        
         return angle
+    
+
+    def _fix_axis_flip(self, prev_axis, new_axis):
+        """
+        Fix 180° ambiguity in PCA eigenvectors.
+        Ensures that the new axis points roughly in the same direction as previous one.
+        """
+        if prev_axis is None:
+            return new_axis
+
+        if np.dot(prev_axis, new_axis) < 0:
+            return -new_axis   # flip by 180°
+        return new_axis
+
+    def _update_axis_history(self, new_axis, fragment_name):
+        if new_axis is None:
+            return None
+
+        # Append to history
+        self.principal_axis_history[fragment_name].append(new_axis)
+
+        # Keep only the last max_history entries
+        if len(self.principal_axis_history[fragment_name]) > self.num_samples:
+            self.principal_axis_history[fragment_name].pop(0)
+
+        # Compute average or median
+        avg = np.median(self.principal_axis_history[fragment_name], axis=0)
+
+        # Normalize
+        avg = avg / np.linalg.norm(avg)
+
+        return avg
+
+    def smooth_polygon(self, polygon):
+        pts = np.array(polygon, dtype=np.float32)
+
+        # epsilon controls smoothness: larger → more smoothing
+        eps = 0.01
+        epsilon = eps * cv2.arcLength(pts, True)
+        smooth = cv2.approxPolyDP(pts, epsilon, True)
+        smooth = smooth.reshape(-1, 2)
+
+        return smooth
 
     def recognize_and_publish(self, recognition_pub, placement_pub, group_num, iou=0.99,
                                verbosity=1, debug=False, show_image_feed=False, 
-                               use_hardcoded_alignment=True):
+                               use_hardcoded_alignment=True, only_g15=False):
         """
         The main loop with the 2D color recognition, reprojection and registration 
         """
@@ -316,11 +413,20 @@ class SandRecognition():
             detections = self.recognize_with_contraints(self.rgb_image, 
                                                         group_number=group_num,
                                                         iou=iou)
+            
+            names_list = [detections[d]['name'] for d in detections]
+            if self.principal_axis_history is None: # initialize the history of principal axes
+                self.principal_axis_history = {detection['name']: [] for detection in detections.values()}
+            elif set(self.principal_axis_history.keys()) != set(names_list): # new object detected, start a history for it
+                for name in names_list:
+                    if name not in self.principal_axis_history.keys():
+                        self.principal_axis_history[name] = []
 
             # We collect information which will be published
             points_in_3d_space = []
             fragments_ids = []
             fragments_rotation = []
+            fragments_area = []
             fragments_placement_positions = []
             fragments_placement_rotations = []
             fragments_placement_side = []
@@ -336,93 +442,104 @@ class SandRecognition():
             if show_image_feed == True:
                 from ultralytics.utils.plotting import Colors
                 yolo_colors = Colors()
-                image2draw_detection = self.rgb_image.copy()
+                image_draw = self.rgb_image.copy()
 
             # here we print out what we detected 
             # (and draw if needed)
-            detected_string = "Group {group_num}:\n"
-            for class_id, detection in final_detections.items():
-                fragment_name = detections.names[class_id]
-                fragment_id = int(fragment_name[-5:])
-                detected_string += f"  {fragment_name}: {conf:.2f}"
-                polygon = detection['mask'].xy[0]
-                centerx, centery = self.calculate_center_of_mass(polygon)
-                rotation_angle_deg = self.calculate_rotation(polygon, method='PCA')
-
-                ###############################
-                # prepare for publishing
-                # the stuff
-                ###############################
-                placement_side_string = self.placements_dict[f'group_{group_num}']['placement']['side']
-                if placement_side_string == 'left':
-                    placement_side = -1
-                else:
-                    placement_side = 1
-
-                # rotations and ids for publishing
-                fragments_rotation.append(rotation_angle_deg)
-                fragments_ids.append(fragment_id)
-                fragments_placement_side.append(placement_side)
-
-                # we fetch here the final position where it should be placed
-                assembly_position = self.placements_dict[f'group_{group_num}'][f'{fragment_name}_intact_mesh']
-                print(f"found {fragment_name} (group {group_num}) with center in {centerx:.2f}, {centery:.2f} (pixel coordinates).")
-                if verbosity > 1:
-                    print(f"\nIt should be placed (in real world coordaintes) in: {assembly_position['trans_x']}, {assembly_position['trans_y']}\n rotated by {assembly_position['ori_yaw']}")       
-                if self.use_gazebo:
-                    fragment_pose = pt3d_to_pose([assembly_position['trans_x']/4000, assembly_position['trans_y']/4000, 0], use_gazebo=self.use_gazebo)
-                else:
-                    fragment_pose = pt3d_to_pose([assembly_position['trans_x'], assembly_position['trans_y'], 0], use_gazebo=self.use_gazebo)
-
-                fragments_placement_positions.append(fragment_pose)
-                fragments_placement_rotations.append(assembly_position['ori_yaw'])
-
-                # grasping
-                try:
-                    use_wide_hand = int(assembly_position['use_wide'])
-                except:
-                    use_wide_hand = False
-                grasping_use_wide_hand.append(use_wide_hand)
-
-                # 3D 
-                depth = self.depth_image[centery, centerx]
-                point_in_3d_space = rs.rs2_deproject_pixel_to_point(self.depth_intrinsics, [centery, centerx], depth)
-                points_in_3d_space.append((vedo.Point(point_in_3d_space), rotation))
-                if debug == True:
-                    vedo_sphere = vedo.Sphere(point_in_3d_space, c="red", r=50).apply_transform(self.T_opencv2rviz)
-                    vedo_spheres.append(vedo_sphere)
-
-                ################################
-                # image visualization
-                # show the recognized objects
-                ################################
-                if show_image_feed == True:
-                    text = f"{detections.names[class_id]}: {conf:.2f}"
-                    color = yolo_colors(class_id, bgr=True)
-                    # 1. Draw bounding box
-                    box = detection['box'].cpu().numpy().astype(int)
-                    x1, y1, x2, y2 = box
-                    cv2.rectangle(image_draw, (x1, y1), (x2, y2), color, 2)
-                    # 2. Draw confidence text
+            detected_string = f"Group {group_num}:\n"
+            # for class_id, detection in final_detections.items():
+            for class_id, detection in detections.items():
+                if detection['conf'].cpu().numpy() > 0.6:
+                    # breakpoint()
+                    # fragment_name = detections.names[class_id]
+                    fragment_name = detection['name']
+                    fragment_id = int(fragment_name[4:9])
                     conf = detection['conf'].cpu().numpy()
-                    text = f"{detections.names[class_id]}: {conf:.2f}"
-                    # Add text background for better visibility
-                    (text_width, text_height), baseline = cv2.getTextSize(
-                        text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
-                    cv2.rectangle(image_draw, 
-                        (x1, y1 - text_height - baseline - 5),
-                        (x1 + text_width, y1),
-                        color, -1) # -1 = Filled rectangle
-                    cv2.putText(image_draw, text, (x1, y1 - 5),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 25), 2 )# White text
-                    # Convert to integer coordinates and reshape for cv2.polylines
-                    polygon = polygon.astype(np.int32).reshape((-1, 1, 2))
-                    # Draw polygon
-                    image_draw = cv2.polylines(image_draw, [polygon], isClosed=True, color=color, thickness=2)
-                    cv2.imshow(f'recognition', img2draw)
-                    print(detected_string)
-                    # f'detected {len(det_res[0].obb)} objects:\n\t- {detected[0]} of group 15\n\t- {detected[1]} of group 29\n\t- {detected[2]} of group 89')
-                    cv2.waitKey(1)
+                    detected_string += f"  {fragment_name}: {conf:.2f}"
+                    polygon = detection['mask'].xy[0]
+                    polygon = self.smooth_polygon(polygon)
+                    box = detection['box'].cpu().numpy().astype(int)
+                    centerx, centery = self.calculate_center_of_mass(polygon)
+                    rotation_angle_deg = self.calculate_rotation(polygon, method='PCA', imgdraw=image_draw, fragment_name=fragment_name) 
+                    area = self.calculate_area(polygon, box)
+
+                    ###############################
+                    # prepare for publishing
+                    # the stuff
+                    ###############################
+                    placement_side_string = self.placements_dict[f'group_{group_num}']['placement']['side']
+                    if placement_side_string == 'left':
+                        placement_side = -1
+                    else:
+                        placement_side = 1
+
+                    # rotations and ids for publishing
+                    fragments_rotation.append(rotation_angle_deg)
+                    fragments_area.append(area)
+                    fragments_ids.append(fragment_id)
+                    fragments_placement_side.append(placement_side)
+
+                    # we fetch here the final position where it should be placed
+                    assembly_position = self.placements_dict[f'group_{group_num}'][f'{fragment_name}_intact_mesh']
+                    print(f"found {fragment_name} (group {group_num}) with center in {centerx:.2f}, {centery:.2f} (pixel coordinates).")
+                    if verbosity > 1:
+                        print(f"\nIt should be placed (in real world coordaintes) in: {assembly_position['trans_x']}, {assembly_position['trans_y']}\n rotated by {assembly_position['ori_yaw']}")       
+                    if self.use_gazebo:
+                        fragment_pose = pt3d_to_pose([assembly_position['trans_x']/4000, assembly_position['trans_y']/4000, 0], use_gazebo=self.use_gazebo)
+                    else:
+                        fragment_pose = pt3d_to_pose([assembly_position['trans_x'], assembly_position['trans_y'], 0], use_gazebo=self.use_gazebo)
+
+                    fragments_placement_positions.append(fragment_pose)
+                    fragments_placement_rotations.append(assembly_position['ori_yaw'])
+
+                    # grasping
+                    try:
+                        use_wide_hand = int(assembly_position['use_wide'])
+                    except:
+                        use_wide_hand = False
+                    grasping_use_wide_hand.append(use_wide_hand)
+
+                    # 3D 
+                    depth = self.depth_image[centery, centerx]
+                    point_in_3d_space = rs.rs2_deproject_pixel_to_point(self.depth_intrinsics, [centery, centerx], depth)
+                    points_in_3d_space.append((vedo.Point(point_in_3d_space), rotation_angle_deg))
+                    if debug == True:
+                        vedo_sphere = vedo.Sphere(point_in_3d_space, c="red", r=50).apply_transform(self.T_opencv2rviz)
+                        vedo_spheres.append(vedo_sphere)
+
+                    ################################
+                    # image visualization
+                    # show the recognized objects
+                    ################################
+                    if show_image_feed == True:
+                        text = f"{fragment_name}: {conf:.2f}"
+                        color = yolo_colors(class_id, bgr=True)
+                        # 1. Draw bounding box
+                        box = detection['box'].cpu().numpy().astype(int)
+                        x1, y1, x2, y2 = box
+                        cv2.rectangle(image_draw, (x1, y1), (x2, y2), color, 2)
+                        # 2. Draw confidence text
+                        conf = detection['conf'].cpu().numpy()
+                        text = f"{fragment_name}: {conf:.2f}"
+                        # Add text background for better visibility
+                        (text_width, text_height), baseline = cv2.getTextSize(
+                            text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+                        cv2.rectangle(image_draw, 
+                            (x1, y1 - text_height - baseline - 5),
+                            (x1 + text_width, y1),
+                            color, -1) # -1 = Filled rectangle
+                        cv2.putText(image_draw, text, (x1, y1 - 5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 25), 2 )# White text
+                        # Convert to integer coordinates and reshape for cv2.polylines
+                        polygon = polygon.astype(np.int32).reshape((-1, 1, 2))
+                        # Draw polygon
+                        image_draw = cv2.polylines(image_draw, [polygon], isClosed=True, color=color, thickness=2)
+                        # draw circle
+                        image_draw = cv2.circle(image_draw, (centerx, centery), 2, color, 5)
+                        cv2.imshow(f'recognition', image_draw)
+                        print(detected_string)
+                        # f'detected {len(det_res[0].obb)} objects:\n\t- {detected[0]} of group 15\n\t- {detected[1]} of group 29\n\t- {detected[2]} of group 89')
+                        cv2.waitKey(1)
 
             if debug == True:
                 cv2.imshow("image", img2draw)
@@ -511,6 +628,9 @@ class SandRecognition():
                         # and the rotation alone for now
             rotation_array_msg = Float32MultiArray()
             rotation_array_msg.data = fragments_rotation
+            
+            area_array_msg = Float32MultiArray()
+            area_array_msg.data = fragments_area
 
             ################ 
             # ID
@@ -530,6 +650,7 @@ class SandRecognition():
             recognition_msg.pose_array = pose_array_msg  # Populate PoseArray
             recognition_msg.id_array = id_array_msg  # Populate Int32MultiArray for ids
             recognition_msg.rotation_array = rotation_array_msg  # Populate Float32MultiArray for rotations
+            recognition_msg.area_array = area_array_msg  # Populate Float32MultiArray for rotations
             recognition_msg.use_wide_hand = use_wide_hand_msg  # Populate Int32MultiArray for wide hand data
 
             recognition_pub.publish(recognition_msg)
@@ -639,7 +760,7 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--group', type=str, default='29')
     args = parser.parse_args()
     
-    node_name = "Sand_Recognition"
+    node_name = "Sand_Recognition_with_Polygon"
     rospy.init_node(node_name)
     verbosity_level = 1 # increase value to print debug information in the recognition code
 
@@ -653,9 +774,9 @@ if __name__ == '__main__':
     root_data_folder = '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/sand_detection_models'
     polygon_recognition_folder = os.path.join(root_data_folder, 'polygon')
     model_path = os.path.join(polygon_recognition_folder, f"polygon_rec_g{args.group}.pt")
-    print("Will use {model_path} for this experiment!")
+    print(f"Will use {model_path} for this experiment!")
     placements_folder = '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/placements'
-    placement_file = os.path.join(placements_folder, 'int_week_6_piece_center_placements_demo.json')
+    placement_file = os.path.join(placements_folder, 'int_week_7_piece_center_placements_demo.json')
 
     # data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
     # # data_folder = rospy.get_param('data_folder', '/home/ws/src/repair_ros_robot/repair_interface/sand_detection_models')  # Default in case not set
@@ -667,7 +788,7 @@ if __name__ == '__main__':
     # Instantiate SandRecognition with the parameters from the ROS parameter server
     recognition = SandRecognition(data_folder=root_data_folder, model_name=model_path, placement_file=placement_file, use_gazebo=args.use_gazebo)
 
-    recognition.recognize_and_publish(recognition_pub, placement_pub, 
+    recognition.recognize_and_publish(recognition_pub, placement_pub, group_num=args.group, 
                                       verbosity=verbosity_level, debug=False, show_image_feed=True,
                                       use_hardcoded_alignment=True, only_g15=False)
 

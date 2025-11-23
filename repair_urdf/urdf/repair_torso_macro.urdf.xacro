@@ -47,11 +47,11 @@
         <!-- <joint name="j_torso_base" type="prismatic"> -->
         <!-- <limit effort="147.0" lower="-0.8" upper="0.8" velocity="0.25"/> -->
         <joint name="j_torso_base" type="prismatic">
-        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.07"/>
         <parent link="${parent}"/>
                 <child link="dummy_prismatic_link"/>
                 <axis xyz="0 0 1"/>
-        <limit effort="147.0" lower="-0.8" upper="0.8" velocity="0.25"/>
+        <limit effort="147.0" lower="-0.75" upper="0.75" velocity="0.25"/>
         </joint>
 
         <!-- torso -->
