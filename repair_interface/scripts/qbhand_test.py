@@ -15,7 +15,6 @@ class QbHand:
         self.side = side
         self.gazebo = gazebo
         if gazebo:
-            # self.gripperMsg = Float64()
             self.gripperMsg = HandCmd()
             self.open_value = 0.0
             self.close_value = 0.9
@@ -32,8 +31,6 @@ class QbHand:
                 self.close_value =20000.0
                 self.hand_status = None
 
-        #if gazebo:
-        #    self.init_ros()
         self.init_params()
 
         # if self.side == "right":
@@ -55,19 +52,11 @@ class QbHand:
         self.hand_status = msg
         
     def get_current(self):
-          
         return self.hand_status
-        # Print the response
-        #print("QbHand Current:", response.currents[0])
-        #print("QbHand Residual Current:", response.currents[1])
-
-        #return response.currents
 
     def move_hand(self, aperture, secs=1.0):
         # moving
-        #print('Moving qb Soft Hand..')
         if self.gazebo:
-            # self.gripperMsg.data = aperture
             self.gripperMsg.pos_ref = aperture
             self.GripperPub.publish(self.gripperMsg)
 
@@ -79,30 +68,30 @@ class QbHand:
             #QUIRINO, TO_CHECK
             self.gripperMsg.pos_ref = aperture
             self.GripperPub.publish(self.gripperMsg)
-        # print(self.gripperMsg)
         
-        print('wait to finish')
+        # print('wait to finish')
         rospy.sleep(secs)
         
     def close_hand(self):
         # close
-        print('Closing qb Soft Hand..')
+        # print('Closing qb Soft Hand..')
         self.move_hand(self.close_value)
 
     def close_hand_2(self, used_hand, gazebo_flag=False):
         # close
-        print('Closing qb Soft Hand..')
-        if used_hand == "left":
+        if used_hand == "right":
+            print('Closing QbHand..')
             if(gazebo_flag == True):self.move_hand(0.9)
             else:self.move_hand(11500)
         else:
+            print('Closing Wide Hand..')
             if(gazebo_flag == True):self.move_hand(0.9)
             else:self.move_hand(15500)
 
 
     def open_hand(self, secs=0.5):
         # open
-        print("Opening qb Soft Hand..")
+        # print("Opening qb Soft Hand..")
         self.move_hand(self.open_value)
 
     def init_params(self):

@@ -66,7 +66,6 @@ class ManipulationUtils:
         return success_1 and success_2
 
     def move_arm_to_pose_moveit(self, arm: ARM_ENUM, pose: PoseStamped):
-        #print("planing for arm ", arm)
         rospy.loginfo("[ManipulationUtils] Waiting for moveit motion planner service...")
         rospy.wait_for_service(self.mp_moveit_topic)
         rospy.loginfo("[ManipulationUtils] Service found!")
@@ -265,9 +264,6 @@ class ManipulationUtils:
                 goal.target_pose_right = pose.pose
                 goal.target_time = 5 # sec
             
-            
-            print("Sending goal: ",goal)
-            print("Self current state klampter: ",self.klampt_mp_client.get_state())
             self.klampt_mp_client.send_goal(goal)
             #rospy.loginfo("[ManipulationUtils] Action  goal is sent.")
             rospy.loginfo("[ManipulationUtils] Waiting for action result...")

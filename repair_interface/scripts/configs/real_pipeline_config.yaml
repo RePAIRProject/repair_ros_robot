@@ -1,7 +1,7 @@
 use_both_hands: False #Indicates if bimanula manipulation should be used
 use_hands: True #Indicates if QB hands should be used at all (Per default True)
 grasp_without_rotation: False # Indicates if we use oriented bounding box from recognition framework to align hand
-place_without_rotation: False
+place_without_rotation: True
 follow_the_hand: False # it will choose placement side based on the hand and not on the published data
 use_klampt: True #uses Klampt instead of Moveit
 single_step_execution: True #If true, robot will wait for user input before each movement
@@ -14,17 +14,18 @@ fresco_pose_world_y_offset: 0.0 # -0.02 # 0.02 # 0.1248 # Offset in Y direction 
 
 fresco_pose_world_z: 1.29 # Initial Z Heigt for placing Hand above Fresco Fragment
 fresco_down_pose_y_offset: 0.04 # Hardcoded Y offset to better grasp fresco when going down to it
-grasp_z_above_fresco_in_meters: 0.03
+grasp_z_above_fresco_in_meters_qb: 0.03
+grasp_z_above_fresco_in_meters_wide: 0.055
 
 placement_center_table_x: 0.15 # Placing offset to not collide with other already placed frescos
 placement_center_table_y: 0.65 # Placing offset to not collide with other already placed frescos
 
 lift_position_z_offset_after_grasp: 0.16 # intermediate position after grasping to go to, to test if grasp was succesfull
 
-dropping_position_z_arm_1: 1.15 # Z height at which the hand opens to drop the fresco
+dropping_position_z_arm_1: 1.13 # Z height at which the hand opens to drop the fresco
 dropping_position_z_arm_2: 1.1  
 
-qbHand_current_thresh: 180 # current threshold to check if fresco was properly grasped
+qbHand_current_thresh: -1000 # current threshold to check if fresco was properly grasped
 fresco_area_threshold_for_rotation: 5000  # Area threshold to decide if we need to rotate the hand when grasping fresco in pixels^2
 max_grasp_attempts: 3 # Maximum number of attempts to grasp the fresco  
 

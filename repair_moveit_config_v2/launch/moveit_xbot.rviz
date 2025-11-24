@@ -696,6 +696,8 @@ Visualization Manager:
           Value: false
         arm_2_tcp:
           Value: false
+        arm_grasp_pose:
+          Value: true
         camera_accel_frame:
           Value: false
         camera_accel_optical_frame:
@@ -728,6 +730,12 @@ Visualization Manager:
           Value: false
         dummy_prismatic_link:
           Value: false
+        fresco_world_pose:
+          Value: true
+        hand_grasp_pose:
+          Value: true
+        hand_pose_array:
+          Value: true
         left_hand_v1_wide_grasp_link:
           Value: false
         left_hand_v1_wide_index_distal_link:
@@ -808,6 +816,8 @@ Visualization Manager:
           Value: false
         left_hand_v1_wide_thumb_proximal_virtual_link:
           Value: false
+        left_initial_pose:
+          Value: true
         leg1_link:
           Value: false
         leg2_link:
@@ -896,12 +906,16 @@ Visualization Manager:
           Value: false
         right_hand_v1_2_research_thumb_proximal_virtual_link:
           Value: false
+        right_initial_pose:
+          Value: true
         sliding_guide_link:
           Value: false
         table_top_link:
           Value: false
         torso_1:
           Value: false
+        unchanged_fresco_world_pose:
+          Value: true
         vbar1_link:
           Value: false
         vbar2_link:
@@ -922,6 +936,18 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
+          arm_grasp_pose:
+            {}
+          fresco_world_pose:
+            {}
+          hand_grasp_pose:
+            {}
+          hand_pose_array:
+            {}
+          left_initial_pose:
+            {}
+          right_initial_pose:
+            {}
           table_top_link:
             leg1_link:
               vbar1_link:
@@ -1079,6 +1105,8 @@ Visualization Manager:
               vbar4_link:
                 obar4_link:
                   {}
+          unchanged_fresco_world_pose:
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -1289,5 +1317,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 828
-  X: 101
-  Y: 27
+  X: 97
+  Y: 52

@@ -353,7 +353,7 @@ class SandRecognition():
             print("\nPlease use `OBB` or `PCA`\nreturning 0..\n\n")
             return 0
         
-        return angle
+        return angle_pca_rad
     
 
     def _fix_axis_flip(self, prev_axis, new_axis):
@@ -409,7 +409,7 @@ class SandRecognition():
         while not rospy.is_shutdown():
             points3d_rs = get_points_from_ros()
             
-            print('-' * 40)
+            # print('-' * 40)
             detections = self.recognize_with_contraints(self.rgb_image, 
                                                         group_number=group_num,
                                                         iou=iou)
@@ -461,6 +461,7 @@ class SandRecognition():
                     box = detection['box'].cpu().numpy().astype(int)
                     centerx, centery = self.calculate_center_of_mass(polygon)
                     rotation_angle_deg = self.calculate_rotation(polygon, method='PCA', imgdraw=image_draw, fragment_name=fragment_name) 
+                    print(f"Rotation angle for {fragment_name}: {rotation_angle_deg:.2f} radians")
                     area = self.calculate_area(polygon, box)
 
                     ###############################
@@ -536,14 +537,14 @@ class SandRecognition():
                         image_draw = cv2.polylines(image_draw, [polygon], isClosed=True, color=color, thickness=2)
                         # draw circle
                         image_draw = cv2.circle(image_draw, (centerx, centery), 2, color, 5)
-                        cv2.imshow(f'recognition', image_draw)
-                        print(detected_string)
-                        # f'detected {len(det_res[0].obb)} objects:\n\t- {detected[0]} of group 15\n\t- {detected[1]} of group 29\n\t- {detected[2]} of group 89')
-                        cv2.waitKey(1)
-
-            if debug == True:
-                cv2.imshow("image", img2draw)
+                        
+                    
+            if show_image_feed == True:
+                cv2.imshow(f'recognition', image_draw)
+                print(detected_string)
+                # f'detected {len(det_res[0].obb)} objects:\n\t- {detected[0]} of group 15\n\t- {detected[1]} of group 29\n\t- {detected[2]} of group 89')
                 cv2.waitKey(1)
+
 
             # MISALIGNMENT CORRECTION
             # align reprojected pointcloud with realsense pointcloud

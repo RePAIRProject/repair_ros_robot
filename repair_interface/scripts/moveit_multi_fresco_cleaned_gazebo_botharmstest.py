@@ -553,7 +553,7 @@ class PicpkNPlaceDemo:
             self.go_home_pose()
             return
         else:
-            print("Successfully grasped")
+            print("Successfully grasped!")
         # wait for user input DEBUG
         #input("Press Enter to continue...")
 
