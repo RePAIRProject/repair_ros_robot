@@ -25,7 +25,7 @@ import argparse
 from std_msgs.msg import Header
 
 
-from repair_interface.msg import RecognitionData, PlacementData
+from repair_interface.msg import RecognitionData, PlacementData, PlacedPieces
 
 """
 This script is used to detect fragments in the sand in the color image!
@@ -65,8 +65,10 @@ class SandRecognition():
         if self.use_gazebo:
             self.depth_sub = rospy.Subscriber('/camera/depth/image_rect_raw', Image, self.depth_callback)       
         else:
-            self.depth_sub = rospy.Subscriber('/camera/aligned_depth_to_color/image_raw', Image, self.depth_callback)       
+            self.depth_sub = rospy.Subscriber('/camera/aligned_depth_to_color/image_raw', Image, self.depth_callback)  
 
+        self.placed_pieces = []
+        self.placed_pieces_sub = rospy.Subscriber('/placed_pieces', PlacedPieces, self.placed_pieces_callback)
         # Store intrinsics for RGB and Depth cameras
         self.rgb_intrinsics = None
         self.depth_intrinsics = None
@@ -109,6 +111,9 @@ class SandRecognition():
         self.num_samples = 10
         self.prev_axis = None        # np.array([ux, uy])
         self.prev_angle = None
+
+    def placed_pieces_callback(self, msg):
+        self.placed_pieces = msg.placed_pieces.data
 
     def publish_pose_array(self, poses, frame_id="world"):
         pa = PoseArray()
@@ -208,7 +213,7 @@ class SandRecognition():
         return pcl
     
 
-    def recognize_with_contraints(self, rgb_image, group_number, iou=1, verbose=False):
+    def recognize_with_contraints(self, rgb_image, group_number, iou=1, placed_pieces=[], verbose=False):
         """
         Adds on top of the recognition a loop to limit the recognition to one object per class,
         to avoid duplicates.
@@ -225,16 +230,31 @@ class SandRecognition():
             The polygon can be accessed like this
                 `polygon = detection['mask'].xy[0]`
         """
-        conf_debug = 0.3 if verbose else 0.5
+        conf_debug = 0.3 if verbose else 0.3
         detections = self.recognition_model(self.rgb_image, conf=conf_debug, iou=0.1, verbose=False)[0]
         final_detections = {}
+
+        dict_mapping  = {"RPf_00096": 4,
+                         "RPf_00097": 5,
+                         "RPf_00103": 11,
+                         "RPf_00104": 12,
+                         "RPf_00106": 14,
+                         "RPf_00107": 15,
+                         "RPf_00109": 17}
 
         if group_number == "29" or group_number == 29:
             group_number = 29
             classes = [1, 2, 3, 4, 5]
         elif group_number == "15" or group_number == 15:
             group_number = 15
-            classes = [3, 4, 5, 11, 12, 14, 15, 17]
+            classes = [4, 5, 11, 12, 14, 17]
+            if len(placed_pieces) > 0:
+                print("received as placed pieces:", placed_pieces)
+                print("received as placed pieces classes:", [dict_mapping[f'RPf_{str(pid).zfill(5)}'] for pid in placed_pieces])
+                print("before:", classes)
+                # remove already placed pieces from the classes to be detected
+                classes = [cls for cls in classes if cls not in [dict_mapping[f'RPf_{str(pid).zfill(5)}'] for pid in placed_pieces]]
+                print("after:", classes)
         elif group_number == "89" or group_number == 89:
             group_number = 89
             classes = [1, 2, 4, 5, 6, 7, 11]
@@ -399,7 +419,7 @@ class SandRecognition():
         return smooth
 
     def recognize_and_publish(self, recognition_pub, placement_pub, group_num, iou=0.99,
-                               verbosity=1, debug=False, show_image_feed=False, 
+                               verbosity=1, placed_pieces=[], debug=False, show_image_feed=False, 
                                use_hardcoded_alignment=True, only_g15=False):
         """
         The main loop with the 2D color recognition, reprojection and registration 
@@ -412,6 +432,7 @@ class SandRecognition():
             # print('-' * 40)
             detections = self.recognize_with_contraints(self.rgb_image, 
                                                         group_number=group_num,
+                                                        placed_pieces=placed_pieces,
                                                         iou=iou)
             
             names_list = [detections[d]['name'] for d in detections]
@@ -777,7 +798,8 @@ if __name__ == '__main__':
     model_path = os.path.join(polygon_recognition_folder, f"polygon_rec_g{args.group}.pt")
     print(f"Will use {model_path} for this experiment!")
     placements_folder = '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/placements'
-    placement_file = os.path.join(placements_folder, 'int_week_7_piece_center_placements_demo.json')
+    placement_file = os.path.join(placements_folder, 'demo_placement.json')
+    # placement_file = os.path.join(placements_folder, 'int_week_7_piece_center_placements_demo.json')
 
     # data_folder = rospy.get_param('data_folder', '/home/repair/repair_ws/src/repair_ros_robot/repair_interface/config/weights_mix')  # Default in case not set
     # # data_folder = rospy.get_param('data_folder', '/home/ws/src/repair_ros_robot/repair_interface/sand_detection_models')  # Default in case not set
@@ -790,7 +812,8 @@ if __name__ == '__main__':
     recognition = SandRecognition(data_folder=root_data_folder, model_name=model_path, placement_file=placement_file, use_gazebo=args.use_gazebo)
 
     recognition.recognize_and_publish(recognition_pub, placement_pub, group_num=args.group, 
-                                      verbosity=verbosity_level, debug=False, show_image_feed=True,
+                                      verbosity=verbosity_level, placed_pieces=recognition.placed_pieces, 
+                                      debug=False, show_image_feed=True,
                                       use_hardcoded_alignment=True, only_g15=False)
 
     rospy.spin()
