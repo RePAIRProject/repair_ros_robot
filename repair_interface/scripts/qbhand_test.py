@@ -72,21 +72,27 @@ class QbHand:
         # print('wait to finish')
         rospy.sleep(secs)
         
-    def close_hand(self):
-        # close
-        # print('Closing qb Soft Hand..')
-        self.move_hand(self.close_value)
 
-    def close_hand_2(self, used_hand, gazebo_flag=False):
+    def close_hand(self, used_hand, is_tight=False, gazebo_flag=False):
         # close
         if used_hand == "right":
-            print('Closing QbHand..')
-            if(gazebo_flag == True):self.move_hand(0.9)
-            else:self.move_hand(11500)
+            if is_tight:
+                print('Closing QbHand tightly..')
+                if(gazebo_flag == True):self.move_hand(0.9)
+                else:self.move_hand(18000)
+            else:
+                print('Closing QbHand..')
+                if(gazebo_flag == True):self.move_hand(0.9)
+                else:self.move_hand(16000)
         else:
-            print('Closing Wide Hand..')
-            if(gazebo_flag == True):self.move_hand(0.9)
-            else:self.move_hand(15500)
+            if is_tight:
+                print('Closing Wide Hand tightly..')
+                if(gazebo_flag == True):self.move_hand(0.9)
+                else:self.move_hand(20000)
+            else:
+                print('Closing Wide Hand..')
+                if(gazebo_flag == True):self.move_hand(0.9)
+                else:self.move_hand(15500)
 
 
     def open_hand(self, secs=0.5):

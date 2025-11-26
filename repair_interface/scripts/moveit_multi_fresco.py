@@ -525,7 +525,7 @@ class PicpkNPlaceDemo:
         q_new = quaternion_multiply(q_rot, q_orig)
         arm_target_pose_np[3:] = q_new
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        print("TARGET POSE 1", arm_target_pose_np)
+        # print("TARGET POSE 1", arm_target_pose_np)
 
         ### MOVE TO FIRST POSE ABOVE OBJECT
         # center the hand with fresco position + offset
@@ -547,7 +547,7 @@ class PicpkNPlaceDemo:
                 # arm_target_pose_np, rot_amount = self.calculate_hand_rotation_in_hand_frame(arm_target_pose_np.copy(), fresco_rotation)
                 publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
                 publish_tf_np(arm_target_pose_np, child_frame='AFTER_arm_grasp_pose')
-                print("TARGET POSE 2", arm_target_pose_np)
+                # print("TARGET POSE 2", arm_target_pose_np)
 
                 ### ROTATE HAND TO ALIGN WITH FRESCO
                 self.move_arm(self.arm, arm_target_pose_np)
@@ -565,7 +565,6 @@ class PicpkNPlaceDemo:
         ### TILT HAND
         arm_target_pose_np = self.change_hand_angle(arm_target_pose_np)
         publish_tf_np(arm_target_pose_np, child_frame='arm_grasp_pose')
-        print("TARGET POSE 3", arm_target_pose_np)
         
         ### TILT HAND TO BETTER GRASP FRESCO 
         # self.move_arm(self.arm, arm_target_pose_np)
@@ -575,7 +574,6 @@ class PicpkNPlaceDemo:
 
         ### 3. GO DOWN TO GRASP
         arm_target_pose_np[2] = self.fresco_world_z + above_fresco_height
-        print("TARGET POSE 4", arm_target_pose_np)
         self.move_arm(self.arm, arm_target_pose_np.copy())
         self.wait_for_robot()
 
@@ -615,14 +613,7 @@ class PicpkNPlaceDemo:
             y_placement = placement_side * placement_center_table_y + final_placements_position[1]
             # print(f"Going Above the Fragment at {x_placement}, {y_placement}")
 
-        
         ### Turn Robot Base according to hand and side
-        arm_target_pose_np = self.calculate_placement_rotation_new(arm_target_pose_np.copy(), fresco_placement_rotation, q_when_grasping)
-        # arm_target_pose_np = self.calculate_placement_rotation(arm_target_pose_np.copy(), 0,  q_orig)
-
-        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
-                                                    [x_placement, y_placement, before_placement_height],
-                                                    [x_placement, y_placement, before_placement_height])
         needs_right_turn = (not self.use_wide_hand and original_placement_side == 1)
         needs_left_turn  = (self.use_wide_hand and original_placement_side == -1)
 
@@ -637,6 +628,13 @@ class PicpkNPlaceDemo:
             print("TURN BASE RIGHT" if needs_right_turn else "TURN BASE LEFT")
             self.mu.move_to_joint_pose(rotation_joints)
             self.wait_for_robot()
+        
+        # arm_target_pose_np = self.calculate_placement_rotation_new(arm_target_pose_np.copy(), fresco_placement_rotation, q_when_grasping)
+        arm_target_pose_np = self.calculate_placement_rotation(arm_target_pose_np.copy(), 0,  q_orig)
+
+        arm_target_pose_np = self.set_move_position(self.arm, arm_target_pose_np.copy(),
+                                                    [x_placement, y_placement, before_placement_height],
+                                                    [x_placement, y_placement, before_placement_height])
 
         ### Move Robot To Place Position
         self.move_arm(self.arm, arm_target_pose_np)
@@ -987,7 +985,7 @@ class PicpkNPlaceDemo:
             if(result==True):self.gazebo_attached = True
         else: 
             ### close hand
-            self.hand_api.close_hand_2(self.used_hand, gazebo_flag=self.use_gazebo)
+            self.hand_api.close_hand(self.used_hand, gazebo_flag=self.use_gazebo)
             # print('Closing Hand!')
 
         ### Store upper and lower hand position before and after grasping for later use in loop
@@ -1002,11 +1000,22 @@ class PicpkNPlaceDemo:
             qbhand_curr = self.hand_api.get_current()
             print('Current m1 %f and current m2 %f' % (qbhand_curr.m1_curr, qbhand_curr.m2_curr))
             grasp_count = 1
-            while (not (int(qbhand_curr.m1_curr) > self.config["qbHand_current_thresh"] and int(qbhand_curr.m2_curr) > self.config["qbHand_current_thresh"])) and grasp_count<self.config["max_grasp_attempts"]:
+            if self.arm == ARM_ENUM.ARM_1:
+                threshold = self.config["wideHand_current_thresh"]
+            elif self.arm == ARM_ENUM.ARM_2:
+                threshold = self.config["qbHand_current_thresh"]
+            
+            while (not (int(qbhand_curr.m1_curr) > threshold and int(qbhand_curr.m2_curr) > threshold)) and grasp_count<self.config["max_grasp_attempts"]:
+                
+                if grasp_count >= self.config["max_grasp_attempts"]:
+                    print("Failed to grasp fresco after 3 attempts")
+                    success = False
+                    return upper_hand_target_pose_np, success
+                
                 self.hand_api.open_hand()
                 rospy.sleep(1)
                 
-                ### change hangle for slight adjustment
+                ### change angle for slight adjustment
                 if grasp_count > 1:
                     yaw_angle = np.random.uniform(-np.deg2rad(20), np.deg2rad(20))
                     arm_target_pose_np = self.change_hand_angle(lower_hand_target_pose_np,  y_ang=yaw_angle, p_ang=0)
@@ -1016,7 +1025,7 @@ class PicpkNPlaceDemo:
                 self.move_arm(self.arm, lower_hand_target_pose_np)
 
                 ### close hand
-                self.hand_api.close_hand_2(self.used_hand)      
+                self.hand_api.close_hand(self.used_hand)      
                 rospy.sleep(1)
 
                 ### Lift up
@@ -1025,11 +1034,8 @@ class PicpkNPlaceDemo:
 
                 ### check current
                 qbhand_curr = self.hand_api.get_current()
+                print('Current m1 %f and current m2 %f' % (qbhand_curr.m1_curr, qbhand_curr.m2_curr))
                 grasp_count += 1
-            if grasp_count >= self.config["max_grasp_attempts"]:
-                print("Failed to grasp fresco after 3 attempts")
-                success = False
-                return upper_hand_target_pose_np, success
             
             success = True
     
@@ -1040,7 +1046,7 @@ class PicpkNPlaceDemo:
             return upper_hand_target_pose_np, False
 
         # print('Fresco is Grasped')
-        self.hand_api.close_hand()
+        self.hand_api.close_hand(self.used_hand, is_tight=True)
 
         return upper_hand_target_pose_np, success
 
