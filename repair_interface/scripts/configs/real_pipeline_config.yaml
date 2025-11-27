@@ -9,8 +9,8 @@ single_step_execution: False #If true, robot will wait for user input before eac
 min_z_value_arm_1: 1.137 # Minimum Z value the Left (big hand) arm is alowed to go down to
 min_z_value_arm_2: 1.076 # Minimum Z value the Right (small hand) arm is alowed to go down to
   
-fresco_pose_world_x_offset: 0.05 # 0.05 # -0.04 # 
-fresco_pose_world_y_offset: 0.08 # -0.06 #  # Offset in Y direction for correct Hand placement above Fresco fragment (we still don't know why we need it)
+fresco_pose_world_x_offset: 0.02 # 0.05 # -0.04 # 
+fresco_pose_world_y_offset: 0.04 # -0.06 #  # Offset in Y direction for correct Hand placement above Fresco fragment (we still don't know why we need it)
 
 fresco_pose_world_z: 1.29 # Initial Z Heigt for placing Hand above Fresco Fragment
 fresco_down_pose_y_offset: 0.04 # Hardcoded Y offset to better grasp fresco when going down to it
@@ -25,9 +25,9 @@ lift_position_z_offset_after_grasp: 0.16 # intermediate position after grasping 
 dropping_position_z_arm_1: 1.13 # Z height at which the hand opens to drop the fresco
 dropping_position_z_arm_2: 1.1  
 
-qbHand_current_thresh: -1000 # 550 # current threshold to check if fresco was properly grasped
+qbHand_current_thresh: 180 # 550 # current threshold to check if fresco was properly grasped
 qbHand_current_thresh2: -1000 # 300 # current threshold to check if fresco was properly grasped
-wideHand_current_thresh: -1000 # 120 # current threshold to check if fresco was properly grasped
+wideHand_current_thresh: 120 # current threshold to check if fresco was properly grasped
 fresco_area_threshold_for_rotation: 5000  # Area threshold to decide if we need to rotate the hand when grasping fresco in pixels^2
 max_grasp_attempts: 3 # Maximum number of attempts to grasp the fresco  
 

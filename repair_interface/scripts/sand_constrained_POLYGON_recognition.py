@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from matplotlib.pyplot import box
 import rospy
 from sensor_msgs.msg import Image, CameraInfo
 
@@ -240,11 +241,24 @@ class SandRecognition():
                          "RPf_00104": 12,
                          "RPf_00106": 14,
                          "RPf_00107": 15,
-                         "RPf_00109": 17}
+                         "RPf_00109": 17, 
+                         "RPf_00204": 1,
+                         "RPf_00205": 2,
+                         "RPf_00206": 3,
+                         "RPf_00207": 4,
+                         "RPf_00208": 5}
+        
 
         if group_number == "29" or group_number == 29:
             group_number = 29
             classes = [1, 2, 3, 4, 5]
+            if len(placed_pieces) > 0:
+                print("received as placed pieces:", placed_pieces)
+                print("received as placed pieces classes:", [dict_mapping[f'RPf_{str(pid).zfill(5)}'] for pid in placed_pieces])
+                print("before:", classes)
+                # remove already placed pieces from the classes to be detected
+                classes = [cls for cls in classes if cls not in [dict_mapping[f'RPf_{str(pid).zfill(5)}'] for pid in placed_pieces]]
+                print("after:", classes)
         elif group_number == "15" or group_number == 15:
             group_number = 15
             classes = [4, 5, 11, 12, 14, 17]
@@ -268,10 +282,10 @@ class SandRecognition():
             if class_mask.any():
                 # Get confidences for this class
                 class_confs = detections.boxes.conf[class_mask]
-                
+                    
                 # Find index of max confidence
                 best_idx = class_confs.argmax()
-                
+
                 # Get the best detection
                 all_class_indices = class_mask.nonzero(as_tuple=True)[0]
                 global_idx = all_class_indices[best_idx]
@@ -295,8 +309,8 @@ class SandRecognition():
         y = polygon[:, 1]
         area_polygon = 0.5 * np.abs(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))
         box_area = (box[2]-box[0]) * (box[3]-box[1])
-        print("== Contour area:", area_polygon)
-        print("== Box Area:", box_area)
+        # print("== Contour area:", area_polygon)
+        # print("== Box Area:", box_area)
         return area_polygon
 
     def calculate_center_of_mass(self, polygon):
@@ -432,9 +446,20 @@ class SandRecognition():
             # print('-' * 40)
             detections = self.recognize_with_contraints(self.rgb_image, 
                                                         group_number=group_num,
-                                                        placed_pieces=placed_pieces,
+                                                        placed_pieces=self.placed_pieces,
                                                         iou=iou)
             
+
+            # get masks for all detections in one line of code
+            masks = [detections[d]['mask'].xy[0].astype(np.int32) for d in detections]
+            boxes = [detections[d]['box'].cpu().numpy().astype(int) for d in detections]
+            areas = [self.calculate_area(masks[i], boxes[i]) for i in range(len(masks))]
+            print("Areas of detected IDs:", areas)
+            # reorder by area (largest first)
+            sorted_indices = np.argsort(areas)[::-1]
+            detections = {list(detections.keys())[i]: detections[list(detections.keys())[i]] for i in sorted_indices}
+            print("Detections reordered by area:", [detections[d]['name'] for d in detections])
+
             names_list = [detections[d]['name'] for d in detections]
             if self.principal_axis_history is None: # initialize the history of principal axes
                 self.principal_axis_history = {detection['name']: [] for detection in detections.values()}

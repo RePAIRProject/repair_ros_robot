@@ -51,6 +51,7 @@ add_message_files(
   FILES
   RecognitionData.msg
   PlacementData.msg
+  PlacedPieces.msg
 )
 
 ## Generate added messages and services with any dependencies listed here

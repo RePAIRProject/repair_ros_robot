@@ -685,9 +685,11 @@ class PicpkNPlaceDemo:
 
         ### 8. Go Up
         if place_down_path is not None:
+            print("Going Up on Inversed Path")
             place_up_path = self.inverse_path(place_down_path)
             self.move_path(place_up_path)
         else:
+            print("No valid path found, going up by 15 cm")
             arm_target_pose_np[2] += 0.15
             place_up_path = self.move_arm(self.arm, arm_target_pose_np)
 
